@@ -5,6 +5,7 @@ import com.google.android.material.tabs.TabLayout
 
 @StringDef(
     TabId.HOME,
+    TabId.ACGN,
     TabId.DISCOVERY,
     TabId.MINE
 )
@@ -15,6 +16,7 @@ annotation class TabId {
         const val HOME="home"
         const val MINE="mine"
         const val DISCOVERY="discovery"
+        const val ACGN="acgn"
     }
 
 
