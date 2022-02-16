@@ -8,9 +8,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
-import com.nan.xarch.R
-import com.nan.xarch.databinding.ViewRecyclerHeaderBinding
-import com.nan.xarch.util.d
+import com.qiusuo.videoeditor.R
+import com.qiusuo.videoeditor.databinding.ViewRecyclerHeaderBinding
+import com.qiusuo.videoeditor.util.d
 
 class PullRefreshLayout @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0

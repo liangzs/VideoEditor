@@ -1,6 +1,7 @@
 package com.nan.xarch.bean
 
-import com.nan.xarch.constant.VideoType
+import com.qiusuo.videoeditor.constant.VideoType
+
 
 data class VideoBean(
     val id: String,

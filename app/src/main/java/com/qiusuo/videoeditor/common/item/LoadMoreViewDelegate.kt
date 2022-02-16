@@ -6,10 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.nan.xarch.R
-import com.nan.xarch.base.list.base.BaseItemViewDelegate
-import com.nan.xarch.constant.LoadMoreState
-import com.nan.xarch.databinding.ViewRecyclerFooterBinding
+import com.qiusuo.videoeditor.R
+import com.qiusuo.videoeditor.base.BaseItemViewDelegate
+import com.qiusuo.videoeditor.constant.LoadMoreState
+import com.qiusuo.videoeditor.databinding.ViewRecyclerFooterBinding
 
 class LoadMoreViewDelegate : BaseItemViewDelegate<LoadMoreViewData, LoadMoreViewDelegate.ViewHolder>() {
 

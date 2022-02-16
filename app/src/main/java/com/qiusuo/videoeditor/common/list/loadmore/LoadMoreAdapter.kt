@@ -4,8 +4,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.qiusuo.videoeditor.base.BaseAdapter
 import com.qiusuo.videoeditor.base.BaseViewData
-import com.nan.xarch.constant.LoadMoreState
 import com.nan.xarch.item.LoadMoreViewData
+import com.qiusuo.videoeditor.constant.LoadMoreState
 
 class LoadMoreAdapter : BaseAdapter() {
 

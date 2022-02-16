@@ -48,11 +48,18 @@ dependencies {
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-    implementation("me.imid.swipebacklayout.lib:library:1.1.0")
+    implementation("androidx.annotation:annotation:${androidx_annotation}")
+    //retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:adapter-rxjava2:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
+
+    //room
+    implementation("androidx.room:room-runtime:${androidx_room}")
+    implementation("androidx.room:room-rxjava2:${androidx_room}")
+    implementation("androidx.room:room-ktx:${androidx_room}")
+    kapt("androidx.room:room-compiler:${androidx_room}")
 
     //状态栏
     // 基础依赖包，必须要依赖
@@ -62,16 +69,24 @@ dependencies {
 // kotlin扩展（可选）
     implementation 'com.gyf.immersionbar:immersionbar-ktx:3.0.0'
     //stdlib
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:${rootProject.ext.androidx_core}")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:${rootProject.ext.androidx_core}")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${rootProject.ext.androidx_core}")
-    implementation("androidx.lifecycle:lifecycle-process:${rootProject.ext.androidx_lifecycle}")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:${androidx_core}")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:${androidx_core}")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${androidx_core}")
+    implementation("androidx.lifecycle:lifecycle-process:${androidx_lifecycle}")
 
-    implementation("androidx.activity:activity-ktx:${rootProject.ext.androidx_activity_ktx}")
-    implementation("androidx.fragment:fragment-ktx:${rootProject.ext.androidx_fragment_ktx}")
+    implementation("androidx.activity:activity-ktx:${androidx_activity_ktx}")
+    implementation("androidx.fragment:fragment-ktx:${androidx_fragment_ktx}")
 
     // Glide
-    implementation("com.github.bumptech.glide:glide:4.12.0")
-    implementation("com.github.bumptech.glide:okhttp3-integration:4.12.0")
-    kapt("com.github.bumptech.glide:compiler:4.12.0")
+    implementation("com.github.bumptech.glide:glide:${version_glide}")
+    implementation("com.github.bumptech.glide:okhttp3-integration:${version_glide}")
+    kapt("com.github.bumptech.glide:compiler:${version_glide}")
+    // 下拉刷新
+    implementation("in.srain.cube:ultra-ptr:${versions_ptr}")
+    // 右滑返回
+    implementation("me.imid.swipebacklayout.lib:library:${versions_swipebacklayout}")
+
+    // Lottie
+    implementation("com.airbnb.android:lottie:${versions_lottie}")
+
 }

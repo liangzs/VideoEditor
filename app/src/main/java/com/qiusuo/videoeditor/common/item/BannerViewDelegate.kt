@@ -4,20 +4,17 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.nan.xarch.base.list.base.BaseItemViewDelegate
-import com.nan.xarch.databinding.ItemBannerBinding
-import com.nan.xarch.util.getActivity
-import com.nan.xarch.util.getContext
-import com.nan.xarch.util.setImageUrl
-import com.youth.banner.adapter.BannerImageAdapter
-import com.youth.banner.holder.BannerImageHolder
-import com.youth.banner.indicator.CircleIndicator
+import com.qiusuo.videoeditor.base.BaseItemViewDelegate
 
 class BannerViewDelegate : BaseItemViewDelegate<BannerViewData, BannerViewDelegate.ViewHolder>() {
 
     private val bannerAdapter = BannerAdapter()
 
-    override fun onCreateViewHolder(inflater: LayoutInflater, context: Context, parent: ViewGroup): ViewHolder {
+    override fun onCreateViewHolder(
+        inflater: LayoutInflater,
+        context: Context,
+        parent: ViewGroup
+    ): ViewHolder {
         val holder = ViewHolder(ItemBannerBinding.inflate(inflater, parent, false))
         holder.viewBinding.banner.setAdapter(bannerAdapter)
         holder.viewBinding.banner.addBannerLifecycleObserver(holder.getActivity())
@@ -30,12 +27,18 @@ class BannerViewDelegate : BaseItemViewDelegate<BannerViewData, BannerViewDelega
         bannerAdapter.setDatas(item.value.images)
     }
 
-    class ViewHolder(val viewBinding: ItemBannerBinding) : RecyclerView.ViewHolder(viewBinding.root) {
+    class ViewHolder(val viewBinding: ItemBannerBinding) :
+        RecyclerView.ViewHolder(viewBinding.root) {
 
     }
 
     class BannerAdapter : BannerImageAdapter<String>(null) {
-        override fun onBindView(holder: BannerImageHolder, image: String, position: Int, size: Int) {
+        override fun onBindView(
+            holder: BannerImageHolder,
+            image: String,
+            position: Int,
+            size: Int
+        ) {
             holder.imageView.setImageUrl(image)
         }
     }

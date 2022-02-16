@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.widget.RadioGroup
 import android.widget.TabHost
 import com.gyf.immersionbar.ktx.immersionBar
+import com.nan.xarch.bean.Tab
 import com.qiusuo.videoeditor.base.BaseActivity
 import com.qiusuo.videoeditor.base.BaseFragment
 import com.qiusuo.videoeditor.constant.TabId
 import com.qiusuo.videoeditor.databinding.ActivityMainBinding
-import com.qiusuo.videoeditor.entity.Tab
 import com.qiusuo.videoeditor.widgegt.TabIndicatorView
 
 class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
