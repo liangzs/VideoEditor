@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import com.nan.xarch.base.list.XRecyclerView
 import com.qiusuo.videoeditor.base.BaseFragment
 import com.qiusuo.videoeditor.databinding.FragmentHomeBinding
 
@@ -22,7 +23,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     }
 
     private fun initView(){
-        viewBinding.rvList.init()
+        viewBinding.rvList.init(XRecyclerView.Config())
     }
 
 }

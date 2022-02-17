@@ -42,6 +42,8 @@ ext {
     versions_swipebacklayout = "1.1.0"
     versions_lottie = "4.2.1"
     androidx_room = "2.3.0"
+    versions_banner = "2.2.2"
+    versions_retrofit = "2.9.0"
 
 }
 

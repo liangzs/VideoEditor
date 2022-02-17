@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.nan.xarch.R
+import com.qiusuo.videoeditor.R
 
 /**
  * This is a simple [ItemViewDelegate] that does not require to declare and provide a [RecyclerView.ViewHolder].

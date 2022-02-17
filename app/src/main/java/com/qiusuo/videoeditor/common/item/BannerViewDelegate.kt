@@ -5,6 +5,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.qiusuo.videoeditor.base.BaseItemViewDelegate
+import com.qiusuo.videoeditor.databinding.ItemBannerBinding
+import com.qiusuo.videoeditor.util.getActivity
+import com.qiusuo.videoeditor.util.getContext
+import com.qiusuo.videoeditor.util.setImageUrl
+import com.youth.banner.adapter.BannerImageAdapter
+import com.youth.banner.holder.BannerImageHolder
+import com.youth.banner.indicator.CircleIndicator
 
 class BannerViewDelegate : BaseItemViewDelegate<BannerViewData, BannerViewDelegate.ViewHolder>() {
 

@@ -5,10 +5,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.nan.xarch.base.list.base.BaseAdapter
-import com.nan.xarch.base.list.base.BaseItemViewDelegate
-import com.nan.xarch.databinding.ItemCatagoryListBinding
-import com.nan.xarch.widget.GridItemDecoration
+import com.qiusuo.videoeditor.base.BaseAdapter
+import com.qiusuo.videoeditor.base.BaseItemViewDelegate
+import com.qiusuo.videoeditor.databinding.ItemCatagoryListBinding
+import com.qiusuo.videoeditor.widgegt.GridItemDecoration
 
 class CatagoryListViewDelegate : BaseItemViewDelegate<CatagoryListViewData, CatagoryListViewDelegate.ViewHolder>() {
 

@@ -4,8 +4,8 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.nan.xarch.base.list.base.BaseItemViewDelegate
-import com.nan.xarch.databinding.ItemTest1Binding
+import com.qiusuo.videoeditor.base.BaseItemViewDelegate
+import com.qiusuo.videoeditor.databinding.ItemTest1Binding
 
 class Test1ViewDelegate : BaseItemViewDelegate<Test1ViewData, Test1ViewDelegate.ViewHolder>() {
 

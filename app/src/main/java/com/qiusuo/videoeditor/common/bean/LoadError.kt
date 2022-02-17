@@ -1,6 +1,7 @@
 package com.nan.xarch.bean
 
-import com.nan.xarch.base.list.base.BaseViewData
+import com.qiusuo.videoeditor.base.BaseViewData
+
 
 object LoadError : ArrayList<BaseViewData<*>>() {
 }
