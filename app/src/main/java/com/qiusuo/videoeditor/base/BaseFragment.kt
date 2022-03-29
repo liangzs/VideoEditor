@@ -12,7 +12,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 
 abstract class BaseFragment<T : ViewBinding>(var inflater: (inflater: LayoutInflater, container: ViewGroup?, attchRoot: Boolean) -> T) :
-    Fragment() {
+    Fragment(), IGetPageName {
 
     protected lateinit var viewBinding: T
     val dispose = CompositeDisposable()
@@ -41,8 +41,6 @@ abstract class BaseFragment<T : ViewBinding>(var inflater: (inflater: LayoutInfl
     fun addDisPose(disposable: Disposable) {
         dispose.add(disposable)
     }
-
-
 
 
 }

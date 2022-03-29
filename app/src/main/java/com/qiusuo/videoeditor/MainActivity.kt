@@ -9,6 +9,7 @@ import com.qiusuo.videoeditor.base.BaseActivity
 import com.qiusuo.videoeditor.base.BaseFragment
 import com.qiusuo.videoeditor.constant.TabId
 import com.qiusuo.videoeditor.databinding.ActivityMainBinding
+import com.qiusuo.videoeditor.module.home.HomeFragment
 import com.qiusuo.videoeditor.widgegt.TabIndicatorView
 
 class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
@@ -20,6 +21,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         super.onCreate(savedInstanceState)
         initSystembar()
         updateTitle()
+        initTab()
     }
 
 
@@ -44,30 +46,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
     fun initTab() {
         val tabs = listOf<Tab>(
-            Tab(
-                TabId.HOME,
-                getString(R.string.page_home),
-                R.drawable.selector_btn_home,
-                BaseFragment::class
-            ),
-            Tab(
-                TabId.ACGN,
-                getString(R.string.page_acgn),
-                R.drawable.selector_btn_acgn,
-                BaseFragment::class
-            ),
-            Tab(
-                TabId.DISCOVERY,
-                getString(R.string.page_discovery),
-                R.drawable.selector_btn_discovery,
-                BaseFragment::class
-            ),
-            Tab(
-                TabId.MINE,
-                getString(R.string.page_mine),
-                R.drawable.selector_btn_mine,
-                BaseFragment::class
-            )
+            Tab(TabId.HOT_THEME, getString(R.string.main_hot_theme), R.drawable.selector_btn_discovery, HomeFragment::class),
+            Tab(TabId.HOME, getString(R.string.main_home), R.drawable.btn_home, HomeFragment::class),
+            Tab(TabId.STUDIO, getString(R.string.main_studio), R.drawable.selector_btn_mine, HomeFragment::class)
         )
         viewBinding.fragmentTabHost.run {
             setup(this@MainActivity, supportFragmentManager, viewBinding.fragmentContainer.id)
@@ -79,11 +60,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
                         viewBinding.tabTitle.text = title
                     })
                 }
-                addTab(tabSpec,fragmentClz.java,null)
+                addTab(tabSpec, fragmentClz.java, null)
             }
-            setOnTabChangedListener {
-                tabId->
-                currentTabId=tabId;
+            setOnTabChangedListener { tabId ->
+                currentTabId = tabId;
                 updateTitle()
             }
         }

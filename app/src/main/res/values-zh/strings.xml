@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">VideoEditor</string>
+    <string name="main_home">首页</string>
+
+    <string name="main_hot_theme">热门主题</string>
+    <string name="main_studio">我的工作台</string>
+
+    <string name="no_network">无网络连接，请检查网络设置</string>
+    <string name="network_error">出了点意外，内容加载失败</string>
+    <string name="state_empty">这里是空的哦</string>
+    <string name="loading">正在加载</string>
+    <string name="no_more">没有更多数据了</string>
+    <string name="network">设置网络</string>
+    <string name="retry">重新加载</string>
+
+    <string name="refresh_pull_down_to_refresh">下拉刷新</string>
+    <string name="refresh_refreshing">加载中</string>
+    <string name="refresh_release_to_refresh">释放更新</string>
+    <string name="refresh_refresh_complete">更新完成</string>
+
+
+    <string name="setting">设置</string>
+</resources>
