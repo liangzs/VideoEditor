@@ -1,6 +1,5 @@
 package com.qiusuo.videoeditor.module.home
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -30,7 +29,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     }
 
     private fun initView() {
-        viewBinding.rvList.init(
+        viewBinding.rvMainFunc.init(
             XRecyclerView.Config().setViewModel(viewModel)
                 .setPullRefreshEnable(true).setPullUploadMoreEnable(true)
                 .setLayoutManager(GridLayoutManager(context, SPAN_COUNT))
@@ -43,14 +42,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                 })
                 .setOnItemChildViewClickListener(object :
                     XRecyclerView.OnItemChildViewClickListener {
-                    override fun onItemChildViewClick(
-                        parent: RecyclerView,
-                        view: View,
-                        viewData: BaseViewData<*>,
-                        position: Int,
-                        id: Long,
-                        extra: Any?
-                    ) {
+                    override fun onItemChildViewClick(parent: RecyclerView, view: View, viewData: BaseViewData<*>, position: Int, id: Long, extra: Any?) {
                         if (extra is String) {
                             Toast.makeText(context, "child item", Toast.LENGTH_SHORT).show()
                         }
@@ -58,7 +50,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                 })
         )
         XEventBus.observe(viewLifecycleOwner, EventName.REFRESH_HOME_LIST) { message: String ->
-            viewBinding.rvList.refreshList()
+            viewBinding.rvMainFunc.refreshList()
             Toast.makeText(context, "home-list消息", Toast.LENGTH_SHORT).show()
         }
 

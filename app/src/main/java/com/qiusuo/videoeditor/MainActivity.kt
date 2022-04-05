@@ -36,9 +36,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
     fun updateTitle() {
         val title = when (currentTabId) {
-            TabId.HOME -> getString(R.string.page_home)
-            TabId.MINE -> getString(R.string.page_mine)
-            TabId.DISCOVERY -> getString(R.string.page_discovery)
+            TabId.HOT_THEME -> getString(R.string.main_hot_theme)
+            TabId.HOME -> getString(R.string.main_home)
+            TabId.STUDIO -> getString(R.string.main_studio)
             else -> ""
         }
         viewBinding.root

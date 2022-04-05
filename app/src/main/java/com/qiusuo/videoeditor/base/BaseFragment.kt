@@ -24,11 +24,7 @@ abstract class BaseFragment<T : ViewBinding>(var inflater: (inflater: LayoutInfl
         activity = requireActivity();
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewBinding = this.inflater(inflater, container, false);
         return viewBinding.root;
     }
