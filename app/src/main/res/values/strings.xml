@@ -1,31 +1,21 @@
 <resources>
     <string name="app_name">VideoEditor</string>
-    <string name="page_home">首页</string>
+    <string name="main_home">HOME</string>
 
-    <string name="page_mine">我的</string>
-    <string name="page_acgn">二次元</string>
-    <string name="page_discovery">发现</string>
-    <string name="page_about">关于</string>
+    <string name="main_hot_theme">Hot Theme</string>
+    <string name="main_studio">My Studio</string>
 
-    <string name="page_state_no_network">无网络连接，请检查网络设置</string>
-    <string name="page_state_network_error">出了点意外，内容加载失败</string>
-    <string name="page_state_empty">这里是空的哦</string>
-    <string name="page_state_loading">正在加载</string>
-    <string name="action_set_network">设置网络</string>
-    <string name="action_retry">重新加载</string>
+    <string name="no_network">No network connection, please check the network settings</string>
+    <string name="network_error">Out of the accident, content loading failed</string>
+    <string name="state_empty">Here is empty</string>
+    <string name="loading">Loading</string>
+    <string name="network">Set up a network</string>
+    <string name="retry">Reload</string>
+    <string name="no_more">No more data</string>
 
-    <string name="refresh_pull_down_to_refresh">下拉刷新</string>
-    <string name="refresh_refreshing">加载中</string>
-    <string name="refresh_release_to_refresh">释放更新</string>
-    <string name="refresh_refresh_complete">更新完成</string>
-
-    <string name="load_more_loading">正在加载</string>
-    <string name="load_more_no_network">无网络连接，请检查网络设置</string>
-    <string name="load_more_network_error">网络异常，点击重试</string>
-    <string name="load_more_no_more">没有更多数据了</string>
-
-    <string name="setting_item_history">播放记录</string>
-    <string name="setting_item_collection">我的收藏</string>
-    <string name="setting_item_subscribe">我的关注</string>
-    <string name="setting_item_setting">设置</string>
+    <string name="refresh_pull_down_to_refresh">Pull down to refresh</string>
+    <string name="refresh_refreshing">Loading</string>
+    <string name="refresh_release_to_refresh">Release update</string>
+    <string name="refresh_refresh_complete">update completed</string>
+    <string name="setting">设置</string>
 </resources>
