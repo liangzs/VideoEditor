@@ -10,8 +10,9 @@
     <string name="state_empty">这里是空的哦</string>
     <string name="loading">正在加载</string>
     <string name="no_more">没有更多数据了</string>
-    <string name="network">设置网络</string>
+    <string name="set_network">设置网络</string>
     <string name="retry">重新加载</string>
+
 
     <string name="refresh_pull_down_to_refresh">下拉刷新</string>
     <string name="refresh_refreshing">加载中</string>

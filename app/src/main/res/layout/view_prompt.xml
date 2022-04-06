@@ -34,7 +34,7 @@
         android:layout_marginTop="31dp"
         android:background="@drawable/bg_error_action"
         android:gravity="center"
-        android:text="@string/network"
+        android:text="@string/set_network"
         android:textColor="#FFEB5F52"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"

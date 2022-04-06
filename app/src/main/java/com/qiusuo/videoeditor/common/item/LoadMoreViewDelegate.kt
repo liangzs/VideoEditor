@@ -26,19 +26,19 @@ class LoadMoreViewDelegate : BaseItemViewDelegate<LoadMoreViewData, LoadMoreView
                 }
                 LoadMoreState.LOADING -> {
                     footerRoot.visibility = View.VISIBLE
-                    tvLoadMoreState.setText(R.string.load_more_loading)
+                    tvLoadMoreState.setText(R.string.loading)
                 }
                 LoadMoreState.ERROR -> {
                     footerRoot.visibility = View.VISIBLE
-                    tvLoadMoreState.setText(R.string.load_more_network_error)
+                    tvLoadMoreState.setText(R.string.network_error)
                 }
                 LoadMoreState.NO_NETWORK -> {
                     footerRoot.visibility = View.VISIBLE
-                    tvLoadMoreState.setText(R.string.load_more_no_network)
+                    tvLoadMoreState.setText(R.string.no_network)
                 }
                 LoadMoreState.NO_MORE -> {
                     footerRoot.visibility = View.VISIBLE
-                    tvLoadMoreState.setText(R.string.load_more_no_more)
+                    tvLoadMoreState.setText(R.string.no_more)
                 }
             }
         }

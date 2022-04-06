@@ -23,12 +23,12 @@ class PromptView @JvmOverloads constructor(
 
     val viewBinding = ViewPromptBinding.inflate(LayoutInflater.from(context), this, true)
 
-    fun showNoNetwork(@DrawableRes imageRes: Int = R.drawable.icon_no_network, message: String = resources.getString(R.string.page_state_no_network)) {
+    fun showNoNetwork(@DrawableRes imageRes: Int = R.drawable.icon_no_network, message: String = resources.getString(R.string.no_network)) {
         viewBinding.run {
             ivError.setImageResource(imageRes)
             tvError.text = message
             btnAction.visibility = View.VISIBLE
-            btnAction.text = resources.getString(R.string.action_set_network)
+            btnAction.text = resources.getString(R.string.set_network)
             btnAction.setOnClickListener {
                 // 跳转到网络设置页面
                 NetworkHelper.toNetworkSetting(context)
@@ -42,7 +42,7 @@ class PromptView @JvmOverloads constructor(
         visibility = View.VISIBLE
     }
 
-    fun showEmpty(@DrawableRes imageRes: Int = R.drawable.icon_empty, message: String = resources.getString(R.string.page_state_empty)) {
+    fun showEmpty(@DrawableRes imageRes: Int = R.drawable.icon_empty, message: String = resources.getString(R.string.state_empty)) {
         viewBinding.run {
             ivError.setImageResource(imageRes)
             tvError.text = message
@@ -56,11 +56,12 @@ class PromptView @JvmOverloads constructor(
         visibility = View.VISIBLE
     }
 
-    fun showNetworkError(retryOnClickListener: OnClickListener, @DrawableRes imageRes: Int = R.drawable.icon_network_error, message: String = resources.getString(R.string.page_state_network_error)) {
+    fun showNetworkError(retryOnClickListener: OnClickListener, @DrawableRes imageRes: Int = R.drawable.icon_network_error,
+                         message: String = resources.getString(R.string.network_error)) {
         viewBinding.run {
             ivError.setImageResource(imageRes)
             tvError.text = message
-            btnAction.text = resources.getString(R.string.action_retry)
+            btnAction.text = resources.getString(R.string.retry)
             btnAction.setOnClickListener(retryOnClickListener)
             ivError.visibility = View.VISIBLE
             tvError.visibility = View.VISIBLE

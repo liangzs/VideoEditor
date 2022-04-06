@@ -5,9 +5,7 @@
     android:layout_height="match_parent"
     android:paddingHorizontal="16dp">
 
-
     <androidx.appcompat.widget.AppCompatImageView
-
         android:id="@+id/iv_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -49,33 +47,36 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_marginTop="20dp"
+        android:background="@color/bg_image"
         app:layout_constraintTop_toBottomOf="@+id/bt_vip">
 
     </FrameLayout>
 
 
-    <com.nan.xarch.base.list.XRecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_main_func"
         android:layout_width="match_parent"
         android:layout_height="200dp"
+        android:layout_marginTop="10dp"
         android:background="@color/bg_window"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/fl_create" />
 
     <TableLayout
-        android:id="@+id/fragmentTabHost"
+        android:id="@+id/tab_home"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rv_main_func" />
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_weight="1" />
 
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/tab_home" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -491,7 +491,7 @@ class XRecyclerView @JvmOverloads constructor(
                 layoutManager = LinearLayoutManager(context)
             }
             if (TextUtils.isEmpty(emptyMessage)) {
-                emptyMessage = context.resources.getString(R.string.page_state_empty)
+                emptyMessage = context.resources.getString(R.string.state_empty)
             }
             if (emptyIcon == -1) {
                 emptyIcon = R.drawable.icon_empty
