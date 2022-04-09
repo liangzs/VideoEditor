@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.qiusuo.videoeditor.R
 import com.qiusuo.videoeditor.base.BaseItemViewDelegate
-import com.qiusuo.videoeditor.constant.LoadMoreState
+import com.qiusuo.videoeditor.common.constant.LoadMoreState
 import com.qiusuo.videoeditor.databinding.ViewRecyclerFooterBinding
 
 class LoadMoreViewDelegate : BaseItemViewDelegate<LoadMoreViewData, LoadMoreViewDelegate.ViewHolder>() {

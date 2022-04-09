@@ -23,8 +23,8 @@ import com.nan.xarch.bean.LoadError
 import com.nan.xarch.bean.exception.GlobalException
 import com.nan.xarch.item.LoadMoreViewData
 import com.qiusuo.videoeditor.R
-import com.qiusuo.videoeditor.constant.LoadMoreState
-import com.qiusuo.videoeditor.constant.PageState
+import com.qiusuo.videoeditor.common.constant.LoadMoreState
+import com.qiusuo.videoeditor.common.constant.PageState
 import com.qiusuo.videoeditor.databinding.ViewXRecyclerBinding
 import com.qiusuo.videoeditor.util.NetworkHelper
 

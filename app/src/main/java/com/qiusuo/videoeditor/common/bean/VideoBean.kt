@@ -1,6 +1,6 @@
 package com.nan.xarch.bean
 
-import com.qiusuo.videoeditor.constant.VideoType
+import com.qiusuo.videoeditor.common.constant.VideoType
 
 
 data class VideoBean(

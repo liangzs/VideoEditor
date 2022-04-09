@@ -2,16 +2,15 @@ package com.qiusuo.videoeditor.module.home
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.nan.xarch.base.list.XRecyclerView
+import com.qiusuo.videoeditor.R
 import com.qiusuo.videoeditor.base.BaseFragment
-import com.qiusuo.videoeditor.base.BaseViewData
-import com.qiusuo.videoeditor.constant.PageName
+import com.qiusuo.videoeditor.common.constant.PageName
 import com.qiusuo.videoeditor.databinding.FragmentHomeBinding
+import com.qiusuo.videoeditor.view.adapter.HomeFunAdapter
 import com.qiusuo.videoeditor.widgegt.GridItemDecoration
+import com.qiusuo.videoeditor.widgegt.RecyclerItemDecoration
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate) {
     val viewModel: HomeViewModel by viewModels()
@@ -27,10 +26,17 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     }
 
     private fun initView() {
-        viewBinding.rvMainFunc.setLayoutManager(GridLayoutManager(context, SPAN_COUNT))
-        viewBinding.rvMainFunc.addItemDecoration(GridItemDecoration(activity, SPAN_COUNT))
-       
+        var gridlayout=GridLayoutManager(context, SPAN_COUNT);
+        gridlayout.orientation=GridLayoutManager.HORIZONTAL;
+        gridlayout.isAutoMeasureEnabled=true
+        viewBinding.rvMainFunc.setLayoutManager(gridlayout)
+        viewBinding.rvMainFunc.addItemDecoration(RecyclerItemDecoration(
+            activity.resources.getDimensionPixelOffset(R.dimen.item_padding), true, true))
+        viewBinding.rvMainFunc.adapter = HomeFunAdapter { position: Int -> funItemClick(position) }
     }
+
+
+    fun funItemClick(position: Int) {}
 
 
     override fun getPageName(): String {

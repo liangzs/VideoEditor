@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.qiusuo.videoeditor.base.BaseAdapter
 import com.qiusuo.videoeditor.base.BaseViewData
 import com.nan.xarch.item.LoadMoreViewData
-import com.qiusuo.videoeditor.constant.LoadMoreState
+import com.qiusuo.videoeditor.common.constant.LoadMoreState
 
 class LoadMoreAdapter : BaseAdapter() {
 

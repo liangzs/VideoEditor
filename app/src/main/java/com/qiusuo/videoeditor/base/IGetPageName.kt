@@ -1,6 +1,6 @@
 package com.qiusuo.videoeditor.base
 
-import com.qiusuo.videoeditor.constant.PageName
+import com.qiusuo.videoeditor.common.constant.PageName
 
 
 /**

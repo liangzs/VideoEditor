@@ -1,7 +1,6 @@
-package com.qiusuo.videoeditor.constant
+package com.qiusuo.videoeditor.common.constant
 
 import androidx.annotation.StringDef
-import com.google.android.material.tabs.TabLayout
 
 @StringDef(
     TabId.HOME,

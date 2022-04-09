@@ -4,7 +4,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.nan.xarch.eventbus.core.EmptyMessage
 import com.nan.xarch.eventbus.core.EventLiveData
-import com.qiusuo.videoeditor.constant.EventName
+import com.qiusuo.videoeditor.common.constant.EventName
 
 object XEventBus {
 

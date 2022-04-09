@@ -1,4 +1,4 @@
-package com.qiusuo.videoeditor.constant
+package com.qiusuo.videoeditor.common.constant
 
 import androidx.annotation.IntDef
 

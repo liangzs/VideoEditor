@@ -8,9 +8,8 @@ import com.nan.xarch.item.LargeVideoViewData
 import com.nan.xarch.item.VideoViewData
 import com.qiusuo.videoeditor.base.BaseRecyclerViewModel
 import com.qiusuo.videoeditor.base.BaseViewData
-import com.qiusuo.videoeditor.base.BaseViewModel
-import com.qiusuo.videoeditor.constant.PageName
-import com.qiusuo.videoeditor.constant.VideoType
+import com.qiusuo.videoeditor.common.constant.PageName
+import com.qiusuo.videoeditor.common.constant.VideoType
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 

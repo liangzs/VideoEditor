@@ -4,7 +4,7 @@ import android.os.Bundle
 import com.gyf.immersionbar.ktx.immersionBar
 import com.nan.xarch.bean.Tab
 import com.qiusuo.videoeditor.base.BaseActivity
-import com.qiusuo.videoeditor.constant.TabId
+import com.qiusuo.videoeditor.common.constant.TabId
 import com.qiusuo.videoeditor.databinding.ActivityMainBinding
 import com.qiusuo.videoeditor.module.home.HomeFragment
 import com.qiusuo.videoeditor.widgegt.TabIndicatorView
