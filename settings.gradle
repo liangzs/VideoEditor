@@ -1,2 +1,2 @@
 rootProject.name = "VideoEditor"
-include ':app'
+include ':app',':selector'

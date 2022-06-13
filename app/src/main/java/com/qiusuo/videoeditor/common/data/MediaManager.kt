@@ -19,14 +19,11 @@ class MediaManager {
 
         val cursor= context.contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,projection,
         null,null,sortOrder)
-        while (cursor!!.moveToNext()){
-
-        }
         //一个辅助集合，防止同一目录被扫描多次
         val dirPaths: HashSet<Any?> = HashSet<Any?>()
         val picList :ArrayList<MediaFolder> = ArrayList()
 
-        while (cursor.moveToNext()) {
+        while (cursor!!.moveToNext()) {
             // 获取图片的路径
             val path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA))
             val bucketName =

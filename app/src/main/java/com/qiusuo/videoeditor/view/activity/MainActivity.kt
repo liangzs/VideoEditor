@@ -1,8 +1,9 @@
-package com.qiusuo.videoeditor
+package com.qiusuo.videoeditor.view.activity
 
 import android.os.Bundle
 import com.gyf.immersionbar.ktx.immersionBar
 import com.nan.xarch.bean.Tab
+import com.qiusuo.videoeditor.R
 import com.qiusuo.videoeditor.base.BaseActivity
 import com.qiusuo.videoeditor.common.constant.TabId
 import com.qiusuo.videoeditor.databinding.ActivityMainBinding
