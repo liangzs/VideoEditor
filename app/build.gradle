@@ -37,6 +37,50 @@ android {
     buildFeatures {
         viewBinding true
     }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+            java {
+                srcDir "src/main/java"
+                srcDir "../uicore/src/main/java"
+            }
+            res {
+                srcDir "src/main/res"
+                srcDir "../uicore/src/main/res"
+            }
+            assets {
+                srcDir "src/main/assets"
+                srcDir "../uicore/src/main/assets"
+            }
+            manifest.srcFile {
+                //其它Manifest
+                def libraryManifests = [
+                        "src/main/AndroidManifest.xml",
+                        "../uicore/src/main/AndroidManifest.xml",
+                ]
+                //主manifest
+                def mainManifestPath = 'src/main/AndroidManifest.xml'
+                //新生成的manifest
+                def targetManifestPath = 'src/main/AndroidManifest_target.xml'
+
+                def mainManifest = new XmlParser().parseText(file(mainManifestPath).getText("utf-8"))
+                Node mainApplication = mainManifest["application"][0]
+                NodeList nodesInMainApplication = mainApplication.value();
+
+                for (libraryManifestPath in libraryManifests) {
+                    def libraryManifest = new XmlParser().parseText(file(libraryManifestPath).getText("utf-8"))
+                    Node libraryApplication = libraryManifest["application"][0]
+                    NodeList nodesInLibraryApplication = libraryApplication.value();
+                    nodesInMainApplication.addAll(nodesInLibraryApplication);
+                }
+
+                def serialize = groovy.xml.XmlUtil.serialize(mainManifest)
+                file(targetManifestPath).write(serialize, "utf-8")
+
+                return targetManifestPath
+            }
+        }
+    }
 }
 
 dependencies {
