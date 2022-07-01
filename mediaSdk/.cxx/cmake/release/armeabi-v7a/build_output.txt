@@ -1,0 +1,16 @@
+Check for working C compiler: /Users/mac/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang
+Check for working C compiler: /Users/mac/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang -- works
+Detecting C compiler ABI info
+Detecting C compiler ABI info - done
+Detecting C compile features
+Detecting C compile features - done
+Check for working CXX compiler: /Users/mac/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++
+Check for working CXX compiler: /Users/mac/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++ -- works
+Detecting CXX compiler ABI info
+Detecting CXX compiler ABI info - done
+Detecting CXX compile features
+Detecting CXX compile features - done
+Current souce file positon1: /Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk
+Current souce file positon2: ../../../../libs/armeabi-v7a/include
+Current souce file positon3: /Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/libs/armeabi-v7a/include
+Configuring done

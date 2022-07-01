@@ -1,0 +1,724 @@
+ninja: Entering directory `/Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/.cxx/cmake/debug/armeabi-v7a'
+[1/9] Building C object CMakeFiles/ijoysoft-ffmpeg.dir/src/main/cpp/ffmpeg_thread.c.o
+[2/9] Building C object CMakeFiles/ijoysoft-ffmpeg.dir/src/main/cpp/ffmpeg/video_player.c.o
+../../../../src/main/cpp/ffmpeg/video_player.c:41:37: warning: 'codec' is deprecated [-Wdeprecated-declarations]
+        if (pFormatCtx->streams[i]->codec->codec_type == AVMEDIA_TYPE_VIDEO
+                                    ^
+../../../../src/main/cpp/include/libavformat/avformat.h:892:5: note: 'codec' has been explicitly marked deprecated here
+    attribute_deprecated
+    ^
+../../../../src/main/cpp/include/libavutil/attributes.h:94:49: note: expanded from macro 'attribute_deprecated'
+#    define attribute_deprecated __attribute__((deprecated))
+                                                ^
+../../../../src/main/cpp/ffmpeg/video_player.c:54:29: warning: format specifies type 'int' but the argument has type 'long' [-Wformat]
+        LOGE("duration=%d", duration);
+                       ~~   ^~~~~~~~
+                       %ld
+../../../../src/main/cpp/ffmpeg/video_player.c:13:81: note: expanded from macro 'LOGE'
+#define LOGE(FORMAT, ...) __android_log_print(ANDROID_LOG_ERROR, TAG, FORMAT, ##__VA_ARGS__);
+                                                                      ~~~~~~    ^~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/video_player.c:58:67: warning: 'codec' is deprecated [-Wdeprecated-declarations]
+    AVCodecContext *pCodecCtx = pFormatCtx->streams[videoStream]->codec;
+                                                                  ^
+../../../../src/main/cpp/include/libavformat/avformat.h:892:5: note: 'codec' has been explicitly marked deprecated here
+    attribute_deprecated
+    ^
+../../../../src/main/cpp/include/libavutil/attributes.h:94:49: note: expanded from macro 'attribute_deprecated'
+#    define attribute_deprecated __attribute__((deprecated))
+                                                ^
+../../../../src/main/cpp/ffmpeg/video_player.c:116:13: warning: 'avcodec_decode_video2' is deprecated [-Wdeprecated-declarations]
+            avcodec_decode_video2(pCodecCtx, pFrame, &frameFinished, &packet);
+            ^
+../../../../src/main/cpp/include/libavcodec/avcodec.h:4900:1: note: 'avcodec_decode_video2' has been explicitly marked deprecated here
+attribute_deprecated
+^
+../../../../src/main/cpp/include/libavutil/attributes.h:94:49: note: expanded from macro 'attribute_deprecated'
+#    define attribute_deprecated __attribute__((deprecated))
+                                                ^
+../../../../src/main/cpp/ffmpeg/video_player.c:154:1: warning: control reaches end of non-void function [-Wreturn-type]
+}
+^
+5 warnings generated.
+[3/9] Building C object CMakeFiles/ijoysoft-ffmpeg.dir/src/main/cpp/ffmpeg_cmd.c.o
+[4/9] Building C object CMakeFiles/ijoysoft-ffmpeg.dir/src/main/cpp/ffmpeg/video_filter.c.o
+../../../../src/main/cpp/ffmpeg/video_filter.c:170:37: warning: 'codec' is deprecated [-Wdeprecated-declarations]
+        if (pFormatCtx->streams[i]->codec->codec_type == AVMEDIA_TYPE_VIDEO
+                                    ^
+../../../../src/main/cpp/include/libavformat/avformat.h:892:5: note: 'codec' has been explicitly marked deprecated here
+    attribute_deprecated
+    ^
+../../../../src/main/cpp/include/libavutil/attributes.h:94:49: note: expanded from macro 'attribute_deprecated'
+#    define attribute_deprecated __attribute__((deprecated))
+                                                ^
+../../../../src/main/cpp/ffmpeg/video_filter.c:181:58: warning: 'codec' is deprecated [-Wdeprecated-declarations]
+    pCodecCtx = pFormatCtx->streams[video_stream_index]->codec;
+                                                         ^
+../../../../src/main/cpp/include/libavformat/avformat.h:892:5: note: 'codec' has been explicitly marked deprecated here
+    attribute_deprecated
+    ^
+../../../../src/main/cpp/include/libavutil/attributes.h:94:49: note: expanded from macro 'attribute_deprecated'
+#    define attribute_deprecated __attribute__((deprecated))
+                                                ^
+../../../../src/main/cpp/ffmpeg/video_filter.c:239:19: warning: incompatible pointer types assigning to 'AVCodecContext *' (aka 'struct AVCodecContext *') from 'AVCodecParameters *' (aka 'struct AVCodecParameters *') [-Wincompatible-pointer-types]
+    audioCodecCtx = pFormatCtx->streams[audio_stream_index]->codecpar;
+                  ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/video_filter.c:305:15: warning: 'avcodec_decode_audio4' is deprecated [-Wdeprecated-declarations]
+    int ret = avcodec_decode_audio4(audioCodecCtx, frame, &got_frame, packet);
+              ^
+../../../../src/main/cpp/include/libavcodec/avcodec.h:4851:1: note: 'avcodec_decode_audio4' has been explicitly marked deprecated here
+attribute_deprecated
+^
+../../../../src/main/cpp/include/libavutil/attributes.h:94:49: note: expanded from macro 'attribute_deprecated'
+#    define attribute_deprecated __attribute__((deprecated))
+                                                ^
+../../../../src/main/cpp/ffmpeg/video_filter.c:380:13: warning: 'avcodec_decode_video2' is deprecated [-Wdeprecated-declarations]
+            avcodec_decode_video2(pCodecCtx, pFrame, &frameFinished, &packet);
+            ^
+../../../../src/main/cpp/include/libavcodec/avcodec.h:4900:1: note: 'avcodec_decode_video2' has been explicitly marked deprecated here
+attribute_deprecated
+^
+../../../../src/main/cpp/include/libavutil/attributes.h:94:49: note: expanded from macro 'attribute_deprecated'
+#    define attribute_deprecated __attribute__((deprecated))
+                                                ^
+5 warnings generated.
+[5/9] Building C object CMakeFiles/ijoysoft-ffmpeg.dir/src/main/cpp/ffmpeg/ffmpeg_filter.c.o
+../../../../src/main/cpp/ffmpeg/ffmpeg_filter.c:151:16: warning: returning 'uint8_t *' (aka 'unsigned char *') from a function with result type 'char *' converts between pointers to integer types with different sign [-Wpointer-sign]
+        return ret;
+               ^~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_filter.c:187:1: warning: returning 'uint8_t *' (aka 'unsigned char *') from a function with result type 'char *' converts between pointers to integer types with different sign [-Wpointer-sign]
+DEF_CHOOSE_FORMAT(sample_fmts, enum AVSampleFormat, format, formats,
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_filter.c:179:16: note: expanded from macro 'DEF_CHOOSE_FORMAT'
+        return ret;                                                            \
+               ^~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_filter.c:190:1: warning: returning 'uint8_t *' (aka 'unsigned char *') from a function with result type 'char *' converts between pointers to integer types with different sign [-Wpointer-sign]
+DEF_CHOOSE_FORMAT(sample_rates, int, sample_rate, sample_rates, 0,
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_filter.c:179:16: note: expanded from macro 'DEF_CHOOSE_FORMAT'
+        return ret;                                                            \
+               ^~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_filter.c:193:1: warning: returning 'uint8_t *' (aka 'unsigned char *') from a function with result type 'char *' converts between pointers to integer types with different sign [-Wpointer-sign]
+DEF_CHOOSE_FORMAT(channel_layouts, uint64_t, channel_layout, channel_layouts, 0,
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_filter.c:179:16: note: expanded from macro 'DEF_CHOOSE_FORMAT'
+        return ret;                                                            \
+               ^~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_filter.c:249:12: warning: returning 'uint8_t *' (aka 'unsigned char *') from a function with result type 'char *' converts between pointers to integer types with different sign [-Wpointer-sign]
+    return res;
+           ^~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_filter.c:322:41: warning: assigning to 'uint8_t *' (aka 'unsigned char *') from 'char *' converts between pointers to integer types with different sign [-Wpointer-sign]
+    fg->inputs[fg->nb_inputs - 1]->name = describe_filter_link(fg, in, 1);
+                                        ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_filter.c:361:47: warning: assigning to 'uint8_t *' (aka 'unsigned char *') from 'char *' converts between pointers to integer types with different sign [-Wpointer-sign]
+        fg->outputs[fg->nb_outputs - 1]->name = describe_filter_link(fg, cur, 0);
+                                              ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+7 warnings generated.
+[6/9] Building C object CMakeFiles/ijoysoft-ffmpeg.dir/src/main/cpp/ffmpeg/cmdutils.c.o
+../../../../src/main/cpp/ffmpeg/cmdutils.c:159:5: warning: function 'exit_program' declared 'noreturn' should not return [-Winvalid-noreturn]
+    return;
+    ^
+../../../../src/main/cpp/ffmpeg/cmdutils.c:236:18: warning: using the result of an assignment as a condition without parentheses [-Wparentheses]
+    while (child = av_opt_child_class_next(class, child))
+           ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/cmdutils.c:236:18: note: place parentheses around the assignment to silence this warning
+    while (child = av_opt_child_class_next(class, child))
+                 ^
+           (                                            )
+../../../../src/main/cpp/ffmpeg/cmdutils.c:236:18: note: use '==' to turn this assignment into an equality comparison
+    while (child = av_opt_child_class_next(class, child))
+                 ^
+                 ==
+../../../../src/main/cpp/ffmpeg/cmdutils.c:499:12: warning: assigning to 'const unsigned char *' from 'const char *' converts between pointers to integer types with different sign [-Wpointer-sign]
+    for (p = a; *p; p++)
+           ^ ~
+../../../../src/main/cpp/ffmpeg/cmdutils.c:508:12: warning: assigning to 'const unsigned char *' from 'const char *' converts between pointers to integer types with different sign [-Wpointer-sign]
+    for (p = a; *p; p++) {
+           ^ ~
+../../../../src/main/cpp/ffmpeg/cmdutils.c:1703:22: warning: using the result of an assignment as a condition without parentheses [-Wparentheses]
+    for (i = 0; name = av_get_known_color_name(i, &rgb); i++)
+                ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/cmdutils.c:1703:22: note: place parentheses around the assignment to silence this warning
+    for (i = 0; name = av_get_known_color_name(i, &rgb); i++)
+                     ^
+                (                                      )
+../../../../src/main/cpp/ffmpeg/cmdutils.c:1703:22: note: use '==' to turn this assignment into an equality comparison
+    for (i = 0; name = av_get_known_color_name(i, &rgb); i++)
+                     ^
+                     ==
+../../../../src/main/cpp/ffmpeg/cmdutils.c:2039:13: warning: 4 enumeration values not handled in switch: 'AVMEDIA_TYPE_UNKNOWN', 'AVMEDIA_TYPE_DATA', 'AVMEDIA_TYPE_ATTACHMENT'... [-Wswitch]
+    switch (st->codecpar->codec_type) {
+            ^
+../../../../src/main/cpp/ffmpeg/cmdutils.c:2054:14: warning: using the result of an assignment as a condition without parentheses [-Wparentheses]
+    while (t = av_dict_get(opts, "", t, AV_DICT_IGNORE_SUFFIX)) {
+           ~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/cmdutils.c:2054:14: note: place parentheses around the assignment to silence this warning
+    while (t = av_dict_get(opts, "", t, AV_DICT_IGNORE_SUFFIX)) {
+             ^
+           (                                                  )
+../../../../src/main/cpp/ffmpeg/cmdutils.c:2054:14: note: use '==' to turn this assignment into an equality comparison
+    while (t = av_dict_get(opts, "", t, AV_DICT_IGNORE_SUFFIX)) {
+             ^
+             ==
+7 warnings generated.
+[7/9] Building C object CMakeFiles/ijoysoft-ffmpeg.dir/src/main/cpp/ffmpeg/ffmpeg_opt.c.o
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:295:14: warning: using the result of an assignment as a condition without parentheses [-Wparentheses]
+    if (sync = strchr(map, ',')) {
+        ~~~~~^~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:295:14: note: place parentheses around the assignment to silence this warning
+    if (sync = strchr(map, ',')) {
+             ^
+        (                      )
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:295:14: note: use '==' to turn this assignment into an equality comparison
+    if (sync = strchr(map, ',')) {
+             ^
+             ==
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:329:26: warning: using the result of an assignment as a condition without parentheses [-Wparentheses]
+        if (allow_unused = strchr(map, '?'))
+            ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:329:26: note: place parentheses around the assignment to silence this warning
+        if (allow_unused = strchr(map, '?'))
+                         ^
+            (                              )
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:329:26: note: use '==' to turn this assignment into an equality comparison
+        if (allow_unused = strchr(map, '?'))
+                         ^
+                         ==
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:638:5: warning: assigning to 'char *' from 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+    MATCH_PER_STREAM_OPT(codec_names, str, codec_name, s, st);
+    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:52:20: note: expanded from macro 'MATCH_PER_STREAM_OPT'
+            outvar = o->name[i].u.type;\
+                   ^ ~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:685:9: warning: assigning to 'char *' from 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+        MATCH_PER_STREAM_OPT(codec_tags, str, codec_tag, ic, st);
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:52:20: note: expanded from macro 'MATCH_PER_STREAM_OPT'
+            outvar = o->name[i].u.type;\
+                   ^ ~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:699:9: warning: assigning to 'char *' from 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+        MATCH_PER_STREAM_OPT(discard, str, discard_str, ic, st);
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:52:20: note: expanded from macro 'MATCH_PER_STREAM_OPT'
+            outvar = o->name[i].u.type;\
+                   ^ ~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:726:41: warning: 'codec' is deprecated [-Wdeprecated-declarations]
+            if (av_codec_get_lowres(st->codec)) {
+                                        ^
+../../../../src/main/cpp/include/libavformat/avformat.h:892:5: note: 'codec' has been explicitly marked deprecated here
+    attribute_deprecated
+    ^
+../../../../src/main/cpp/include/libavutil/attributes.h:94:49: note: expanded from macro 'attribute_deprecated'
+#    define attribute_deprecated __attribute__((deprecated))
+                                                ^
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:727:75: warning: 'codec' is deprecated [-Wdeprecated-declarations]
+                av_codec_set_lowres(ist->dec_ctx, av_codec_get_lowres(st->codec));
+                                                                          ^
+../../../../src/main/cpp/include/libavformat/avformat.h:892:5: note: 'codec' has been explicitly marked deprecated here
+    attribute_deprecated
+    ^
+../../../../src/main/cpp/include/libavutil/attributes.h:94:49: note: expanded from macro 'attribute_deprecated'
+#    define attribute_deprecated __attribute__((deprecated))
+                                                ^
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:728:44: warning: 'codec' is deprecated [-Wdeprecated-declarations]
+                ist->dec_ctx->width  = st->codec->width;
+                                           ^
+../../../../src/main/cpp/include/libavformat/avformat.h:892:5: note: 'codec' has been explicitly marked deprecated here
+    attribute_deprecated
+    ^
+../../../../src/main/cpp/include/libavutil/attributes.h:94:49: note: expanded from macro 'attribute_deprecated'
+#    define attribute_deprecated __attribute__((deprecated))
+                                                ^
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:729:44: warning: 'codec' is deprecated [-Wdeprecated-declarations]
+                ist->dec_ctx->height = st->codec->height;
+                                           ^
+../../../../src/main/cpp/include/libavformat/avformat.h:892:5: note: 'codec' has been explicitly marked deprecated here
+    attribute_deprecated
+    ^
+../../../../src/main/cpp/include/libavutil/attributes.h:94:49: note: expanded from macro 'attribute_deprecated'
+#    define attribute_deprecated __attribute__((deprecated))
+                                                ^
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:730:50: warning: 'codec' is deprecated [-Wdeprecated-declarations]
+                ist->dec_ctx->coded_width  = st->codec->coded_width;
+                                                 ^
+../../../../src/main/cpp/include/libavformat/avformat.h:892:5: note: 'codec' has been explicitly marked deprecated here
+    attribute_deprecated
+    ^
+../../../../src/main/cpp/include/libavutil/attributes.h:94:49: note: expanded from macro 'attribute_deprecated'
+#    define attribute_deprecated __attribute__((deprecated))
+                                                ^
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:731:50: warning: 'codec' is deprecated [-Wdeprecated-declarations]
+                ist->dec_ctx->coded_height = st->codec->coded_height;
+                                                 ^
+../../../../src/main/cpp/include/libavformat/avformat.h:892:5: note: 'codec' has been explicitly marked deprecated here
+    attribute_deprecated
+    ^
+../../../../src/main/cpp/include/libavutil/attributes.h:94:49: note: expanded from macro 'attribute_deprecated'
+#    define attribute_deprecated __attribute__((deprecated))
+                                                ^
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:739:13: warning: assigning to 'char *' from 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+            MATCH_PER_STREAM_OPT(frame_rates, str, framerate, ic, st);
+            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:52:20: note: expanded from macro 'MATCH_PER_STREAM_OPT'
+            outvar = o->name[i].u.type;\
+                   ^ ~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:750:13: warning: assigning to 'char *' from 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+            MATCH_PER_STREAM_OPT(hwaccels, str, hwaccel, ic, st);
+            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:52:20: note: expanded from macro 'MATCH_PER_STREAM_OPT'
+            outvar = o->name[i].u.type;\
+                   ^ ~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:777:13: warning: assigning to 'char *' from 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+            MATCH_PER_STREAM_OPT(hwaccel_devices, str, hwaccel_device, ic, st);
+            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:52:20: note: expanded from macro 'MATCH_PER_STREAM_OPT'
+            outvar = o->name[i].u.type;\
+                   ^ ~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:784:13: warning: assigning to 'char *' from 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+            MATCH_PER_STREAM_OPT(hwaccel_output_formats, str,
+            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:52:20: note: expanded from macro 'MATCH_PER_STREAM_OPT'
+            outvar = o->name[i].u.type;\
+                   ^ ~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:810:13: warning: assigning to 'char *' from 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+            MATCH_PER_STREAM_OPT(canvas_sizes, str, canvas_size, ic, st);
+            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:52:20: note: expanded from macro 'MATCH_PER_STREAM_OPT'
+            outvar = o->name[i].u.type;\
+                   ^ ~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:951:25: warning: passing 'uint8_t *' (aka 'unsigned char *') to parameter of type 'const char *' converts between pointers to integer types with different sign [-Wpointer-sign]
+                        o->frame_rates[o->nb_frame_rates - 1].u.str, 0);
+                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/include/libavutil/dict.h:130:65: note: passing argument to parameter 'value' here
+int av_dict_set(AVDictionary **pm, const char *key, const char *value, int flags);
+                                                                ^
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:955:55: warning: passing 'uint8_t *' (aka 'unsigned char *') to parameter of type 'const char *' converts between pointers to integer types with different sign [-Wpointer-sign]
+        av_dict_set(&o->g->format_opts, "video_size", o->frame_sizes[o->nb_frame_sizes - 1].u.str, 0);
+                                                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/include/libavutil/dict.h:130:65: note: passing argument to parameter 'value' here
+int av_dict_set(AVDictionary **pm, const char *key, const char *value, int flags);
+                                                                ^
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:958:57: warning: passing 'uint8_t *' (aka 'unsigned char *') to parameter of type 'const char *' converts between pointers to integer types with different sign [-Wpointer-sign]
+        av_dict_set(&o->g->format_opts, "pixel_format", o->frame_pix_fmts[o->nb_frame_pix_fmts - 1].u.str, 0);
+                                                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/include/libavutil/dict.h:130:65: note: passing argument to parameter 'value' here
+int av_dict_set(AVDictionary **pm, const char *key, const char *value, int flags);
+                                                                ^
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:960:5: warning: assigning to 'char *' from 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+    MATCH_PER_TYPE_OPT(codec_names, str,    video_codec_name, ic, "v");
+    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:64:20: note: expanded from macro 'MATCH_PER_TYPE_OPT'
+            outvar = o->name[i].u.type;\
+                   ^ ~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:961:5: warning: assigning to 'char *' from 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+    MATCH_PER_TYPE_OPT(codec_names, str,    audio_codec_name, ic, "a");
+    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:64:20: note: expanded from macro 'MATCH_PER_TYPE_OPT'
+            outvar = o->name[i].u.type;\
+                   ^ ~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:962:5: warning: assigning to 'char *' from 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+    MATCH_PER_TYPE_OPT(codec_names, str, subtitle_codec_name, ic, "s");
+    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:64:20: note: expanded from macro 'MATCH_PER_TYPE_OPT'
+            outvar = o->name[i].u.type;\
+                   ^ ~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:963:5: warning: assigning to 'char *' from 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+    MATCH_PER_TYPE_OPT(codec_names, str,     data_codec_name, ic, "d");
+    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:64:20: note: expanded from macro 'MATCH_PER_TYPE_OPT'
+            outvar = o->name[i].u.type;\
+                   ^ ~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:1128:37: warning: passing 'uint8_t *' (aka 'unsigned char *') to parameter of type 'const char *' converts between pointers to integer types with different sign [-Wpointer-sign]
+                dump_attachment(st, o->dump_attachment[i].u.str);
+                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:862:55: note: passing argument to parameter 'filename' here
+static void dump_attachment(AVStream *st, const char *filename)
+                                                      ^
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:1192:9: warning: assigning to 'char *' from 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+        MATCH_PER_STREAM_OPT(codec_names, str, codec_name, s, ost->st);
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:52:20: note: expanded from macro 'MATCH_PER_STREAM_OPT'
+            outvar = o->name[i].u.type;\
+                   ^ ~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:1275:9: warning: assigning to 'char *' from 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+        MATCH_PER_STREAM_OPT(presets, str, preset, oc, st);
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:52:20: note: expanded from macro 'MATCH_PER_STREAM_OPT'
+            outvar = o->name[i].u.type;\
+                   ^ ~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:1278:21: warning: assigning to 'char *' from 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+                buf = get_line(s);
+                    ^ ~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:1303:5: warning: assigning to 'const char *' from 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+    MATCH_PER_STREAM_OPT(time_bases, str, time_base, oc, st);
+    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:52:20: note: expanded from macro 'MATCH_PER_STREAM_OPT'
+            outvar = o->name[i].u.type;\
+                   ^ ~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:1327:5: warning: assigning to 'const char *' from 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+    MATCH_PER_STREAM_OPT(bitstream_filters, str, bsfs, oc, st);
+    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:52:20: note: expanded from macro 'MATCH_PER_STREAM_OPT'
+            outvar = o->name[i].u.type;\
+                   ^ ~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:1385:5: warning: assigning to 'char *' from 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+    MATCH_PER_STREAM_OPT(codec_tags, str, codec_tag, oc, st);
+    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:52:20: note: expanded from macro 'MATCH_PER_STREAM_OPT'
+            outvar = o->name[i].u.type;\
+                   ^ ~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:1400:5: warning: assigning to 'char *' from 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+    MATCH_PER_STREAM_OPT(disposition, str, ost->disposition, oc, st);
+    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:52:20: note: expanded from macro 'MATCH_PER_STREAM_OPT'
+            outvar = o->name[i].u.type;\
+                   ^ ~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:1491:16: warning: returning 'uint8_t *' (aka 'unsigned char *') from a function with result type 'char *' converts between pointers to integer types with different sign [-Wpointer-sign]
+        return read_file(ost->filters_script);
+               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:1524:5: warning: assigning to 'char *' from 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+    MATCH_PER_STREAM_OPT(frame_rates, str, frame_rate, oc, st);
+    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:52:20: note: expanded from macro 'MATCH_PER_STREAM_OPT'
+            outvar = o->name[i].u.type;\
+                   ^ ~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:1532:5: warning: assigning to 'char *' from 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+    MATCH_PER_STREAM_OPT(frame_aspect_ratios, str, frame_aspect_ratio, oc, st);
+    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:52:20: note: expanded from macro 'MATCH_PER_STREAM_OPT'
+            outvar = o->name[i].u.type;\
+                   ^ ~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:1543:5: warning: assigning to 'char *' from 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+    MATCH_PER_STREAM_OPT(filter_scripts, str, ost->filters_script, oc, st);
+    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:52:20: note: expanded from macro 'MATCH_PER_STREAM_OPT'
+            outvar = o->name[i].u.type;\
+                   ^ ~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:1544:5: warning: assigning to 'char *' from 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+    MATCH_PER_STREAM_OPT(filters,        str, ost->filters,        oc, st);
+    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:52:20: note: expanded from macro 'MATCH_PER_STREAM_OPT'
+            outvar = o->name[i].u.type;\
+                   ^ ~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:1555:9: warning: assigning to 'char *' from 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+        MATCH_PER_STREAM_OPT(frame_sizes, str, frame_size, oc, st);
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:52:20: note: expanded from macro 'MATCH_PER_STREAM_OPT'
+            outvar = o->name[i].u.type;\
+                   ^ ~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:1562:9: warning: assigning to 'char *' from 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+        MATCH_PER_STREAM_OPT(frame_pix_fmts, str, frame_pix_fmt, oc, st);
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:52:20: note: expanded from macro 'MATCH_PER_STREAM_OPT'
+            outvar = o->name[i].u.type;\
+                   ^ ~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:1576:9: warning: assigning to 'char *' from 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+        MATCH_PER_STREAM_OPT(intra_matrices, str, intra_matrix, oc, st);
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:52:20: note: expanded from macro 'MATCH_PER_STREAM_OPT'
+            outvar = o->name[i].u.type;\
+                   ^ ~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:1584:9: warning: assigning to 'char *' from 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+        MATCH_PER_STREAM_OPT(chroma_intra_matrices, str, chroma_intra_matrix, oc, st);
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:52:20: note: expanded from macro 'MATCH_PER_STREAM_OPT'
+            outvar = o->name[i].u.type;\
+                   ^ ~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:1594:9: warning: assigning to 'char *' from 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+        MATCH_PER_STREAM_OPT(inter_matrices, str, inter_matrix, oc, st);
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:52:20: note: expanded from macro 'MATCH_PER_STREAM_OPT'
+            outvar = o->name[i].u.type;\
+                   ^ ~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:1603:9: warning: assigning to 'const char *' from 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+        MATCH_PER_STREAM_OPT(rc_overrides, str, p, oc, st);
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:52:20: note: expanded from macro 'MATCH_PER_STREAM_OPT'
+            outvar = o->name[i].u.type;\
+                   ^ ~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:1649:9: warning: assigning to 'char *' from 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+        MATCH_PER_STREAM_OPT(passlogfiles, str, ost->logfile_prefix, oc, st);
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:52:20: note: expanded from macro 'MATCH_PER_STREAM_OPT'
+            outvar = o->name[i].u.type;\
+                   ^ ~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:1666:28: warning: initializing 'char *' with an expression of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+                    char  *logbuffer = read_file(logfilename);
+                           ^           ~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:1688:9: warning: assigning to 'char *' from 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+        MATCH_PER_STREAM_OPT(forced_key_frames, str, ost->forced_keyframes, oc, st);
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:52:20: note: expanded from macro 'MATCH_PER_STREAM_OPT'
+            outvar = o->name[i].u.type;\
+                   ^ ~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:1724:5: warning: assigning to 'char *' from 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+    MATCH_PER_STREAM_OPT(filter_scripts, str, ost->filters_script, oc, st);
+    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:52:20: note: expanded from macro 'MATCH_PER_STREAM_OPT'
+            outvar = o->name[i].u.type;\
+                   ^ ~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:1725:5: warning: assigning to 'char *' from 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+    MATCH_PER_STREAM_OPT(filters,        str, ost->filters,        oc, st);
+    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:52:20: note: expanded from macro 'MATCH_PER_STREAM_OPT'
+            outvar = o->name[i].u.type;\
+                   ^ ~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:1732:9: warning: assigning to 'char *' from 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+        MATCH_PER_STREAM_OPT(sample_fmts, str, sample_fmt, oc, st);
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:52:20: note: expanded from macro 'MATCH_PER_STREAM_OPT'
+            outvar = o->name[i].u.type;\
+                   ^ ~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:1741:9: warning: assigning to 'char *' from 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+        MATCH_PER_STREAM_OPT(apad, str, ost->apad, oc, st);
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:52:20: note: expanded from macro 'MATCH_PER_STREAM_OPT'
+            outvar = o->name[i].u.type;\
+                   ^ ~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:1835:9: warning: assigning to 'char *' from 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+        MATCH_PER_STREAM_OPT(frame_sizes, str, frame_size, oc, st);
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:52:20: note: expanded from macro 'MATCH_PER_STREAM_OPT'
+            outvar = o->name[i].u.type;\
+                   ^ ~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:1940:43: warning: 'codec' is deprecated [-Wdeprecated-declarations]
+        avcodec_get_context_defaults3(st->codec, codec);
+                                          ^
+../../../../src/main/cpp/include/libavformat/avformat.h:892:5: note: 'codec' has been explicitly marked deprecated here
+    attribute_deprecated
+    ^
+../../../../src/main/cpp/include/libavutil/attributes.h:94:49: note: expanded from macro 'attribute_deprecated'
+#    define attribute_deprecated __attribute__((deprecated))
+                                                ^
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:1945:34: warning: 'codec' is deprecated [-Wdeprecated-declarations]
+            av_opt_set_dict2(st->codec, &opts, AV_OPT_SEARCH_CHILDREN);
+                                 ^
+../../../../src/main/cpp/include/libavformat/avformat.h:892:5: note: 'codec' has been explicitly marked deprecated here
+    attribute_deprecated
+    ^
+../../../../src/main/cpp/include/libavutil/attributes.h:94:49: note: expanded from macro 'attribute_deprecated'
+#    define attribute_deprecated __attribute__((deprecated))
+                                                ^
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:1952:38: warning: 'codec' is deprecated [-Wdeprecated-declarations]
+            choose_pixel_fmt(st, st->codec, codec, st->codecpar->format);
+                                     ^
+../../../../src/main/cpp/include/libavformat/avformat.h:892:5: note: 'codec' has been explicitly marked deprecated here
+    attribute_deprecated
+    ^
+../../../../src/main/cpp/include/libavutil/attributes.h:94:49: note: expanded from macro 'attribute_deprecated'
+#    define attribute_deprecated __attribute__((deprecated))
+                                                ^
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:1953:9: warning: 'avcodec_copy_context' is deprecated [-Wdeprecated-declarations]
+        avcodec_copy_context(ost->enc_ctx, st->codec);
+        ^
+../../../../src/main/cpp/include/libavcodec/avcodec.h:4325:1: note: 'avcodec_copy_context' has been explicitly marked deprecated here
+attribute_deprecated
+^
+../../../../src/main/cpp/include/libavutil/attributes.h:94:49: note: expanded from macro 'attribute_deprecated'
+#    define attribute_deprecated __attribute__((deprecated))
+                                                ^
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:1953:48: warning: 'codec' is deprecated [-Wdeprecated-declarations]
+        avcodec_copy_context(ost->enc_ctx, st->codec);
+                                               ^
+../../../../src/main/cpp/include/libavformat/avformat.h:892:5: note: 'codec' has been explicitly marked deprecated here
+    attribute_deprecated
+    ^
+../../../../src/main/cpp/include/libavutil/attributes.h:94:49: note: expanded from macro 'attribute_deprecated'
+#    define attribute_deprecated __attribute__((deprecated))
+                                                ^
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:2087:21: warning: 4 enumeration values not handled in switch: 'AVMEDIA_TYPE_UNKNOWN', 'AVMEDIA_TYPE_DATA', 'AVMEDIA_TYPE_ATTACHMENT'... [-Wswitch]
+            switch (ofilter->type) {
+                    ^
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:2180:9: warning: assigning to 'char *' from 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+        MATCH_PER_TYPE_OPT(codec_names, str, subtitle_codec_name, oc, "s");
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:64:20: note: expanded from macro 'MATCH_PER_TYPE_OPT'
+            outvar = o->name[i].u.type;\
+                   ^ ~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:2199:63: warning: '&&' within '||' [-Wlogical-op-parentheses]
+                        input_descriptor && output_descriptor &&
+                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:2199:63: note: place parentheses around the '&&' expression to silence this warning
+                        input_descriptor && output_descriptor &&
+                                                              ^
+                        (
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:2332:37: warning: 'codec' is deprecated [-Wdeprecated-declarations]
+            if (av_opt_set(ost->st->codec, "flags", e->value, 0) < 0)
+                                    ^
+../../../../src/main/cpp/include/libavformat/avformat.h:892:5: note: 'codec' has been explicitly marked deprecated here
+    attribute_deprecated
+    ^
+../../../../src/main/cpp/include/libavutil/attributes.h:94:49: note: expanded from macro 'attribute_deprecated'
+#    define attribute_deprecated __attribute__((deprecated))
+                                                ^
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:2410:21: warning: 5 enumeration values not handled in switch: 'AVMEDIA_TYPE_UNKNOWN', 'AVMEDIA_TYPE_DATA', 'AVMEDIA_TYPE_SUBTITLE'... [-Wswitch]
+            switch (ost->enc_ctx->codec_type) {
+                    ^
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:2504:36: warning: passing 'uint8_t *' (aka 'unsigned char *') to parameter of type 'const char *' converts between pointers to integer types with different sign [-Wpointer-sign]
+        int in_file_index = strtol(o->metadata_map[i].u.str, &p, 0);
+                                   ^~~~~~~~~~~~~~~~~~~~~~~~
+/Users/mac/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include/stdlib.h:91:25: note: passing argument to parameter '__s' here
+long strtol(const char* __s, char** __end_ptr, int __base);
+                        ^
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:2557:21: warning: initializing 'const char *' with an expression of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+        const char *p = o->program[i].u.str;
+                    ^   ~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:2586:11: warning: assigning to 'const char *' from 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+        p = o->program[i].u.str;
+          ^ ~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:2628:22: warning: passing 'uint8_t *' (aka 'unsigned char *') to parameter of type 'const char *' converts between pointers to integer types with different sign [-Wpointer-sign]
+        val = strchr(o->metadata[i].u.str, '=');
+                     ^~~~~~~~~~~~~~~~~~~~
+/Users/mac/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include/bits/fortify/string.h:255:32: note: passing argument to parameter 's' here
+char* strchr(const char* const s __pass_object_size, int c) __overloadable {
+                               ^
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:2641:33: warning: passing 'uint8_t *' (aka 'unsigned char *') to parameter of type 'const char *' converts between pointers to integer types with different sign [-Wpointer-sign]
+                    if (!strcmp(o->metadata[i].u.str, "rotate")) {
+                                ^~~~~~~~~~~~~~~~~~~~
+/Users/mac/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include/string.h:102:24: note: passing argument to parameter '__lhs' here
+int strcmp(const char* __lhs, const char* __rhs) __attribute_pure__;
+                       ^
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:2649:64: warning: passing 'uint8_t *' (aka 'unsigned char *') to parameter of type 'const char *' converts between pointers to integer types with different sign [-Wpointer-sign]
+                        av_dict_set(&oc->streams[j]->metadata, o->metadata[i].u.str, *val ? val : NULL, 0);
+                                                               ^~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/include/libavutil/dict.h:130:48: note: passing argument to parameter 'key' here
+int av_dict_set(AVDictionary **pm, const char *key, const char *value, int flags);
+                                               ^
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:2678:28: warning: passing 'uint8_t *' (aka 'unsigned char *') to parameter of type 'const char *' converts between pointers to integer types with different sign [-Wpointer-sign]
+            av_dict_set(m, o->metadata[i].u.str, *val ? val : NULL, 0);
+                           ^~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/include/libavutil/dict.h:130:48: note: passing argument to parameter 'key' here
+int av_dict_set(AVDictionary **pm, const char *key, const char *value, int flags);
+                                               ^
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:2897:5: warning: assigning to 'const char *' from 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+    MATCH_PER_TYPE_OPT(codec_names, str, codec_name, NULL, tmp_line);
+    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:64:20: note: expanded from macro 'MATCH_PER_TYPE_OPT'
+            outvar = o->name[i].u.type;\
+                   ^ ~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:3090:51: warning: assigning to 'const char *' from 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+    filtergraphs[nb_filtergraphs - 1]->graph_desc = graph_desc;
+                                                  ^ ~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg_opt.c:3268:26: warning: passing 'uint8_t [128]' to parameter of type 'char *' converts between pointers to integer types with different sign [-Wpointer-sign]
+        av_strerror(ret, error, sizeof(error));
+                         ^~~~~
+../../../../src/main/cpp/include/libavutil/error.h:97:35: note: passing argument to parameter 'errbuf' here
+int av_strerror(int errnum, char *errbuf, size_t errbuf_size);
+                                  ^
+70 warnings generated.
+[8/9] Building C object CMakeFiles/ijoysoft-ffmpeg.dir/src/main/cpp/ffmpeg/ffmpeg.c.o
+../../../../src/main/cpp/ffmpeg/ffmpeg.c:239:9: warning: ignoring return value of function declared with 'warn_unused_result' attribute [-Wunused-result]
+        av_buffersrc_add_frame_flags(ist->filters[i]->filter, frame,
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg.c:269:9: warning: assigning to 'int8_t *' (aka 'signed char *') from 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+    dst = frame->data[0];
+        ^ ~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg.c:272:29: warning: passing 'int8_t *' (aka 'signed char *') to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+        sub2video_copy_rect(dst, dst_linesize, frame->width, frame->height, sub->rects[i]);
+                            ^~~
+../../../../src/main/cpp/ffmpeg/ffmpeg.c:202:42: note: passing argument to parameter 'dst' here
+static void sub2video_copy_rect(uint8_t *dst, int dst_linesize, int w, int h,
+                                         ^
+../../../../src/main/cpp/ffmpeg/ffmpeg.c:311:9: warning: ignoring return value of function declared with 'warn_unused_result' attribute [-Wunused-result]
+        av_buffersrc_add_frame(ist->filters[i]->filter, NULL);
+        ^~~~~~~~~~~~~~~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../../src/main/cpp/ffmpeg/ffmpeg.c:1852:35: warning: passing 'char *' to parameter of type 'const unsigned char *' converts between pointers to integer types with different sign [-Wpointer-sign]
+        avio_write(progress_avio, buf_script.str,
+                                  ^~~~~~~~~~~~~~
+../../../../src/main/cpp/include/libavformat/avio.h:448:54: note: passing argument to parameter 'buf' here
+void avio_write(AVIOContext *s, const unsigned char *buf, int size);
+                                                     ^
+../../../../src/main/cpp/ffmpeg/ffmpeg.c:2116:19: warning: 'avpicture_fill' is deprecated [-Wdeprecated-declarations]
+        int ret = avpicture_fill(&pict, opkt.data, ost->st->codecpar->format,
+                  ^
+../../../../src/main/cpp/include/libavcodec/avcodec.h:5545:1: note: 'avpicture_fill' has been explicitly marked deprecated here
+attribute_deprecated
+^
+../../../../src/main/cpp/include/libavutil/attributes.h:94:49: note: expanded from macro 'attribute_deprecated'
+#    define attribute_deprecated __attribute__((deprecated))
+                                                ^
+../../../../src/main/cpp/ffmpeg/ffmpeg.c:2186:13: warning: 5 enumeration values not handled in switch: 'AVMEDIA_TYPE_UNKNOWN', 'AVMEDIA_TYPE_DATA', 'AVMEDIA_TYPE_SUBTITLE'... [-Wswitch]
+    switch (ifilter->ist->st->codecpar->codec_type) {
+            ^
+../../../../src/main/cpp/ffmpeg/ffmpeg.c:2761:17: warning: 5 enumeration values not handled in switch: 'AVMEDIA_TYPE_UNKNOWN', 'AVMEDIA_TYPE_DATA', 'AVMEDIA_TYPE_SUBTITLE'... [-Wswitch]
+        switch (ist->dec_ctx->codec_type) {
+                ^
+../../../../src/main/cpp/ffmpeg/ffmpeg.c:3144:13: warning: 5 enumeration values not handled in switch: 'AVMEDIA_TYPE_UNKNOWN', 'AVMEDIA_TYPE_DATA', 'AVMEDIA_TYPE_SUBTITLE'... [-Wswitch]
+    switch (par_dst->codec_type) {
+            ^
+../../../../src/main/cpp/ffmpeg/ffmpeg.c:3211:20: warning: passing 'uint8_t *' (aka 'unsigned char *') to parameter of type 'char *' converts between pointers to integer types with different sign [-Wpointer-sign]
+        av_strlcpy(encoder_string, LIBAVCODEC_IDENT " ", encoder_string_len);
+                   ^~~~~~~~~~~~~~
+../../../../src/main/cpp/include/libavutil/avstring.h:100:25: note: passing argument to parameter 'dst' here
+size_t av_strlcpy(char *dst, const char *src, size_t size);
+                        ^
+../../../../src/main/cpp/ffmpeg/ffmpeg.c:3213:20: warning: passing 'uint8_t *' (aka 'unsigned char *') to parameter of type 'char *' converts between pointers to integer types with different sign [-Wpointer-sign]
+        av_strlcpy(encoder_string, "Lavc ", encoder_string_len);
+                   ^~~~~~~~~~~~~~
+../../../../src/main/cpp/include/libavutil/avstring.h:100:25: note: passing argument to parameter 'dst' here
+size_t av_strlcpy(char *dst, const char *src, size_t size);
+                        ^
+../../../../src/main/cpp/ffmpeg/ffmpeg.c:3214:16: warning: passing 'uint8_t *' (aka 'unsigned char *') to parameter of type 'char *' converts between pointers to integer types with different sign [-Wpointer-sign]
+    av_strlcat(encoder_string, ost->enc->name, encoder_string_len);
+               ^~~~~~~~~~~~~~
+../../../../src/main/cpp/include/libavutil/avstring.h:118:25: note: passing argument to parameter 'dst' here
+size_t av_strlcat(char *dst, const char *src, size_t size);
+                        ^
+../../../../src/main/cpp/ffmpeg/ffmpeg.c:3215:48: warning: passing 'uint8_t *' (aka 'unsigned char *') to parameter of type 'const char *' converts between pointers to integer types with different sign [-Wpointer-sign]
+    av_dict_set(&ost->st->metadata, "encoder", encoder_string,
+                                               ^~~~~~~~~~~~~~
+../../../../src/main/cpp/include/libavutil/dict.h:130:65: note: passing argument to parameter 'value' here
+int av_dict_set(AVDictionary **pm, const char *key, const char *value, int flags);
+                                                                ^
+../../../../src/main/cpp/ffmpeg/ffmpeg.c:3517:15: warning: 'avcodec_copy_context' is deprecated [-Wdeprecated-declarations]
+        ret = avcodec_copy_context(ost->st->codec, ost->enc_ctx);
+              ^
+../../../../src/main/cpp/include/libavcodec/avcodec.h:4325:1: note: 'avcodec_copy_context' has been explicitly marked deprecated here
+attribute_deprecated
+^
+../../../../src/main/cpp/include/libavutil/attributes.h:94:49: note: expanded from macro 'attribute_deprecated'
+#    define attribute_deprecated __attribute__((deprecated))
+                                                ^
+../../../../src/main/cpp/ffmpeg/ffmpeg.c:3517:45: warning: 'codec' is deprecated [-Wdeprecated-declarations]
+        ret = avcodec_copy_context(ost->st->codec, ost->enc_ctx);
+                                            ^
+../../../../src/main/cpp/include/libavformat/avformat.h:892:5: note: 'codec' has been explicitly marked deprecated here
+    attribute_deprecated
+    ^
+../../../../src/main/cpp/include/libavutil/attributes.h:94:49: note: expanded from macro 'attribute_deprecated'
+#    define attribute_deprecated __attribute__((deprecated))
+                                                ^
+../../../../src/main/cpp/ffmpeg/ffmpeg.c:3559:45: warning: passing 'uint32_t *' (aka 'unsigned int *') to parameter of type 'int32_t *' (aka 'int *') converts between pointers to integer types with different sign [-Wpointer-sign]
+                    av_display_rotation_set((uint32_t *) dst, 0);
+                                            ^~~~~~~~~~~~~~~~
+../../../../src/main/cpp/include/libavutil/display.h:76:38: note: passing argument to parameter 'matrix' here
+void av_display_rotation_set(int32_t matrix[9], double angle);
+                                     ^
+../../../../src/main/cpp/ffmpeg/ffmpeg.c:3572:18: warning: 'codec' is deprecated [-Wdeprecated-declarations]
+        ost->st->codec->codec = ost->enc_ctx->codec;
+                 ^
+../../../../src/main/cpp/include/libavformat/avformat.h:892:5: note: 'codec' has been explicitly marked deprecated here
+    attribute_deprecated
+    ^
+../../../../src/main/cpp/include/libavutil/attributes.h:94:49: note: expanded from macro 'attribute_deprecated'
+#    define attribute_deprecated __attribute__((deprecated))
+                                                ^
+../../../../src/main/cpp/ffmpeg/ffmpeg.c:3959:43: warning: 'codec' is deprecated [-Wdeprecated-declarations]
+            debug = input_streams[0]->st->codec->debug << 1;
+                                          ^
+../../../../src/main/cpp/include/libavformat/avformat.h:892:5: note: 'codec' has been explicitly marked deprecated here
+    attribute_deprecated
+    ^
+../../../../src/main/cpp/include/libavutil/attributes.h:94:49: note: expanded from macro 'attribute_deprecated'
+#    define attribute_deprecated __attribute__((deprecated))
+                                                ^
+../../../../src/main/cpp/ffmpeg/ffmpeg.c:3979:35: warning: 'codec' is deprecated [-Wdeprecated-declarations]
+            input_streams[i]->st->codec->debug = debug;
+                                  ^
+../../../../src/main/cpp/include/libavformat/avformat.h:892:5: note: 'codec' has been explicitly marked deprecated here
+    attribute_deprecated
+    ^
+../../../../src/main/cpp/include/libavutil/attributes.h:94:49: note: expanded from macro 'attribute_deprecated'
+#    define attribute_deprecated __attribute__((deprecated))
+                                                ^
+19 warnings generated.
+[9/9] Linking C shared library ../../../../build/intermediates/cmake/debug/obj/armeabi-v7a/libijoysoft-ffmpeg.so

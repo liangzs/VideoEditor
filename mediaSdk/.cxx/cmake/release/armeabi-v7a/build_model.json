@@ -1,0 +1,72 @@
+{
+  "variant": {
+    "module": {
+      "rootBuildGradleFolder": "/Users/mac/AndroidStudioProjects/VideoMakerAs",
+      "sdkFolder": "/Users/mac/Library/Android/sdk",
+      "isNativeCompilerSettingsCacheEnabled": false,
+      "isBuildOnlyTargetAbiEnabled": true,
+      "splitsAbiFilterSet": [],
+      "intermediatesFolder": "/Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/build/intermediates",
+      "gradleModulePathName": ":mediaSdk",
+      "moduleRootFolder": "/Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk",
+      "makeFile": "/Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/CMakeLists.txt",
+      "buildSystem": "CMAKE",
+      "compilerSettingsCacheFolder": "/Users/mac/AndroidStudioProjects/VideoMakerAs/.cxx",
+      "cxxFolder": "/Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/.cxx",
+      "ndkFolder": "/Users/mac/Library/Android/sdk/ndk/21.0.6113669",
+      "ndkVersion": "21.0.6113669",
+      "ndkSupportedAbiList": [
+        "ARMEABI_V7A",
+        "ARM64_V8A",
+        "X86",
+        "X86_64"
+      ],
+      "ndkDefaultAbiList": [
+        "ARMEABI_V7A",
+        "ARM64_V8A",
+        "X86",
+        "X86_64"
+      ],
+      "cmakeToolchainFile": "."
+    },
+    "buildSystemArgumentList": [
+      "-DANDROID_ARM_NEON\u003dTRUE"
+    ],
+    "cFlagList": [],
+    "cppFlagsList": [
+      "-frtti -fexceptions"
+    ],
+    "variantName": "release",
+    "soFolder": "/Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/build/intermediates/cmake/release/lib",
+    "objFolder": "/Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/build/intermediates/cmake/release/obj",
+    "jsonFolder": "/Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/.cxx/cmake/release",
+    "gradleBuildOutputFolder": "/Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/.cxx/cxx/release",
+    "isDebuggableEnabled": false,
+    "validAbiList": [
+      "ARMEABI_V7A",
+      "ARM64_V8A"
+    ],
+    "buildTargetSet": []
+  },
+  "abi": "ARMEABI_V7A",
+  "abiPlatformVersion": 17,
+  "cxxBuildFolder": "/Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/.cxx/cmake/release/armeabi-v7a",
+  "jsonFile": "/Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/.cxx/cmake/release/armeabi-v7a/android_gradle_build.json",
+  "gradleBuildOutputFolder": "/Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/.cxx/cxx/release/armeabi-v7a",
+  "objFolder": "/Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/build/intermediates/cmake/release/obj/armeabi-v7a",
+  "buildCommandFile": "/Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/.cxx/cmake/release/armeabi-v7a/build_command.txt",
+  "buildOutputFile": "/Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/.cxx/cmake/release/armeabi-v7a/build_output.txt",
+  "modelOutputFile": "/Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/.cxx/cmake/release/armeabi-v7a/build_model.json",
+  "cmake": {
+    "cmakeListsWrapperFile": "/Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/.cxx/cxx/release/armeabi-v7a/CMakeLists.txt",
+    "toolchainWrapperFile": "/Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/.cxx/cxx/release/armeabi-v7a/android_gradle_build.toolchain.cmake",
+    "buildGenerationStateFile": "/Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/.cxx/cxx/release/armeabi-v7a/build_generation_state.json",
+    "cacheKeyFile": "/Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/.cxx/cxx/release/armeabi-v7a/compiler_cache_key.json",
+    "compilerCacheUseFile": "/Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/.cxx/cxx/release/armeabi-v7a/compiler_cache_use.json",
+    "compilerCacheWriteFile": "/Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/.cxx/cxx/release/armeabi-v7a/compiler_cache_write.json",
+    "toolchainSettingsFromCacheFile": "/Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/.cxx/cxx/release/armeabi-v7a/compiler_settings_cache.cmake",
+    "cmakeWrappingBaseFolder": "."
+  },
+  "jsonGenerationLoggingRecordFile": "/Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/.cxx/cmake/release/armeabi-v7a/json_generation_record.json",
+  "compileCommandsJsonFile": "/Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/.cxx/cmake/release/armeabi-v7a/compile_commands.json"
+}

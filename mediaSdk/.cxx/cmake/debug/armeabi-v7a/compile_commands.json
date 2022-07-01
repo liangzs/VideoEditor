@@ -1,0 +1,49 @@
+[
+{
+  "directory": "/Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/.cxx/cmake/debug/armeabi-v7a",
+  "command": "/Users/mac/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=armv7-none-linux-androideabi17 --gcc-toolchain=/Users/mac/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64 --sysroot=/Users/mac/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Dijoysoft_ffmpeg_EXPORTS -I../../../../src/main/cpp -I../../../../src/main/cpp/include  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security  -O0 -fno-limit-debug-info  -fPIC   -o CMakeFiles/ijoysoft-ffmpeg.dir/src/main/cpp/ffmpeg/cmdutils.c.o   -c /Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/src/main/cpp/ffmpeg/cmdutils.c",
+  "file": "/Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/src/main/cpp/ffmpeg/cmdutils.c"
+},
+
+{
+  "directory": "/Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/.cxx/cmake/debug/armeabi-v7a",
+  "command": "/Users/mac/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=armv7-none-linux-androideabi17 --gcc-toolchain=/Users/mac/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64 --sysroot=/Users/mac/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Dijoysoft_ffmpeg_EXPORTS -I../../../../src/main/cpp -I../../../../src/main/cpp/include  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security  -O0 -fno-limit-debug-info  -fPIC   -o CMakeFiles/ijoysoft-ffmpeg.dir/src/main/cpp/ffmpeg/ffmpeg.c.o   -c /Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/src/main/cpp/ffmpeg/ffmpeg.c",
+  "file": "/Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/src/main/cpp/ffmpeg/ffmpeg.c"
+},
+
+{
+  "directory": "/Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/.cxx/cmake/debug/armeabi-v7a",
+  "command": "/Users/mac/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=armv7-none-linux-androideabi17 --gcc-toolchain=/Users/mac/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64 --sysroot=/Users/mac/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Dijoysoft_ffmpeg_EXPORTS -I../../../../src/main/cpp -I../../../../src/main/cpp/include  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security  -O0 -fno-limit-debug-info  -fPIC   -o CMakeFiles/ijoysoft-ffmpeg.dir/src/main/cpp/ffmpeg/ffmpeg_filter.c.o   -c /Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/src/main/cpp/ffmpeg/ffmpeg_filter.c",
+  "file": "/Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/src/main/cpp/ffmpeg/ffmpeg_filter.c"
+},
+
+{
+  "directory": "/Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/.cxx/cmake/debug/armeabi-v7a",
+  "command": "/Users/mac/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=armv7-none-linux-androideabi17 --gcc-toolchain=/Users/mac/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64 --sysroot=/Users/mac/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Dijoysoft_ffmpeg_EXPORTS -I../../../../src/main/cpp -I../../../../src/main/cpp/include  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security  -O0 -fno-limit-debug-info  -fPIC   -o CMakeFiles/ijoysoft-ffmpeg.dir/src/main/cpp/ffmpeg/ffmpeg_opt.c.o   -c /Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/src/main/cpp/ffmpeg/ffmpeg_opt.c",
+  "file": "/Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/src/main/cpp/ffmpeg/ffmpeg_opt.c"
+},
+
+{
+  "directory": "/Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/.cxx/cmake/debug/armeabi-v7a",
+  "command": "/Users/mac/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=armv7-none-linux-androideabi17 --gcc-toolchain=/Users/mac/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64 --sysroot=/Users/mac/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Dijoysoft_ffmpeg_EXPORTS -I../../../../src/main/cpp -I../../../../src/main/cpp/include  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security  -O0 -fno-limit-debug-info  -fPIC   -o CMakeFiles/ijoysoft-ffmpeg.dir/src/main/cpp/ffmpeg_cmd.c.o   -c /Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/src/main/cpp/ffmpeg_cmd.c",
+  "file": "/Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/src/main/cpp/ffmpeg_cmd.c"
+},
+
+{
+  "directory": "/Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/.cxx/cmake/debug/armeabi-v7a",
+  "command": "/Users/mac/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=armv7-none-linux-androideabi17 --gcc-toolchain=/Users/mac/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64 --sysroot=/Users/mac/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Dijoysoft_ffmpeg_EXPORTS -I../../../../src/main/cpp -I../../../../src/main/cpp/include  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security  -O0 -fno-limit-debug-info  -fPIC   -o CMakeFiles/ijoysoft-ffmpeg.dir/src/main/cpp/ffmpeg_thread.c.o   -c /Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/src/main/cpp/ffmpeg_thread.c",
+  "file": "/Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/src/main/cpp/ffmpeg_thread.c"
+},
+
+{
+  "directory": "/Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/.cxx/cmake/debug/armeabi-v7a",
+  "command": "/Users/mac/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=armv7-none-linux-androideabi17 --gcc-toolchain=/Users/mac/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64 --sysroot=/Users/mac/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Dijoysoft_ffmpeg_EXPORTS -I../../../../src/main/cpp -I../../../../src/main/cpp/include  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security  -O0 -fno-limit-debug-info  -fPIC   -o CMakeFiles/ijoysoft-ffmpeg.dir/src/main/cpp/ffmpeg/video_player.c.o   -c /Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/src/main/cpp/ffmpeg/video_player.c",
+  "file": "/Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/src/main/cpp/ffmpeg/video_player.c"
+},
+
+{
+  "directory": "/Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/.cxx/cmake/debug/armeabi-v7a",
+  "command": "/Users/mac/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=armv7-none-linux-androideabi17 --gcc-toolchain=/Users/mac/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64 --sysroot=/Users/mac/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Dijoysoft_ffmpeg_EXPORTS -I../../../../src/main/cpp -I../../../../src/main/cpp/include  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security  -O0 -fno-limit-debug-info  -fPIC   -o CMakeFiles/ijoysoft-ffmpeg.dir/src/main/cpp/ffmpeg/video_filter.c.o   -c /Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/src/main/cpp/ffmpeg/video_filter.c",
+  "file": "/Users/mac/AndroidStudioProjects/VideoMakerAs/mediaSdk/src/main/cpp/ffmpeg/video_filter.c"
+}
+]

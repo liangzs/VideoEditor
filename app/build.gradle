@@ -28,8 +28,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
     kotlinOptions {
         jvmTarget = '1.8'
@@ -47,7 +47,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
     implementation("androidx.recyclerview:recyclerview:1.2.1")
     implementation project(path: ':selector')
-    implementation project(path: ':selector')
+    implementation project(path: ':mediaSdk')
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
@@ -93,5 +93,7 @@ dependencies {
     implementation("com.airbnb.android:lottie:${configs.versions_lottie}")
     // Banner
     implementation("io.github.youth5201314:banner:${configs.versions_banner}")
+
+    implementation 'pub.devrel:easypermissions:3.0.0'
 
 }

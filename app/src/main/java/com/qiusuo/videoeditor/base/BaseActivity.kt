@@ -28,6 +28,7 @@ abstract class BaseActivity<T : ViewBinding>(var inflater: (inflater: LayoutInfl
         viewBinding = inflater(layoutInflater);
         setContentView(viewBinding.root);
         setStatusBar()
+        initData()
     }
 
 
@@ -48,4 +49,7 @@ abstract class BaseActivity<T : ViewBinding>(var inflater: (inflater: LayoutInfl
     open fun isWhiteStatusl(): Boolean {
         return false
     }
+
+    abstract open fun initData();
+
 }
