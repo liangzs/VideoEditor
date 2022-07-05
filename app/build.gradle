@@ -42,21 +42,21 @@ android {
             jniLibs.srcDirs = ['libs']
             java {
                 srcDir "src/main/java"
-                srcDir "../uicore/src/main/java"
+                srcDir "../selector/src/main/java"
             }
             res {
                 srcDir "src/main/res"
-                srcDir "../uicore/src/main/res"
+                srcDir "../selector/src/main/res"
             }
             assets {
                 srcDir "src/main/assets"
-                srcDir "../uicore/src/main/assets"
+                srcDir "../selector/src/main/assets"
             }
             manifest.srcFile {
                 //其它Manifest
                 def libraryManifests = [
                         "src/main/AndroidManifest.xml",
-                        "../uicore/src/main/AndroidManifest.xml",
+                        "../selector/src/main/AndroidManifest.xml",
                 ]
                 //主manifest
                 def mainManifestPath = 'src/main/AndroidManifest.xml'
