@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.qiusuo.videoeditor.base.BaseAdapter
 import com.qiusuo.videoeditor.base.BaseItemViewDelegate
 import com.qiusuo.videoeditor.databinding.ItemCatagoryListBinding
-import com.qiusuo.videoeditor.widgegt.GridItemDecoration
+import com.qiusuo.videoeditor.ui.widgegt.GridItemDecoration
 
 class CatagoryListViewDelegate : BaseItemViewDelegate<CatagoryListViewData, CatagoryListViewDelegate.ViewHolder>() {
 

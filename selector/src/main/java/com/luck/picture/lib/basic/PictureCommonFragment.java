@@ -30,7 +30,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.luck.picture.lib.R;
+import com.qiusuo.videoeditor.R;
 import com.luck.picture.lib.app.PictureAppMaster;
 import com.luck.picture.lib.config.Crop;
 import com.luck.picture.lib.config.CustomIntentKey;
@@ -76,6 +76,7 @@ import com.luck.picture.lib.utils.SdkVersionUtils;
 import com.luck.picture.lib.utils.SpUtils;
 import com.luck.picture.lib.utils.ToastUtils;
 import com.luck.picture.lib.utils.ValueOf;
+
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -603,7 +604,6 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                     }
                 }
                 String maxFileSize = PictureFileUtils.formatFileSize(config.selectMaxFileSize, 1);
-                showTipsDialog(getString(R.string.ps_select_max_size, maxFileSize));
                 return true;
             }
         }

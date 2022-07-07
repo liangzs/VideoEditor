@@ -8,7 +8,7 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 
-import com.luck.picture.lib.R;
+import com.qiusuo.videoeditor.R;
 
 /**
  * @author：luck

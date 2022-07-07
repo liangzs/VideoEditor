@@ -1,12 +1,12 @@
 apply plugin: 'com.android.library'
 //apply plugin: 'com.android.application'
 android {
-    compileSdkVersion 28
+    compileSdkVersion configs.compileSdkVersion
 
 
     defaultConfig {
-        minSdkVersion 17
-        targetSdkVersion 28
+        minSdkVersion configs.minSdkVersion
+        targetSdkVersion configs.targetSdkVersion
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -43,6 +43,10 @@ android {
 //            jni.srcDirs = []
         }
     }
+//    compileOptions {
+//        sourceCompatibility JavaVersion.VERSION_11
+//        targetCompatibility JavaVersion.VERSION_11
+//    }
 }
 
 dependencies {

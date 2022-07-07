@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 
-import com.luck.picture.lib.R;
+import com.qiusuo.videoeditor.R;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.style.PictureSelectorStyle;

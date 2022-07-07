@@ -12,7 +12,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
 import com.luck.picture.lib.PictureOnlyCameraFragment;
-import com.luck.picture.lib.R;
+import com.qiusuo.videoeditor.R;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;

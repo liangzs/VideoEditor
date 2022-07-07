@@ -17,6 +17,7 @@ import com.luck.picture.lib.permissions.PermissionConfig;
 import com.luck.picture.lib.permissions.PermissionResultCallback;
 import com.luck.picture.lib.utils.SdkVersionUtils;
 import com.luck.picture.lib.utils.ToastUtils;
+import com.qiusuo.videoeditor.R;
 
 /**
  * @author：luck

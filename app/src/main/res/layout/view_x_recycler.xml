@@ -22,7 +22,7 @@
 
     </com.nan.xarch.base.list.pullrefresh.PullRefreshLayout>
 
-    <com.qiusuo.videoeditor.widgegt.PromptView
+    <com.qiusuo.videoeditor.ui.widgegt.PromptView
         android:id="@+id/prompt_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

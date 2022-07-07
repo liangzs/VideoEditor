@@ -1,8 +1,7 @@
-package com.qiusuo.videoeditor.view.adapter
+package com.qiusuo.videoeditor.ui.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.qiusuo.videoeditor.module.home.HomeFragment
 import java.lang.IndexOutOfBoundsException
 
 const val HOME_THEME_INDEX = 0;

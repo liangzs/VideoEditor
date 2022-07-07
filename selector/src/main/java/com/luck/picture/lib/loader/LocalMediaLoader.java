@@ -5,7 +5,7 @@ import android.database.Cursor;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 
-import com.luck.picture.lib.R;
+import com.qiusuo.videoeditor.R;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;

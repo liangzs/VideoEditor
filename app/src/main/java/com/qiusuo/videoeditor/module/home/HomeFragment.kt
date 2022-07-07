@@ -1,6 +1,5 @@
 package com.qiusuo.videoeditor.module.home
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -32,8 +31,8 @@ import com.qiusuo.videoeditor.R
 import com.qiusuo.videoeditor.base.BaseFragment
 import com.qiusuo.videoeditor.common.constant.PageName
 import com.qiusuo.videoeditor.databinding.FragmentHomeBinding
-import com.qiusuo.videoeditor.view.adapter.HomeFunAdapter
-import com.qiusuo.videoeditor.widgegt.RecyclerItemDecoration
+import com.qiusuo.videoeditor.ui.adapter.HomeFunAdapter
+import com.qiusuo.videoeditor.ui.widgegt.RecyclerItemDecoration
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate) {
     val viewModel: HomeViewModel by viewModels()

@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-import com.luck.picture.lib.R;
+import com.qiusuo.videoeditor.R;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.utils.DateUtils;

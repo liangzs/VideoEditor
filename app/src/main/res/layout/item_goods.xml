@@ -7,7 +7,7 @@
     android:paddingBottom="@dimen/item_padding"
     android:translationZ="@dimen/item_translation_z">
 
-    <com.qiusuo.videoeditor.widgegt.RoundAngleImageView
+    <com.qiusuo.videoeditor.ui.widgegt.RoundAngleImageView
         android:id="@+id/iv_goods"
         android:layout_width="match_parent"
         android:layout_height="150dp"

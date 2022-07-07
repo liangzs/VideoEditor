@@ -8,7 +8,7 @@ import android.view.Gravity;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
-import com.luck.picture.lib.R;
+import com.qiusuo.videoeditor.R;
 
 public class PictureLoadingDialog extends Dialog {
 

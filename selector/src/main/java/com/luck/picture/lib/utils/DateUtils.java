@@ -6,7 +6,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 
 import com.google.android.exoplayer2.C;
-import com.luck.picture.lib.R;
+import com.qiusuo.videoeditor.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

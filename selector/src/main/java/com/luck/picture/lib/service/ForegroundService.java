@@ -12,8 +12,8 @@ import android.os.IBinder;
 
 import androidx.core.app.NotificationCompat;
 
-import com.luck.picture.lib.BuildConfig;
-import com.luck.picture.lib.R;
+import com.ijoysoft.mediasdk.BuildConfig;
+import com.qiusuo.videoeditor.R;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.utils.SdkVersionUtils;

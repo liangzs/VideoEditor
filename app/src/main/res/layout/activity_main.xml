@@ -22,7 +22,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <com.qiusuo.videoeditor.widgegt.FragmentTabHost
+    <androidx.fragment.app.FragmentTabHost
         android:id="@+id/fragment_tab_host"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

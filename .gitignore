@@ -1,2 +1,6 @@
 # Project exclude paths
 /.gradle/
+/.idea/
+/mediaSdk/.cxx/
+/mediaSdk/build/
+/mediaSdk/.cxx/

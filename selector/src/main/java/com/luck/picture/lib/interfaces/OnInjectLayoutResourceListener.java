@@ -2,7 +2,7 @@ package com.luck.picture.lib.interfaces;
 
 import android.content.Context;
 
-import com.luck.picture.lib.R;
+import com.qiusuo.videoeditor.R;
 import com.luck.picture.lib.config.InjectResourceSource;
 
 /**

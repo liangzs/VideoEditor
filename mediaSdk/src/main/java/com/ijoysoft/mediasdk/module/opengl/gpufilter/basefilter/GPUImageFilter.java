@@ -18,7 +18,9 @@ package com.ijoysoft.mediasdk.module.opengl.gpufilter.basefilter;
 
 import android.graphics.PointF;
 import android.opengl.GLES20;
-import android.support.annotation.CallSuper;
+import androidx.annotation.CallSuper;
+
+import androidx.annotation.CallSuper;
 
 import com.ijoysoft.mediasdk.module.opengl.gpufilter.helper.MagicFilterType;
 import com.ijoysoft.mediasdk.module.opengl.gpufilter.utils.OpenGlUtils;

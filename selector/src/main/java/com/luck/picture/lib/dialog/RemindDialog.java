@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.luck.picture.lib.R;
+import com.qiusuo.videoeditor.R;
 
 /**
  * @author：luck

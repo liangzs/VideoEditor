@@ -3,7 +3,7 @@ package com.luck.picture.lib.adapter.holder;
 import android.view.View;
 import android.widget.TextView;
 
-import com.luck.picture.lib.R;
+import com.qiusuo.videoeditor.R;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.style.SelectMainStyle;

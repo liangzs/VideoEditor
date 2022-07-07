@@ -6,7 +6,7 @@ import android.media.MediaFormat;
 import android.media.MediaMuxer;
 import android.os.Build;
 import android.os.Environment;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.RequiresApi;
 
 
 import com.ijoysoft.mediasdk.common.global.ConstantPath;
@@ -121,6 +121,7 @@ public class RealTimeMediaMuxerManager {
      * @return true when muxer is ready to write
      */
     /*package*/
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     public synchronized boolean start() {
 
         mStatredCount++;
@@ -137,6 +138,7 @@ public class RealTimeMediaMuxerManager {
      * request stop recording from encoder when encoder received EOS
      */
     /*package*/
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     public synchronized void stop() {
 
         mStatredCount--;

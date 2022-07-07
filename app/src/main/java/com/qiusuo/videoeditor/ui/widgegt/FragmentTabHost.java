@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.qiusuo.videoeditor.widgegt;
+package com.qiusuo.videoeditor.ui.widgegt;
 
 import android.content.Context;
 import android.content.res.TypedArray;

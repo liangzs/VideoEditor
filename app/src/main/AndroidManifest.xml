@@ -17,15 +17,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.VideoEditor">
         <activity
-            android:name=".view.activity.EditorActivity"
+            android:name=".module.edit.EditorActivity"
             android:exported="false" />
-        <activity android:name=".view.activity.WelcomeActivity">
+        <activity android:name=".module.welcome.WelcomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.activity.MainActivity"></activity>
+        <activity android:name=".module.home.MainActivity"></activity>
     </application>
 </manifest>

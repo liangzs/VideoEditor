@@ -13,7 +13,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.luck.picture.lib.R;
 import com.luck.picture.lib.adapter.PictureImageGridAdapter;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
@@ -24,6 +23,7 @@ import com.luck.picture.lib.style.SelectMainStyle;
 import com.luck.picture.lib.utils.AnimUtils;
 import com.luck.picture.lib.utils.StyleUtils;
 import com.luck.picture.lib.utils.ValueOf;
+import com.qiusuo.videoeditor.R;
 
 import java.util.List;
 

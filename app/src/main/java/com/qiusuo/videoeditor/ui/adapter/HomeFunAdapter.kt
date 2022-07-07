@@ -1,4 +1,4 @@
-package com.qiusuo.videoeditor.view.adapter
+package com.qiusuo.videoeditor.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

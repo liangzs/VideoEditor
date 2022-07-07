@@ -70,6 +70,7 @@ import com.luck.picture.lib.widget.RecyclerPreloadView;
 import com.luck.picture.lib.widget.SlideSelectTouchListener;
 import com.luck.picture.lib.widget.SlideSelectionHandler;
 import com.luck.picture.lib.widget.TitleBar;
+import com.qiusuo.videoeditor.R;
 
 import java.io.File;
 import java.util.ArrayList;

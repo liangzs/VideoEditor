@@ -1,4 +1,4 @@
-package com.qiusuo.videoeditor.view.activity
+package com.qiusuo.videoeditor.module.home
 
 import android.os.Bundle
 import com.gyf.immersionbar.ktx.immersionBar
@@ -7,8 +7,7 @@ import com.qiusuo.videoeditor.R
 import com.qiusuo.videoeditor.base.BaseActivity
 import com.qiusuo.videoeditor.common.constant.TabId
 import com.qiusuo.videoeditor.databinding.ActivityMainBinding
-import com.qiusuo.videoeditor.module.home.HomeFragment
-import com.qiusuo.videoeditor.widgegt.TabIndicatorView
+import com.qiusuo.videoeditor.ui.widgegt.TabIndicatorView
 
 class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
 
@@ -66,6 +65,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
             }
         }
 
+    }
+
+    override fun initData() {
     }
 
 }

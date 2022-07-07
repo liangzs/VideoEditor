@@ -77,6 +77,7 @@ import com.luck.picture.lib.widget.CompleteSelectView;
 import com.luck.picture.lib.widget.PreviewBottomNavBar;
 import com.luck.picture.lib.widget.PreviewTitleBar;
 import com.luck.picture.lib.widget.TitleBar;
+import com.qiusuo.videoeditor.R;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -178,7 +179,6 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
      * 内部预览
      *
      * @param isBottomPreview 是否顶部预览进来的
-     * @param currentAlbum    当前预览的目录
      * @param isShowCamera    是否有显示拍照图标
      * @param position        预览下标
      * @param totalNum        当前预览总数
@@ -920,6 +920,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             });
             mItemTouchHelper.attachToRecyclerView(mGalleryRecycle);
             mGalleryAdapter.setItemLongClickListener(new PreviewGalleryAdapter.OnItemLongClickListener() {
+                @SuppressLint("MissingPermission")
                 @Override
                 public void onItemLongClick(RecyclerView.ViewHolder holder, int position, View v) {
                     Vibrator vibrator = (Vibrator) getActivity().getSystemService(Service.VIBRATOR_SERVICE);

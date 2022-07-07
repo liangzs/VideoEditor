@@ -6,12 +6,12 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.style.SelectMainStyle;
 import com.luck.picture.lib.utils.DateUtils;
 import com.luck.picture.lib.utils.StyleUtils;
+import com.qiusuo.videoeditor.R;
 
 /**
  * @author：luck

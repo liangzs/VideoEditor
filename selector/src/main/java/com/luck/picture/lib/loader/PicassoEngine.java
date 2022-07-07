@@ -8,7 +8,7 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 
-import com.luck.picture.lib.R;
+import com.qiusuo.videoeditor.R;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.interfaces.OnCallbackListener;

@@ -12,7 +12,7 @@ import android.widget.RelativeLayout;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.luck.picture.lib.R;
+import com.qiusuo.videoeditor.R;
 import com.luck.picture.lib.adapter.PictureAlbumAdapter;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.decoration.WrapContentLinearLayoutManager;

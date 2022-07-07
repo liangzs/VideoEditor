@@ -1,4 +1,4 @@
-package com.qiusuo.videoeditor.widgegt;
+package com.qiusuo.videoeditor.ui.widgegt;
 
 import android.graphics.Rect;
 import android.view.View;

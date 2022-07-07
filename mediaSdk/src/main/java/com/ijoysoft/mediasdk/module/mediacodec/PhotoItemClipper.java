@@ -2,7 +2,7 @@ package com.ijoysoft.mediasdk.module.mediacodec;
 
 import android.os.Build;
 import android.os.HandlerThread;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.RequiresApi;
 import android.view.Surface;
 
 import java.io.File;

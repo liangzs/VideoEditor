@@ -9,7 +9,7 @@ import android.util.AttributeSet;
 
 import androidx.appcompat.widget.AppCompatTextView;
 
-import com.luck.picture.lib.R;
+import com.qiusuo.videoeditor.R;
 
 /**
  * @author：luck

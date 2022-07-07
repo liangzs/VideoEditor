@@ -1,10 +1,8 @@
-package com.qiusuo.videoeditor.widgegt
+package com.qiusuo.videoeditor.ui.widgegt
 
 import android.content.Context
-import android.text.Layout
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import androidx.constraintlayout.widget.ConstraintAttribute
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.qiusuo.videoeditor.databinding.ViewTabIndicatorBinding
 

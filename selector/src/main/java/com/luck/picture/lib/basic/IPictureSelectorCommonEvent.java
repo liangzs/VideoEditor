@@ -151,9 +151,7 @@ public interface IPictureSelectorCommonEvent {
      * 刷新指定数据
      */
     void sendFixedSelectedChangeEvent(LocalMedia currentMedia);
-
     /**
-     * {@link PictureSelectionConfig.selectorStyle.getSelectMainStyle().isSelectNumberStyle}
      * <p>
      * isSelectNumberStyle模式下对选择结果编号进行排序
      * </p>

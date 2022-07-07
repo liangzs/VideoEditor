@@ -1,6 +1,7 @@
 package com.luck.picture.lib.config;
 
-import com.luck.picture.lib.BuildConfig;
+
+import com.ijoysoft.mediasdk.BuildConfig;
 
 /**
  * @author：luck
