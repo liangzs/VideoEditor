@@ -1173,6 +1173,11 @@ public final class PictureSelectionModel {
         return this;
     }
 
+    public PictureSelectionModel setCompleteLisenter(){
+        selectionConfig
+
+    }
+
     /**
      * Start PictureSelector
      *

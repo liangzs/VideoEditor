@@ -1,7 +1,9 @@
 package com.qiusuo.videoeditor.common.data;
 
 import android.graphics.Bitmap;
+import android.media.MediaMetadataRetriever;
 
+import com.ijoysoft.mediasdk.common.global.ConstantMediaSize;
 import com.ijoysoft.mediasdk.common.utils.ObjectUtils;
 import com.ijoysoft.mediasdk.module.entity.AudioMediaItem;
 import com.ijoysoft.mediasdk.module.entity.DoodleItem;
@@ -9,7 +11,9 @@ import com.ijoysoft.mediasdk.module.entity.DurationInterval;
 import com.ijoysoft.mediasdk.module.entity.MediaItem;
 import com.ijoysoft.mediasdk.module.entity.MediaMatrix;
 import com.ijoysoft.mediasdk.module.entity.MediaType;
+import com.ijoysoft.mediasdk.module.entity.PhotoMediaItem;
 import com.ijoysoft.mediasdk.module.entity.RatioType;
+import com.ijoysoft.mediasdk.module.entity.VideoMediaItem;
 import com.ijoysoft.mediasdk.module.entity.WaterMarkType;
 import com.ijoysoft.mediasdk.module.opengl.gpufilter.helper.MagicFilterFactory;
 import com.ijoysoft.mediasdk.module.opengl.transition.TransitionFactory;
@@ -126,81 +130,72 @@ public class MediaDataRepository {
      */
 
     private MediaItem mediaExtrange(LocalMedia originItem, boolean isExtract, final boolean isTrim) {
-//        if (originItem.type == MediaItem.TYPE_IMAGE) {
-//            PhotoMediaItem dustItem = new PhotoMediaItem();
+        if (originItem.isImage()) {
+            PhotoMediaItem dustItem = new PhotoMediaItem();
 //            dustItem.setRotation(BytesBitmap.getExifOrientation(originItem.path, originItem.rotation));
 //            dustItem.setProjectId(getProjectID());
-//            dustItem.setPath(originItem.path);
-//            dustItem.setSize(Long.valueOf(originItem.size));
-//            dustItem.setDuration(ConstantMediaSize.TIME_DURATION);
-//            dustItem.setTempDuration(ConstantMediaSize.TIME_DURATION);
-//            dustItem.setWidth(originItem.width);
-//            dustItem.setHeight(originItem.height);
-//            dustItem.setName(originItem.title);
-//            // 检测是否图片是否需要压缩
-//            dustItem.setFirstFramePath(dustItem.getPath());
-//            if (originItem.width > ConstantMediaSize.screenWidth || originItem.width > ConstantMediaSize.screenHeight) {
+            dustItem.setPath(originItem.getPath());
+            dustItem.setSize(originItem.getSize());
+            dustItem.setDuration(ConstantMediaSize.TIME_DURATION);
+            dustItem.setTempDuration(ConstantMediaSize.TIME_DURATION);
+            dustItem.setWidth(originItem.getWidth());
+            dustItem.setHeight(originItem.getHeight());
+            dustItem.setName(originItem.getFileName());
+            // 检测是否图片是否需要压缩
+            dustItem.setFirstFramePath(dustItem.getPath());
+//            if (originItem.getWidth() > ConstantMediaSize.screenWidth || originItem.getWidth() > ConstantMediaSize.screenHeight) {
 //                dustItem.setFirstFramePath(PathUtil.createFrameImage(getProjectID()));
 //                FileUtil.saveBitmap(BitmapUtil.scaleRatioByPathByMatrix(dustItem.getPath(),
 //                        ConstantMediaSize.screenWidth, ConstantMediaSize.screenHeight), dustItem.getFirstFramePath());
 //            }
-//
-//            return dustItem;
-//        } else if (originItem.type == MediaItem.TYPE_VIDEO) {
-//            final MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-//            final VideoMediaItem dustItem = new VideoMediaItem();
+
+            return dustItem;
+        } else  {
+            final MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+            final VideoMediaItem dustItem = new VideoMediaItem();
 //            dustItem.setProjectId(getProjectID());
-//            dustItem.setPath(originItem.path);
-//            dustItem.setSize(Long.valueOf(originItem.size == null ? "0" : originItem.size));
-//            dustItem.setDuration(originItem.duration);
-//            dustItem.setTempDuration(originItem.duration);
-//            dustItem.setWidth(originItem.width);
-//            dustItem.setHeight(originItem.height);
-//            dustItem.setName(originItem.title);
-//            try {
-//                retriever.setDataSource(originItem.path);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//                dustItem.setWidth(originItem.width);
-//                dustItem.setHeight(originItem.height);
+            dustItem.setPath(originItem.getPath());
+            dustItem.setSize(originItem.getSize());
+            dustItem.setDuration(originItem.getDuration());
+            dustItem.setTempDuration(originItem.getDuration());
+            dustItem.setWidth(originItem.getWidth());
+            dustItem.setHeight(originItem.getHeight());
+            dustItem.setName(originItem.getFileName());
+            try {
+                retriever.setDataSource(originItem.getPath());
+            } catch (Exception e) {
+                e.printStackTrace();
+//                dustItem.setWidth(originItem.getWidth());
+//                dustItem.setHeight(originItem.getHeight());
 //                if (FileUtils.checkExistAudio(dustItem.getPath()) && isExtract) {
 //                    String temppath = ConstantPath.createExtractVideo2Audio(getProjectID(), dustItem.getName());
 //                    dustItem.setExtracAudioPath(temppath + "_ijoysoft");
 //                    FfmpegBackgroundHelper.getInstance()
 //                            .extractAudioMp3(new String[]{dustItem.getPath(), temppath, temppath});
 //                }
-//                return dustItem;
-//            }
-//
-//            if (originItem.width == 0 || originItem.height == 0) {
-//                if (retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH) != null) {
-//                    originItem.width =
-//                            Integer.valueOf(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
-//                    dustItem.setWidth(Integer
-//                            .valueOf(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)));
-//                }
-//                if (retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT) != null) {
-//                    originItem.height = Integer
-//                            .valueOf(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
-//                    dustItem.setHeight(Integer
-//                            .valueOf(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)));
-//                }
-//            } else {
-//                dustItem.setWidth(originItem.width);
-//                dustItem.setHeight(originItem.height);
-//            }
-//            if (retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE) != null) {
-//                int bitRate = Integer.valueOf(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE));
-//                dustItem.setBitRate(bitRate);
-//            }
-//            String value = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION) == null ? "0"
-//                    : retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
-//            Log.i("test", "value:" + value + dustItem.getName() + ":" + dustItem.getRotation());
-//            dustItem.setRotation(Integer.valueOf(value));
-//            Log.i("test", dustItem.getName() + ":" + dustItem.getRotation());
+                return dustItem;
+            }
+
+            if (originItem.getWidth() == 0 || originItem.getHeight() == 0) {
+                if (retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH) != null) {
+                    dustItem.setHeight(Integer
+                            .parseInt(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)));
+                }
+                if (retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT) != null) {
+                    dustItem.setHeight(Integer
+                            .parseInt(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)));
+                }
+            }
+            if (retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE) != null) {
+                int bitRate = Integer.parseInt(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE));
+                dustItem.setBitRate(bitRate);
+            }
+            String value = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION) == null ? "0"
+                    : retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
+            dustItem.setRotation(Integer.valueOf(value));
 //            dustItem.setFirstFramePath(PathUtil.createFrameImage(getProjectID()));
 //            dustItem.setVideolastFramePath(PathUtil.createFrameImage(getProjectID()));
-//            // 做音频抽取动作,这里分是进入主控制台还是进入裁剪子页面
+            // 做音频抽取动作,这里分是进入主控制台还是进入裁剪子页面
 //            if (FileUtils.checkExistAudio(dustItem.getPath()) && isExtract) {
 //                String temppath = ConstantPath.createExtractVideo2Audio(getProjectID(), dustItem.getName());
 //                dustItem.setExtracAudioPath(temppath + "_ijoysoft");
@@ -234,9 +229,8 @@ public class MediaDataRepository {
 //                    retriever.release();
 //                }
 //            });
-//            return dustItem;
-//        }
-        return null;
+            return dustItem;
+        }
     }
 
     public void addDataOriginItem(MediaItem mediaItem) {

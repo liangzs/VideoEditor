@@ -3,7 +3,6 @@ package com.qiusuo.videoeditor.module.edit
 import android.os.Bundle
 import com.ijoysoft.mediasdk.module.entity.DoodleItem
 import com.ijoysoft.mediasdk.module.entity.MediaItem
-import com.ijoysoft.mediasdk.module.entity.RatioType
 import com.ijoysoft.mediasdk.module.playControl.MediaConfig
 import com.ijoysoft.mediasdk.view.MediaPreviewView
 import com.qiusuo.videoeditor.base.BaseActivity

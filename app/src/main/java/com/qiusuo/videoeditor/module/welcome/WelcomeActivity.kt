@@ -36,6 +36,7 @@ class WelcomeActivity : BaseActivity<ActivityWelcomeBinding>(ActivityWelcomeBind
         GlobalScope.launch {
             delay(1000);
             startActivity(Intent(this@WelcomeActivity, MainActivity::class.java))
+            finish()
         }
     }
 

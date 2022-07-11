@@ -495,6 +495,13 @@ public class LocalMedia implements Parcelable {
         this.mimeType = mimeType;
     }
 
+    public boolean isImage(){
+        if(mimeType.contains("image")){
+            return true;
+        }
+        return false;
+    }
+
     public int getChooseModel() {
         return chooseModel;
     }

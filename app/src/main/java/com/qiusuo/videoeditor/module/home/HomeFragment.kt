@@ -22,6 +22,7 @@ import com.luck.picture.lib.config.*
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnPreviewInterceptListener
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
+import com.luck.picture.lib.interfaces.OnSelectFilterListener
 import com.luck.picture.lib.interfaces.OnSelectLimitTipsListener
 import com.luck.picture.lib.language.LanguageConfig
 import com.luck.picture.lib.loader.GlideEngine
@@ -30,9 +31,11 @@ import com.luck.picture.lib.utils.ToastUtils
 import com.qiusuo.videoeditor.R
 import com.qiusuo.videoeditor.base.BaseFragment
 import com.qiusuo.videoeditor.common.constant.PageName
+import com.qiusuo.videoeditor.common.data.MediaDataRepository
 import com.qiusuo.videoeditor.databinding.FragmentHomeBinding
 import com.qiusuo.videoeditor.ui.adapter.HomeFunAdapter
 import com.qiusuo.videoeditor.ui.widgegt.RecyclerItemDecoration
+import kotlinx.android.synthetic.main.ps_alert_dialog.*
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate) {
     val viewModel: HomeViewModel by viewModels()
@@ -99,6 +102,15 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
             .isPreviewZoomEffect(true)
             .setRecyclerAnimationMode(animationMode)
             .isGif(true)
+            .setSelectFilterListener(object :OnSelectFilterListener{
+                override fun onSelectFilter(media: LocalMedia?): Boolean {
+                    MediaDataRepository.getInstance().addMediaItem(media,false,false)
+                    return false
+                }
+            })
+            .setCompressEngine()
+
+
         //设置选中照片的集合页
 //            .setSelectedData(mAdapter.getData())
         selectionModel.forResult(launcher);
