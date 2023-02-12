@@ -26,6 +26,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".module.home.MainActivity"></activity>
+        <activity android:name=".module.home.MainActivity"/>
+
+        <activity
+            android:name=".module.select.PictureSelectorSupporterActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            >
+
+        </activity>
     </application>
 </manifest>

@@ -17,4 +17,24 @@
         <attr name="setting_item_icon" format="reference" />
         <attr name="setting_item_title" format="string" />
     </declare-styleable>
+
+
+    <declare-styleable name="PictureLongScaleImageView">
+        <attr name="src" format="reference" />
+        <attr name="assetName" format="string" />
+        <attr name="panEnabled" format="boolean" />
+        <attr name="zoomEnabled" format="boolean" />
+        <attr name="quickScaleEnabled" format="boolean" />
+        <attr name="tileBackgroundColor" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="PictureMediumBoldTextView">
+        <attr name="stroke_Width" format="float" />
+    </declare-styleable>
+
+    <declare-styleable name="PictureRoundCornerRelativeLayout">
+        <attr name="corners" format="dimension" />
+        <attr name="topNormal" format="boolean" />
+        <attr name="bottomNormal" format="boolean" />
+    </declare-styleable>
 </resources>

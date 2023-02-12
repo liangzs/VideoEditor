@@ -1,4 +1,4 @@
-package com.luck.picture.lib.basic;
+ package com.luck.picture.lib.basic;
 
 import android.app.Activity;
 import android.content.Context;

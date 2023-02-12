@@ -18,7 +18,7 @@ import com.ijoysoft.mediasdk.module.entity.WaterMarkType;
 import com.ijoysoft.mediasdk.module.opengl.gpufilter.helper.MagicFilterFactory;
 import com.ijoysoft.mediasdk.module.opengl.transition.TransitionFactory;
 import com.ijoysoft.mediasdk.module.opengl.transition.TransitionFilter;
-import com.luck.picture.lib.entity.LocalMedia;
+import com.qiusuo.videoeditor.common.bean.LocalMedia;
 
 import java.util.ArrayList;
 import java.util.Collections;

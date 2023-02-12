@@ -1174,7 +1174,8 @@ public final class PictureSelectionModel {
     }
 
     public PictureSelectionModel setCompleteLisenter(){
-        selectionConfig
+//        selectionConfig
+        return null;
 
     }
 

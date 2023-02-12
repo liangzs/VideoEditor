@@ -277,10 +277,11 @@ public class VideoBackgroundFilter extends OesFilter {
         // 显示区背景
         GLES20.glViewport(0, 0, ConstantMediaSize.showViewWidth, ConstantMediaSize.showViewHeight);
         if (!isPureBg) {
+            //当前视频帧
             EasyGlUtils.bindFrameTexture(fFrame[0], fTexture[0]);
             mVerBuffer.clear();
             mVerBuffer.put(pos).position(0);
-            draw();// GL_TEXTURE_EXTERNAL_OES 转GL_TEXTURE_2D
+            draw();
             EasyGlUtils.unBindFrameBuffer();
             // 模糊width方向
             widthBlurFilter.setTextureId(fTexture[0]);
@@ -291,8 +292,6 @@ public class VideoBackgroundFilter extends OesFilter {
             heightBlurFilter.setTextureId(fTexture[1]);
             EasyGlUtils.bindFrameTexture(fFrame[0], fTexture[0]);
             heightBlurFilter.draw();
-            // backgroudFilter.setTextureId(fTexture[0]);
-            // backgroudFilter.draw();
             mVerBuffer.clear();
             mVerBuffer.put(cube).position(0);
             draw();// 绘画视频的帧
