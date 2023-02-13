@@ -38,5 +38,8 @@ abstract class BaseFragment<T : ViewBinding>(var inflater: (inflater: LayoutInfl
         dispose.add(disposable)
     }
 
+    override fun getPageName(): String {
+        return ""
+    }
 
 }

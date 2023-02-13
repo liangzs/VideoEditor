@@ -8,7 +8,6 @@ import com.qiusuo.videoeditor.common.constant.PageName
  */
 interface IGetPageName {
 
-    @PageName
     fun getPageName(): String
 
 }

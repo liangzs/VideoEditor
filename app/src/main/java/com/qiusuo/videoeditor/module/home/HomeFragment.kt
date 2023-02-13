@@ -62,44 +62,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     }
 
     fun openGallery(){
-        PictureSelectionConfig.selectorStyle=PictureSelectorStyle()
-        // 进入相册
-//        val selectionModel: PictureSelectionModel = PictureSelector.create(context)
-//            .openGallery(SelectMimeType.TYPE_IMAGE)
-//            .setSelectorUIStyle( PictureSelectorStyle())
-//            .setImageEngine(GlideEngine.createGlideEngine())
-//            .setSelectLimitTipsListener(MeOnSelectLimitTipsListener())
-//            .setPreviewInterceptListener(MeOnPreviewInterceptListener())
-//            .setSelectionMode( SelectModeConfig.MULTIPLE)
-//            .setLanguage(LanguageConfig.ENGLISH`)
-//            .setQuerySortOrder( MediaStore.MedvbiaColumns.DATE_MODIFIED + " ASC" )
-//            .isDisplayTimeAxis(true)
-//            .isPageStrategy(true)
-//            .isOriginalControl(true)
-//            .isDisplayCamera(true)
-//            .isOpenClickSound(true)
-//            .isFastSlidingSelect(true) //.setOutputCameraImageFileName("luck.jpeg")
-//            //.setOutputCameraVideoFileName("luck.mp4")
-//            .isWithSelectVideoImage(true)
-//            .isPreviewFullScreenMode(true)
-//            .isPreviewZoomEffect(true)
-//            .setRecyclerAnimationMode(animationMode)
-//            .isGif(true)
-//            .setSelectFilterListener(object :OnSelectFilterListener{
-//                override fun onSelectFilter(media: LocalMedia?): Boolean {
-//                    MediaDataRepository.getInstance().addMediaItem(media,false,false)
-//                    return false
-//                }
-//            })
 
 
-        val intent = Intent(activity, PictureSelectorSupporterActivity::class.java)
-        launcher.launch(intent)
-
-
-        //设置选中照片的集合页
-//            .setSelectedData(mAdapter.getData())
-//        selectionModel.forResult(launcher);
     }
 
 
