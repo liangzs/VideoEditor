@@ -13,4 +13,16 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="WelcomTheme" parent="Theme.VideoEditor">
+        <!--将顶部状态栏设置为透明，并将界面内容布局上边界上提至状态栏顶部-->
+        <!--        <item name="android:windowIsTranslucent">true</item>-->
+        <!--        &lt;!&ndash;如果有底部虚拟导航栏，则将底部虚拟导航栏设置为透明，并将界面内容布局下边界下沉至虚拟导航栏底部&ndash;&gt;-->
+        <!--        <item name="android:windowTranslucentNavigation">true</item>-->
+        <!-- 将splash图片设置在这，这样这张图片取代白屏或黑屏 -->
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowBackground">@drawable/splash_background</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
 </resources>

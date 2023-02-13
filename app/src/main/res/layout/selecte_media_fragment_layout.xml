@@ -2,22 +2,20 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/main_bottom_color">
+    android:layout_height="match_parent">
 
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tablayout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_50"
-        android:background="@color/bg_black"
+        android:layout_height="50dp"
         app:tabGravity="fill"
         app:tabIndicatorColor="@color/tabIndicate_color"
         app:tabIndicatorFullWidth="true"
         app:tabMaxWidth="0dp"
         app:tabMode="fixed"
         app:tabSelectedTextColor="@color/tabIndicate_color"
-        app:tabTextAppearance="@style/MyTabTextApperance_normal"
+        app:tabTextAppearance="@style/_14TabTextApperance"
         app:tabTextColor="@color/white" />
 
 
@@ -25,7 +23,6 @@
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/tablayout"
-        android:background="@color/viewpager_color" />
+        android:layout_below="@+id/tablayout" />
 
 </RelativeLayout>

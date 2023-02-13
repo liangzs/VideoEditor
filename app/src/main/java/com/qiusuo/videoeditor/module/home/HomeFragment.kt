@@ -13,37 +13,36 @@ import com.qiusuo.videoeditor.R
 import com.qiusuo.videoeditor.base.BaseFragment
 import com.qiusuo.videoeditor.common.constant.PageName
 import com.qiusuo.videoeditor.databinding.FragmentHomeBinding
-import com.qiusuo.videoeditor.module.select.PictureSelectorSupporterActivity
-import com.qiusuo.videoeditor.module.select.config.PictureSelectionConfig
-import com.qiusuo.videoeditor.module.select.config.SelectMimeType
-import com.qiusuo.videoeditor.module.select.style.PictureSelectorStyle
 import com.qiusuo.videoeditor.ui.adapter.HomeFunAdapter
 import com.qiusuo.videoeditor.ui.widgegt.RecyclerItemDecoration
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate) {
     val viewModel: HomeViewModel by viewModels()
-    lateinit var launcher:ActivityResultLauncher<Intent>
+    lateinit var launcher: ActivityResultLauncher<Intent>
 
     companion object {
         const val SPAN_COUNT = 2;
-        const val REQUEST_CODE=100;
-        const val CALLBACK_CODE=200;
+        const val REQUEST_CODE = 100;
+        const val CALLBACK_CODE = 200;
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        launcher=createActivityResultLauncher()
+        launcher = createActivityResultLauncher()
         initView();
     }
 
     private fun initView() {
-        var gridlayout=GridLayoutManager(context, SPAN_COUNT);
-        gridlayout.orientation=GridLayoutManager.HORIZONTAL;
-        gridlayout.isAutoMeasureEnabled=true
+        var gridlayout = GridLayoutManager(context, SPAN_COUNT);
+        gridlayout.orientation = GridLayoutManager.HORIZONTAL;
+        gridlayout.isAutoMeasureEnabled = true
         viewBinding.rvMainFunc.setLayoutManager(gridlayout)
-        viewBinding.rvMainFunc.addItemDecoration(RecyclerItemDecoration(
-            activity.resources.getDimensionPixelOffset(R.dimen.item_padding), true, true))
+        viewBinding.rvMainFunc.addItemDecoration(
+            RecyclerItemDecoration(
+                activity.resources.getDimensionPixelOffset(R.dimen.item_padding), true, true
+            )
+        )
         viewBinding.rvMainFunc.adapter = HomeFunAdapter { position: Int -> funItemClick(position) }
 
         viewBinding.flCreate.setOnClickListener {
@@ -61,12 +60,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         return PageName.HOME
     }
 
-    fun openGallery(){
+    fun openGallery() {
 
 
     }
-
-
 
 
     /**
@@ -74,7 +71,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
      *
      * @return
      */
-     fun createActivityResultLauncher(): ActivityResultLauncher<Intent> {
+    fun createActivityResultLauncher(): ActivityResultLauncher<Intent> {
         return registerForActivityResult(ActivityResultContracts.StartActivityForResult(),
             object : ActivityResultCallback<ActivityResult?> {
                 override fun onActivityResult(result: ActivityResult?) {
@@ -82,9 +79,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                 }
             })
     }
-
-
-
 
 
 }

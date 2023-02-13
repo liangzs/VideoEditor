@@ -8,7 +8,7 @@
         android:id="@+id/media_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginHorizontal="@dimen/dp_6">
+        android:layout_marginHorizontal="6dp">
 
     </androidx.recyclerview.widget.RecyclerView>
 
@@ -18,9 +18,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/no_photo"
+        android:text="NO PHOTO"
         android:textColor="@color/white"
-        android:textSize="@dimen/sp_14"
+        android:textSize="14sp"
         android:visibility="gone" />
 
 

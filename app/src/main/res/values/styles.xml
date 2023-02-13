@@ -56,6 +56,18 @@
 
         <!-- 自己想要的背景 -->
         <item name="android:windowBackground">@android:color/transparent</item>
+
+        <style name="_16TabTextApperance" parent="Base.TextAppearance.AppCompat.Medium">
+            <item name="android:textSize">16sp</item>
+            <item name="android:fontFamily">sans-serif-medium</item>
+        </style>
+
+
+        <!-- @deprecated use 20sp -->
+        <style name="_14TabTextApperance" parent="TextAppearance.AppCompat.Medium">
+            <item name="android:textSize">14sp</item>
+            <item name="android:fontFamily">sans-serif-medium</item>
+        </style>
     </style>
 
 </resources>

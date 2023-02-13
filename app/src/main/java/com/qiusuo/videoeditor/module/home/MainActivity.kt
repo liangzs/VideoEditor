@@ -43,9 +43,24 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
     fun initTab() {
         val tabs = listOf<Tab>(
-            Tab(TabId.HOT_THEME, getString(R.string.main_hot_theme), R.drawable.selector_btn_discovery, HomeFragment::class),
-            Tab(TabId.HOME, getString(R.string.main_home), R.drawable.btn_home, HomeFragment::class),
-            Tab(TabId.STUDIO, getString(R.string.main_studio), R.drawable.selector_btn_mine, HomeFragment::class)
+            Tab(
+                TabId.HOT_THEME,
+                getString(R.string.main_hot_theme),
+                R.drawable.selector_btn_discovery,
+                HomeFragment::class
+            ),
+            Tab(
+                TabId.HOME,
+                getString(R.string.main_home),
+                R.drawable.btn_home,
+                HomeFragment::class
+            ),
+            Tab(
+                TabId.STUDIO,
+                getString(R.string.main_studio),
+                R.drawable.selector_btn_mine,
+                HomeFragment::class
+            )
         )
         viewBinding.fragmentTabHost.run {
             setup(this@MainActivity, supportFragmentManager, viewBinding.fragmentContainer.id)
