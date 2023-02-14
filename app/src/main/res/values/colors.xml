@@ -9,7 +9,7 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-
+    <color name="gray">#CCCCCC</color>
     <color name="line_color">#08000000</color>
     <color name="black_00_color">#00000000</color>
     <color name="black_02_color">#05000000</color>
@@ -101,7 +101,6 @@
     <color name="ps_color_8D57FC">#8D57FC</color>
     <color name="ps_color_0077F6">#0077F6</color>
     <color name="ps_color_E4E4E4">#E4E4E4</color>
-
 
 
     <!--tab-->
