@@ -46,40 +46,11 @@ import com.ijoysoft.mediasdk.module.entity.MediaItem
 import com.ijoysoft.mediasdk.module.entity.MediaType
 import com.ijoysoft.mediasdk.module.entity.VideoMediaItem
 import com.ijoysoft.mediasdk.module.mediacodec.FfmpegBackgroundHelper
-import com.ijoysoft.mediasdk.module.opengl.transition.TransitionSeries
-import com.ijoysoft.videoeditor.Event.*
-import com.ijoysoft.videoeditor.R
-import com.ijoysoft.videoeditor.activity.edit.EditStickerActivity
-import com.ijoysoft.videoeditor.activity.edit.EditSubTitleActivity
-import com.ijoysoft.videoeditor.adapter.BottomContentRecyclerAdapter
-import com.ijoysoft.videoeditor.base.MyApplication
-import com.ijoysoft.videoeditor.base.ViewModelActivity
-import com.ijoysoft.videoeditor.databinding.ActivitySelectClipBinding
-import com.ijoysoft.videoeditor.entity.MediaDataRepository
-import com.ijoysoft.videoeditor.entity.MediaEntity
-import com.ijoysoft.videoeditor.entity.MediaShowType
-import com.ijoysoft.videoeditor.entity.MediaSortType
-import com.ijoysoft.videoeditor.evalute.PointFTypeEvaluator
-import com.ijoysoft.videoeditor.fragment.PhotoFragment
-import com.ijoysoft.videoeditor.fragment.SelectFragment
-import com.ijoysoft.videoeditor.fragment.SelectMediaFragment
-import com.ijoysoft.videoeditor.model.MediaManager
-import com.ijoysoft.videoeditor.model.ProjectImplement
-import com.ijoysoft.videoeditor.model.viewmodel.LoadMediaViewModel
-import com.ijoysoft.videoeditor.popupwindow.CommonMenuPop
-import com.ijoysoft.videoeditor.popupwindow.MediaFolderSelectPopup
-import com.ijoysoft.videoeditor.utils.*
-import com.ijoysoft.videoeditor.utils.ViewUtils.breakAndSetTextWithTextView
-import com.ijoysoft.videoeditor.view.ImageView.MoveImageView
-import com.ijoysoft.videoeditor.view.SmoothScrollLayoutManager
-import com.ijoysoft.videoeditor.view.pop.BaseTitleMenu
-import com.ijoysoft.videoeditor.view.pop.PopupItem
-import com.ijoysoft.videoeditor.view.recyclerview.ItemDragHelperCallback
-import com.lb.library.T
-import com.lb.library.permission.AppSettingsDialog
-import com.lb.library.permission.EasyPermissions.PermissionCallbacks
-import com.squareup.otto.Subscribe
+import com.qiusuo.videoeditor.base.BaseActivity
+import com.qiusuo.videoeditor.base.ViewModelActivity
+import com.qiusuo.videoeditor.common.bean.MediaItemPicker
 import kotlinx.coroutines.*
+import pub.devrel.easypermissions.EasyPermissions
 import java.io.File
 import java.lang.Runnable
 import java.util.*
@@ -91,7 +62,8 @@ import kotlin.coroutines.suspendCoroutine
 /**
  * Created by wh on 2019/4/26.
  */
-class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectClipBinding>(), MediaItemPicker, PermissionCallbacks, View.OnClickListener {
+class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectClipBinding>(LoadMediaViewModel::class.java,ActivitySelectClipBinding),
+    MediaItemPicker, EasyPermissions.PermissionCallbacks, View.OnClickListener {
     override fun createRootBinding(): ActivitySelectClipBinding {
         return ActivitySelectClipBinding.inflate(layoutInflater)
     }
@@ -481,25 +453,25 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
 
     private var mPreviewItem = MediaEntity()
 
-    @Subscribe
-    fun mediaNotify(event: PhotoNotifyEvent) {
-        fragment!!.updateData()
-    }
+//    @Subscribe
+//    fun mediaNotify(event: PhotoNotifyEvent) {
+//        fragment!!.updateData()
+//    }
 
-    @Subscribe
-    fun mediaNotify(event: PhotoSelectAll) {
-        showLoading("")
-        lifecycleScope.launch {
-            withContext(Dispatchers.IO) {
-                val list: List<MediaEntity>? = viewModel.getMediaByDate(event.date)
-                if (event.isToSelect) {
-                    selectAll(list!!)
-                } else {
-                    unSelectAll(list!!)
-                }
-            }
-        }
-    }
+//    @Subscribe
+//    fun mediaNotify(event: PhotoSelectAll) {
+//        showLoading("")
+//        lifecycleScope.launch {
+//            withContext(Dispatchers.IO) {
+//                val list: List<MediaEntity>? = viewModel.getMediaByDate(event.date)
+//                if (event.isToSelect) {
+//                    selectAll(list!!)
+//                } else {
+//                    unSelectAll(list!!)
+//                }
+//            }
+//        }
+//    }
 
     private suspend fun selectAll(mediaEntities: List<MediaEntity>) {
         val count: CountDownLatch = CountDownLatch(mediaEntities.size)

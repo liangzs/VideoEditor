@@ -27,7 +27,7 @@
         <ImageView
             android:id="@+id/rl_bg"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_16"
+            android:layout_height="16dp"
             android:background="@drawable/color_shader"
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -35,8 +35,8 @@
 
         <ImageView
             android:id="@+id/trim_label"
-            android:layout_width="@dimen/dp_16"
-            android:layout_height="@dimen/dp_16"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             />
@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginEnd="8dp"
             android:gravity="center"
             android:textColor="@color/white"
             android:textSize="12sp"
@@ -59,10 +59,10 @@
 
         <Button
             android:id="@+id/media_item_serial_number_toggle"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_gravity="end|top"
-            android:background="@drawable/vector_drawable_item_fragment_media_select"
+            android:background="@drawable/vector_media_select"
             android:button="@null"
             android:gravity="center"
             android:textColor="@color/white"
@@ -75,8 +75,8 @@
 
         <View
             android:id="@+id/media_item_serial_number_toggle_touch_space"
-            android:layout_width="@dimen/dp_46"
-            android:layout_height="@dimen/dp_46"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             app:layout_constraintEnd_toEndOf="parent"
