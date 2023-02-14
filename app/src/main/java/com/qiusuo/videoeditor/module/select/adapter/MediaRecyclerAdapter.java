@@ -1,38 +1,17 @@
 package com.qiusuo.videoeditor.module.select.adapter;
 
 import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.ijoysoft.mediasdk.common.utils.LogUtils;
-import com.ijoysoft.mediasdk.common.utils.ObjectUtils;
-import com.ijoysoft.mediasdk.module.entity.DurationInterval;
-import com.ijoysoft.mediasdk.module.entity.MediaType;
-import com.ijoysoft.videoeditor.R;
-import com.ijoysoft.videoeditor.activity.MediaItemPicker;
-import com.ijoysoft.videoeditor.activity.SelectPhotoActivity;
-import com.ijoysoft.videoeditor.entity.MediaEntity;
-import com.ijoysoft.videoeditor.utils.ContactUtils;
-import com.ijoysoft.videoeditor.utils.FileUtil;
-import com.ijoysoft.videoeditor.utils.TimeUtils;
-import com.ijoysoft.videoeditor.view.ImageView.SquareImg;
-import com.ijoysoft.videoeditor.view.selection.HeaderViewHolder;
-import com.ijoysoft.videoeditor.view.selection.SimpleSectionedAdapter;
-import com.lb.library.T;
+import com.qiusuo.videoeditor.common.bean.MediaEntity;
+import com.qiusuo.videoeditor.common.bean.MediaItemPicker;
+import com.qiusuo.videoeditor.ui.widgegt.selection.HeaderViewHolder;
+import com.qiusuo.videoeditor.ui.widgegt.selection.SimpleSectionedAdapter;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 

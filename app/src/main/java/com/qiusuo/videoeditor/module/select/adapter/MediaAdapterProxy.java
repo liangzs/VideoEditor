@@ -12,11 +12,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.ijoysoft.mediasdk.R;
 import com.ijoysoft.mediasdk.common.utils.LogUtils;
 import com.ijoysoft.mediasdk.common.utils.ObjectUtils;
 import com.ijoysoft.mediasdk.module.entity.DurationInterval;
 import com.ijoysoft.mediasdk.module.entity.MediaItem;
 import com.ijoysoft.mediasdk.module.entity.MediaType;
+import com.qiusuo.videoeditor.common.bean.MediaEntity;
+import com.qiusuo.videoeditor.common.bean.MediaItemPicker;
 
 import java.util.ArrayList;
 import java.util.HashMap;

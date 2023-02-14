@@ -41,7 +41,6 @@
     </style>
 
     <style name="Picture.Theme.Dialog" parent="@android:style/Theme.Dialog">
-
         <!-- 边框 -->
         <item name="android:windowFrame">@android:color/transparent</item>
         <!-- 是否浮现在activity之上 -->
@@ -53,21 +52,19 @@
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
         <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
-
         <!-- 自己想要的背景 -->
         <item name="android:windowBackground">@android:color/transparent</item>
-
-        <style name="_16TabTextApperance" parent="Base.TextAppearance.AppCompat.Medium">
-            <item name="android:textSize">16sp</item>
-            <item name="android:fontFamily">sans-serif-medium</item>
-        </style>
-
-
-        <!-- @deprecated use 20sp -->
-        <style name="_14TabTextApperance" parent="TextAppearance.AppCompat.Medium">
-            <item name="android:textSize">14sp</item>
-            <item name="android:fontFamily">sans-serif-medium</item>
-        </style>
     </style>
 
+    <style name="_16TabTextApperance" parent="Base.TextAppearance.AppCompat.Medium">
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+
+    <!-- @deprecated use 20sp -->
+    <style name="_14TabTextApperance" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
 </resources>
