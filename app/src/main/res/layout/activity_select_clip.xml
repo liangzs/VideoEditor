@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/slideuppannel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom">
+
+
+        <LinearLayout
+            android:id="@+id/rl_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="184dp">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@null"
+                app:contentInsetLeft="0dp"
+                app:contentInsetStart="0dp"
+                app:contentInsetStartWithNavigation="0dp"
+                app:theme="@style/AppToolbar">
+
+                <include
+                    android:id="@+id/ll_folder"
+                    layout="@layout/select_folder_layout" />
+            </androidx.appcompat.widget.Toolbar>
+        </LinearLayout>
+
+
+        <!--!!!!!!!!!!!!!!!!!drag_view!!!!!!!!!!!!!!!!!!!!!!!!!-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/drag_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/drag_view_color"
+            android:orientation="vertical"
+            app:behavior_peekHeight="184dp"
+            app:layout_behavior="@string/bottom_sheet_behavior">
+
+
+            <Space
+                android:id="@+id/space"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_clear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:scaleType="centerInside"
+                app:layout_constraintBottom_toBottomOf="@id/space"
+                app:layout_constraintStart_toStartOf="@id/space"
+                app:layout_constraintTop_toTopOf="@id/space"
+                app:srcCompat="@drawable/vector_clear_select" />
+
+
+            <TextView
+                android:id="@+id/text_num"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="2dp"
+                android:gravity="start|center"
+                android:text="0"
+                android:textColor="@color/white_90_color"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@id/space"
+                app:layout_constraintEnd_toStartOf="@id/image_direct"
+                app:layout_constraintStart_toEndOf="@id/iv_clear"
+                app:layout_constraintTop_toTopOf="@id/space" />
+
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/image_direct"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="2dp"
+                app:layout_constraintBottom_toBottomOf="@+id/space"
+                app:layout_constraintEnd_toEndOf="@+id/space"
+                app:layout_constraintStart_toStartOf="@+id/space"
+                app:layout_constraintTop_toTopOf="@+id/space"
+                app:srcCompat="@drawable/vm_vector_up" />
+
+
+            <TextView
+                android:id="@+id/button_next"
+                style="@style/NormalTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/menu_save_selector"
+                android:gravity="center"
+                android:minWidth="54dp"
+                android:paddingHorizontal="2dp"
+                android:text="@string/next"
+                android:textColor="@color/white"
+                android:textSize="vm_select_next_text_size"
+                app:layout_constraintBottom_toBottomOf="@+id/space"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/space" />
+
+            <TextView
+                android:id="@+id/drag_tip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="3dp"
+                android:layout_marginTop="3dp"
+                android:text="@string/drag_tip"
+                android:textColor="@color/white_alpha_50"
+                android:textSize="10sp"
+                app:layout_constraintStart_toStartOf="@id/iv_clear"
+                app:layout_constraintTop_toBottomOf="@id/iv_clear" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler"
+                android:layout_width="match_parent"
+                android:layout_height="102dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginRight="10dp"
+                android:descendantFocusability="blocksDescendants"
+                app:layout_constraintTop_toBottomOf="@id/drag_tip" />
+
+            <!--            </FrameLayout>-->
+            <TextView
+                android:id="@+id/add_clip_tip"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/add_clip_tip"
+                android:textColor="@color/white_50_color"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@id/recycler"
+                app:layout_constraintTop_toTopOf="@id/recycler" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+</FrameLayout>
