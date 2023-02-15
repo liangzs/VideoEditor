@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<music>
+	<general/>
+	<happy/>
+	<love/>
+
+	<soft>
+		<item type="3" id="0"  name="The Bluest Star" path="/music/soft/TheBluestStar.mp3" copyright="https://www.youtube.com/watch?v=irQbUCeVEEw\n\nProvided by ：The 126ers"/>
+	</soft>
+	<children/>
+	<birthday/>
+
+	<dynamic>
+		<item type="6" id="0" name="Add Loudness" path="/music/dynamic/Add Loudness.mp3" copyright="https://soundcloud.com/user-30348988/add-loudness\n\nProvided by ：Bear​Person" />
+		<item type="6" id="0" name="Indie Pop" path="/music/dynamic/Indie Pop.mp3" copyright="http://www.etaaudio.com" />
+		<item type="6" id="0" size="796289"  name="campfire" path="/music/dynamic/campfire.mp3"  copyright="https://soundcloud.com/roa_music1031\n\nProvided by ：Roa"/>
+	</dynamic>
+	<epic/>
+
+</music>

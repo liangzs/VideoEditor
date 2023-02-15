@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+
+    <string name="clip_lost" tools:ignore="MissingTranslation">原始文件已丢失，请检查你的系统相册。</string>
+    <string name="hot" tools:ignore="MissingTranslation">热门</string>
+    <string name="birthday" tools:ignore="MissingTranslation">生日</string>
+    <string name="valentine" tools:ignore="MissingTranslation">情人</string>
+    <string name="wedding" tools:ignore="MissingTranslation">婚礼</string>
+    <string name="baby" tools:ignore="MissingTranslation">宝贝</string>
+    <string name="greeting" tools:ignore="MissingTranslation">感恩</string>
+    <string name="holiday" tools:ignore="MissingTranslation">节日</string>
+    <string name="celebration" tools:ignore="MissingTranslation">庆典</string>
+    <string name="love" tools:ignore="MissingTranslation">爱情</string>
+    <string name="traveling" tools:ignore="MissingTranslation">旅行</string>
+    <string name="common" translatable="false">常规</string>
+    <string name="christmas" translatable="false">圣诞节</string>
+    <string name="new_year" translatable="false">新年</string>
+    <string name="food" translatable="false">食物</string>
+    <string name="daily" translatable="false">日常</string>
+    <string name="sport" translatable="false">运动</string>
+    <string name="my" translatable="false">我的</string>
+</resources>
