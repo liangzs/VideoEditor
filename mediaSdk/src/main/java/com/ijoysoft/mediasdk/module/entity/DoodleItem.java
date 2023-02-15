@@ -1,6 +1,10 @@
 package com.ijoysoft.mediasdk.module.entity;
 
+import android.graphics.Bitmap;
+
 import java.io.Serializable;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * 涂鸦管理类
@@ -22,20 +26,21 @@ public class DoodleItem implements Serializable {
     private String doodleSrcPath; //涂鸦原始路径
 
     private int width;
-
     private int height;
     /**
-     * x偏移量
+     * 记录涂鸦的归一化值，所以当比例进行切换,记录原来的显示区域
      */
-    private int x;
+    private float basew;
+    private float baseH;
+    private float tranx;
+    private float trany;
+    private float angle;
+    private boolean gif;
 
-    //y偏移量
-    private int y;
-
-    //做的旋转动作
-    private int angle;
     //显示周期
     private DurationInterval durationInterval;
+
+    private int resourceId;//直接从apk中读取图片资源
 
 
     public DoodleItem(WaterMarkType type) {
@@ -43,7 +48,22 @@ public class DoodleItem implements Serializable {
     }
 
     public DoodleItem() {
+    }
 
+    public void setRectBound(float baseW, float baseH, float tranX, float tranY, int width, int height, float angle) {
+        this.basew = baseW;
+        this.baseH = baseH;
+        this.tranx = tranX;
+        this.trany = tranY;
+        if (angle < 0) {
+            angle += 360f;
+        }
+        this.angle = angle;
+        double sinAngle = Math.sin(Math.toRadians(Math.abs(angle)));
+        double cosAngle = Math.cos(Math.toRadians(Math.abs(angle)));
+
+        this.width = (int) (cosAngle * width + sinAngle * height);
+        this.height = (int) (sinAngle * width + cosAngle * height);
     }
 
     public String getProjectId() {
@@ -63,45 +83,6 @@ public class DoodleItem implements Serializable {
         this.path = path;
     }
 
-    public int getWidth() {
-        return width;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-
-    public int getAngle() {
-        return angle;
-    }
-
-    public void setAngle(int angle) {
-        this.angle = angle;
-    }
 
     public DurationInterval getDurationInterval() {
 
@@ -137,19 +118,119 @@ public class DoodleItem implements Serializable {
     }
 
 
+    public int getResourceId() {
+        return resourceId;
+    }
+
+    public void setResourceId(int resourceId) {
+        this.resourceId = resourceId;
+    }
+
+
     @Override
     public String toString() {
         return "DoodleItem{" +
-                "projectId='" + projectId + '\'' +
-                ", type='" + waterMarkType + '\'' +
+                ", projectId='" + projectId + '\'' +
+                ", waterMarkType=" + waterMarkType +
                 ", priority=" + priority +
                 ", path='" + path + '\'' +
+                ", doodleSrcPath='" + doodleSrcPath + '\'' +
+                ", baseW=" + basew +
+                ", tranX=" + tranx +
+                ", tranY=" + trany +
                 ", width=" + width +
                 ", height=" + height +
-                ", x=" + x +
-                ", y=" + y +
                 ", angle=" + angle +
                 ", durationInterval=" + durationInterval +
+                ", resourceId=" + resourceId +
                 '}';
+    }
+
+    public float getTranX() {
+        return tranx;
+    }
+
+    public void setTranX(float tranX) {
+        this.tranx = tranX;
+    }
+
+    public float getTranY() {
+        return trany;
+    }
+
+    public void setTranY(float tranY) {
+        this.trany = tranY;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public float getAngle() {
+        return angle;
+    }
+
+    public void setAngle(float angle) {
+        this.angle = angle;
+    }
+
+    public float getBaseW() {
+        return basew;
+    }
+
+    public void setBaseW(float baseW) {
+        this.basew = baseW;
+    }
+
+    public float getBasew() {
+        return basew;
+    }
+
+    public void setBasew(float basew) {
+        this.basew = basew;
+    }
+
+    public float getTranx() {
+        return tranx;
+    }
+
+    public void setTranx(float tranx) {
+        this.tranx = tranx;
+    }
+
+    public float getTrany() {
+        return trany;
+    }
+
+    public void setTrany(float trany) {
+        this.trany = trany;
+    }
+
+    public boolean getGif() {
+        return gif;
+    }
+
+    public void setGif(boolean gif) {
+        this.gif = gif;
+    }
+
+    public float getBaseH() {
+        return baseH;
+    }
+
+    public void setBaseH(float baseH) {
+        this.baseH = baseH;
     }
 }

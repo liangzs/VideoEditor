@@ -1,13 +1,20 @@
 package com.ijoysoft.mediasdk.module.ffmpeg;
 
 public interface CallCmdListener {
-    void onStart();
+    default void onStart() {
+    }
 
     void onStop(int result);
 
-    void onNext();
+    default void onNext() {
+    }
 
-    void onProgress(int progress);
+    default void onInnerFinish() {
+    }
 
-    void error(String error);
+    default void onProgress(int progress) {
+    }
+
+    default void error(String error) {
+    }
 }

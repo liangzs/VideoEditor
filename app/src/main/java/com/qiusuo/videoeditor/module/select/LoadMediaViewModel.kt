@@ -16,16 +16,10 @@ import com.ijoysoft.mediasdk.common.utils.FileUtils
 import com.ijoysoft.mediasdk.common.utils.LogUtils
 import com.ijoysoft.mediasdk.common.utils.ObjectUtils
 import com.ijoysoft.mediasdk.module.mediacodec.PhoneAdatarList
-import com.ijoysoft.videoeditor.activity.SelectClipActivity
-import com.ijoysoft.videoeditor.activity.videotrim.VideoTrimActivity
-import com.ijoysoft.videoeditor.base.MyApplication
-import com.ijoysoft.videoeditor.entity.*
-import com.ijoysoft.videoeditor.model.ContentDataLoadTask
-import com.ijoysoft.videoeditor.model.ContentDataObserver
-import com.ijoysoft.videoeditor.model.ContentDataObserver.onUriChange
-import com.ijoysoft.videoeditor.model.MediaManager
-import com.ijoysoft.videoeditor.utils.Dlog
-import com.ijoysoft.videoeditor.utils.TimeUtils
+import com.qiusuo.videoeditor.base.MyApplication
+import com.qiusuo.videoeditor.common.bean.MediaEntity
+import com.qiusuo.videoeditor.common.bean.MediaFolder
+import com.qiusuo.videoeditor.util.TimeUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -258,9 +252,9 @@ class LoadMediaViewModel : ViewModel() {
                 queryArgs.putString(ContentResolver.QUERY_ARG_SQL_LIMIT, "$pageSize offset ${page * pageSize}")
 
 
-                imageCursor = MyApplication.app.getContentResolver().query(uri, IMAGE_COLUMN, queryArgs, null)
+                imageCursor = MyApplication.instance.getContentResolver().query(uri, IMAGE_COLUMN, queryArgs, null)
                 //val sortBy = MediaStore.Images.Media.DATE_ADDED + " desc "
-                //imageCursor = MyApplication.app.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                //imageCursor = MyApplication.instance.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 //    ContentDataLoadTask.IMAGE_COLUMN, null, null, sortBy)
             } else {
                 val uri: Uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
@@ -269,7 +263,7 @@ class LoadMediaViewModel : ViewModel() {
                 // 倒序+分页
                 val sortOrder =
                     MediaStore.Images.Media.DATE_ADDED + " DESC limit " + pageSize + " offset " + page * pageSize
-                imageCursor = MyApplication.app.getContentResolver().query(uri, IMAGE_COLUMN, selection, selectionArgs, sortOrder)
+                imageCursor = MyApplication.instance.getContentResolver().query(uri, IMAGE_COLUMN, selection, selectionArgs, sortOrder)
             }
             count = imageCursor?.count ?: 0;
             imageCursor?.moveToFirst() // 从头开始，防止扫描不出数据
@@ -277,7 +271,6 @@ class LoadMediaViewModel : ViewModel() {
                 createImageMediaItem(imageCursor, false, false)
             } while (imageCursor!!.moveToNext())
         } catch (e: Exception) {
-            Dlog.e(this, "error ---eror")
             e.printStackTrace()
         } finally {
             imageCursor?.close()
@@ -304,7 +297,7 @@ class LoadMediaViewModel : ViewModel() {
                 queryArgs.putInt(ContentResolver.QUERY_ARG_OFFSET, page * pageSize)
                 queryArgs.putInt(ContentResolver.QUERY_ARG_LIMIT, pageSize)
                 //queryArgs.putString(ContentResolver.QUERY_ARG_SQL_LIMIT, "$pageSize offset ${page * pageSize}")
-                videoCursor = MyApplication.app.getContentResolver().query(uri, VIDEO_COLUMN, queryArgs, null)
+                videoCursor = MyApplication.instance.getContentResolver().query(uri, VIDEO_COLUMN, queryArgs, null)
             } else {
                 val uri: Uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
                 var selection: String? = null
@@ -312,7 +305,7 @@ class LoadMediaViewModel : ViewModel() {
                 // 倒序+分页
                 val sortOrder =
                     MediaStore.Video.Media.DATE_ADDED + " DESC limit " + pageSize + " offset " + page * pageSize
-                videoCursor = MyApplication.app.getContentResolver().query(uri, VIDEO_COLUMN, selection, selectionArgs, sortOrder)
+                videoCursor = MyApplication.instance.getContentResolver().query(uri, VIDEO_COLUMN, selection, selectionArgs, sortOrder)
             }
             count = videoCursor?.count ?: 0;
             videoCursor?.moveToFirst() // 从头开始，防止扫描不出数据
@@ -320,7 +313,6 @@ class LoadMediaViewModel : ViewModel() {
                 createVideoMediaItem(videoCursor, false, false)
             } while (videoCursor!!.moveToNext())
         } catch (e: Exception) {
-            Dlog.e(this, "error ---eror")
             e.printStackTrace()
         } finally {
             videoCursor?.close()
@@ -335,8 +327,8 @@ class LoadMediaViewModel : ViewModel() {
         val sortBy = MediaStore.Images.Media.DATE_ADDED + " desc "
         var imageCursor: Cursor? = null
         try {
-            imageCursor = MyApplication.app.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                ContentDataLoadTask.IMAGE_COLUMN, null, null, sortBy)
+            imageCursor = MyApplication.instance.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                IMAGE_COLUMN, null, null, sortBy)
             var num = 0
             while (imageCursor!!.moveToNext() && num < 5) {
                 createImageMediaItem(imageCursor, true, false)
@@ -356,7 +348,7 @@ class LoadMediaViewModel : ViewModel() {
      */
     fun queryLatestVideoMedia() {
         val sortBy = MediaStore.Video.Media.DATE_ADDED + " desc"
-        val videoCursor: Cursor? = MyApplication.app.getContentResolver().query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, ContentDataLoadTask.VIDEO_COLUMN,
+        val videoCursor: Cursor? = MyApplication.instance.getContentResolver().query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, VIDEO_COLUMN,
             null, null, sortBy)
         try {
             var num = 0
@@ -475,7 +467,7 @@ class LoadMediaViewModel : ViewModel() {
         val videoMap: MutableMap<String, MutableList<MediaEntity>> = HashMap()
         var cursor: Cursor? = null
         try {
-            cursor = MyApplication.app.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            cursor = MyApplication.instance.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 IMAGE_COLUMN, selectBucket, null, sortBy)
             while (cursor!!.moveToNext()) {
                 val mediaEntity = createImageMediaItem(cursor, false, true)
@@ -486,7 +478,7 @@ class LoadMediaViewModel : ViewModel() {
             }
             sortBy = MediaStore.Video.Media.DATE_ADDED + " desc "
             selectBucket = MediaStore.Video.Media.BUCKET_ID + "=" + bucketId
-            cursor = MyApplication.app.getContentResolver().query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, VIDEO_COLUMN,
+            cursor = MyApplication.instance.getContentResolver().query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, VIDEO_COLUMN,
                 selectBucket, null, sortBy)
             while (cursor!!.moveToNext()) {
                 val mediaEntity: MediaEntity? = createVideoMediaItem(cursor, false, true)

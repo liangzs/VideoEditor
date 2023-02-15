@@ -24,9 +24,10 @@ import android.opengl.EGLDisplay;
 import android.opengl.EGLExt;
 import android.opengl.EGLSurface;
 import android.os.Build;
-import androidx.annotation.RequiresApi;
 import android.util.Log;
 import android.view.Surface;
+
+import androidx.annotation.RequiresApi;
 
 import com.ijoysoft.mediasdk.module.opengl.gpufilter.utils.OpenGlUtils;
 

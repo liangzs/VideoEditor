@@ -412,29 +412,29 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
     /**
      * 选中文件夹
      */
-    @Subscribe
-    fun selectMediaSetEvent(selectMediaSetEvent: SelectMediaSetEvent) {
-        if (selectMediaSetEvent.name == null) {
-            selectMediaSetEvent.name = getString(R.string.all)
-        }
-        bucketId = selectMediaSetEvent.bucketId
-        breakAndSetTextWithTextView(binding.llFolder.tvTitle, selectMediaSetEvent.name, 0, binding.llFolder.root.width - visibleModeWidth.toInt())
-        lifecycleScope.launch {
-            mediaFolderSelectPopup?.dismiss()
-            delay(100)
-            showLoading("")
-            withContext(Dispatchers.IO) {
-                if (bucketId == -1) {
-                    viewModel.folderType = LoadMediaViewModel.ALL
-                } else {
-                    viewModel.folderType = LoadMediaViewModel.FOLDER
-                }
-                viewModel.queryMediaSetBybucket(bucketId);
-            }
-            fragment!!.updateData()
-            endLoading()
-        }
-    }
+    //@Subscribe
+    //fun selectMediaSetEvent(selectMediaSetEvent: SelectMediaSetEvent) {
+    //    if (selectMediaSetEvent.name == null) {
+    //        selectMediaSetEvent.name = getString(R.string.all)
+    //    }
+    //    bucketId = selectMediaSetEvent.bucketId
+    //    breakAndSetTextWithTextView(binding.llFolder.tvTitle, selectMediaSetEvent.name, 0, binding.llFolder.root.width - visibleModeWidth.toInt())
+    //    lifecycleScope.launch {
+    //        mediaFolderSelectPopup?.dismiss()
+    //        delay(100)
+    //        showLoading("")
+    //        withContext(Dispatchers.IO) {
+    //            if (bucketId == -1) {
+    //                viewModel.folderType = LoadMediaViewModel.ALL
+    //            } else {
+    //                viewModel.folderType = LoadMediaViewModel.FOLDER
+    //            }
+    //            viewModel.queryMediaSetBybucket(bucketId);
+    //        }
+    //        fragment!!.updateData()
+    //        endLoading()
+    //    }
+    //}
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
@@ -672,59 +672,59 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
      *
      * @param previewImg
      */
-    @Subscribe
-    fun setPreviewImg(previewImg: PreviewEvent) {
-        if (lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
-            mPreviewItem = previewImg.mediaItem
-            if (mPreviewItem == null) {
-                return
-            }
-            if (mPreviewItem.type == MediaEntity.TYPE_VIDEO) {
-                mPreviewItem = MediaDataRepository.getInstance().tempMediaEntity
-            }
-            //已选中则不需要添加动画坐标，用来标记原来的状态
-            if (getMediaItemSelectedIndex(mPreviewItem) == null) {
-                previewClickCoordinate = previewImg.previewClickCoordinate
-            } else {
-                previewClickCoordinate = null
-            }
-            var sourceIndex = if (previewImg.isBottom) {
-                previewImg.sourceIndex
-            } else {
-                viewModel.getCurrentGridList(viewModel.mediaMode).indexOf(previewImg.mediaItem)
-            }
-            if (previewImg.isBottom) {
-                PreviewPhotoActivity.start(this, originSize, sourceIndex, ContactUtils.MODE_MAKE, true)
-            } else {
-                PreviewPhotoActivity.start(this, originSize, sourceIndex, ContactUtils.MODE_MAKE)
-            }
-        }
-    }
-
-    @Subscribe
-    fun SelectFragmentEvent(selectFragmentEvent: SelectFragmentEvent) {
-        selectFragmtnType = selectFragmentEvent.type
-        when (selectFragmtnType) {
-            SelectFragmentEvent.SELECT_ALL -> {
-                moreItem!!.isVisible = true
-                viewModel.mediaMode = LoadMediaViewModel.MIX
-                //MediaManager.getInstance().mediaMode = MIX;
-            }
-            SelectFragmentEvent.SELECT_PHOTO -> {
-                moreItem!!.isVisible = true
-                viewModel.mediaMode = LoadMediaViewModel.PHOTO
-                //MediaManager.getInstance().mediaMode = PHOTO;
-            }
-            SelectFragmentEvent.SELECT_VIDEO -> {
-                moreItem!!.isVisible = true
-                viewModel.mediaMode = LoadMediaViewModel.VIDEO
-                //MediaManager.getInstance().mediaMode = VIDEO;
-            }
-            SelectFragmentEvent.SELECT_MATERIAL -> {
-                moreItem!!.isVisible = false
-            }
-        }
-    }
+    //@Subscribe
+    //fun setPreviewImg(previewImg: PreviewEvent) {
+    //    if (lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+    //        mPreviewItem = previewImg.mediaItem
+    //        if (mPreviewItem == null) {
+    //            return
+    //        }
+    //        if (mPreviewItem.type == MediaEntity.TYPE_VIDEO) {
+    //            mPreviewItem = MediaDataRepository.getInstance().tempMediaEntity
+    //        }
+    //        //已选中则不需要添加动画坐标，用来标记原来的状态
+    //        if (getMediaItemSelectedIndex(mPreviewItem) == null) {
+    //            previewClickCoordinate = previewImg.previewClickCoordinate
+    //        } else {
+    //            previewClickCoordinate = null
+    //        }
+    //        var sourceIndex = if (previewImg.isBottom) {
+    //            previewImg.sourceIndex
+    //        } else {
+    //            viewModel.getCurrentGridList(viewModel.mediaMode).indexOf(previewImg.mediaItem)
+    //        }
+    //        if (previewImg.isBottom) {
+    //            PreviewPhotoActivity.start(this, originSize, sourceIndex, ContactUtils.MODE_MAKE, true)
+    //        } else {
+    //            PreviewPhotoActivity.start(this, originSize, sourceIndex, ContactUtils.MODE_MAKE)
+    //        }
+    //    }
+    //}
+    //
+    //@Subscribe
+    //fun SelectFragmentEvent(selectFragmentEvent: SelectFragmentEvent) {
+    //    selectFragmtnType = selectFragmentEvent.type
+    //    when (selectFragmtnType) {
+    //        SelectFragmentEvent.SELECT_ALL -> {
+    //            moreItem!!.isVisible = true
+    //            viewModel.mediaMode = LoadMediaViewModel.MIX
+    //            //MediaManager.getInstance().mediaMode = MIX;
+    //        }
+    //        SelectFragmentEvent.SELECT_PHOTO -> {
+    //            moreItem!!.isVisible = true
+    //            viewModel.mediaMode = LoadMediaViewModel.PHOTO
+    //            //MediaManager.getInstance().mediaMode = PHOTO;
+    //        }
+    //        SelectFragmentEvent.SELECT_VIDEO -> {
+    //            moreItem!!.isVisible = true
+    //            viewModel.mediaMode = LoadMediaViewModel.VIDEO
+    //            //MediaManager.getInstance().mediaMode = VIDEO;
+    //        }
+    //        SelectFragmentEvent.SELECT_MATERIAL -> {
+    //            moreItem!!.isVisible = false
+    //        }
+    //    }
+    //}
 
     override fun onClick(view: View) {
         when (view.id) {

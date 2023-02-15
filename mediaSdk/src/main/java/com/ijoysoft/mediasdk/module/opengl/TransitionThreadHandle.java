@@ -5,9 +5,9 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 
+import com.ijoysoft.mediasdk.common.global.ConstantMediaSize;
 import com.ijoysoft.mediasdk.common.utils.LogUtils;
 
-import static com.ijoysoft.mediasdk.common.global.ConstantMediaSize.TIME_DURATION;
 
 
 /**
@@ -74,14 +74,14 @@ public class TransitionThreadHandle {
         if (!isPlaying) {
             return;
         }
-        currentDuration += 40;
-        if (currentDuration > TIME_DURATION) {
+        currentDuration += ConstantMediaSize.PHTOTO_FPS_TIME;
+        if (currentDuration > ConstantMediaSize.IMAGE_DURATION) {
             playComplete();
             return;
         }
         LogUtils.i(TAG, "duration---->" + currentDuration);
         transitionThreadCallBack.render();
-        handler.sendEmptyMessageDelayed(RENDER_CODE, 40);
+        handler.sendEmptyMessageDelayed(RENDER_CODE, ConstantMediaSize.PHTOTO_FPS_TIME);
     }
 
 

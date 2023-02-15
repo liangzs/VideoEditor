@@ -15,7 +15,7 @@ public class ThreadPoolManager {
                 if (mThreadPool == null) {
                     int cpuCount = Runtime.getRuntime().availableProcessors();
                     int threadCount = cpuCount + 1;
-                    mThreadPool = new ThreadPool(threadCount, N * 2, 1L);
+                    mThreadPool = new ThreadPool((int) (N), threadCount * 3, 1L);
                 }
             }
         }
@@ -42,8 +42,11 @@ public class ThreadPoolManager {
                         new LinkedBlockingQueue<Runnable>(), Executors.defaultThreadFactory(),
                         new ThreadPoolExecutor.AbortPolicy());
             }
-            executor.execute(r);
+            if (!executor.isShutdown()) {
+                executor.execute(r);
+            }
         }
+
 
         public boolean isExecute() {
             return executor == null ? true : false;
@@ -88,14 +91,17 @@ public class ThreadPoolManager {
          * 立马清理线程池，针对快速选中很多视频文件，然后回到主页，选择照片
          */
         public void shutDownNow() {
+            if (executor == null) {
+                return;
+            }
             try {
                 executor.shutdownNow(); // Disable new tasks from being submitted
                 // 等待 60 s
-                if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
+                if (!executor.awaitTermination(14, TimeUnit.SECONDS)) {
                     // 调用 shutdownNow 取消正在执行的任务
                     executor.shutdownNow();
                     // 再次等待 60 s，如果还未结束，可以再次尝试，或则直接放弃
-                    if (!executor.awaitTermination(60, TimeUnit.SECONDS))
+                    if (!executor.awaitTermination(14, TimeUnit.SECONDS))
                         System.err.println("线程池任务未正常执行结束");
                 }
             } catch (Exception ie) {
@@ -104,6 +110,5 @@ public class ThreadPoolManager {
             }
             release();
         }
-
     }
 }

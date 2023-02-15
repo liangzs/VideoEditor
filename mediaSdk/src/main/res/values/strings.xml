@@ -1,3 +1,398 @@
-<resources>
-    <string name="app_name">MediaSdk</string>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!--theme-type-->
+    <string name="hot" tools:ignore="MissingTranslation">Hot</string>
+    <string name="birthday" tools:ignore="MissingTranslation">Birthday</string>
+    <string name="holi" tools:ignore="MissingTranslation">Holi</string>
+    <string name="valentine" tools:ignore="MissingTranslation">Valentine</string>
+    <string name="wedding" tools:ignore="MissingTranslation">Wedding</string>
+    <string name="baby" tools:ignore="MissingTranslation">Baby</string>
+    <string name="greeting" tools:ignore="MissingTranslation">Greeting</string>
+    <string name="holiday" tools:ignore="MissingTranslation">Holiday</string>
+    <string name="celebration" tools:ignore="MissingTranslation">Celebration</string>
+    <string name="love" tools:ignore="MissingTranslation">Love</string>
+    <string name="traveling" tools:ignore="MissingTranslation">Travel</string>
+    <string name="independence" translatable="false">Independence</string>
+    <string name="shivratri" translatable="false">Maha Shivratri</string>
+    <string name="rakshabandhan" translatable="false">Raksha BandHan</string>
+    <string name="onam" translatable="false">Onam</string>
+    <string name="divali" translatable="false">Divali</string>
+    <string name="attitude" translatable="false">Attitude</string>
+    <string name="beat" translatable="false">Beat</string>
+    <string name="friend" translatable="false">Friend</string>
+    <string name="common" translatable="false">Common</string>
+    <string name="christmas" translatable="false">Christmas</string>
+    <string name="new_year" translatable="false">New Year</string>
+    <string name="food" translatable="false">Food</string>
+    <string name="daily" translatable="false">Daily</string>
+    <string name="sport" translatable="false">Sport</string>
+    <string name="my" translatable="false">My</string>
+
+
+    <string name="filter_set_download" tools:ignore="MissingTranslation">Download</string>
+    <string name="filter_set_bw" tools:ignore="MissingTranslation">BW</string>
+    <string name="filter_set_sky" tools:ignore="MissingTranslation">Sky</string>
+    <string name="filter_set_daily" tools:ignore="MissingTranslation">Daily</string>
+    <string name="filter_set_art" tools:ignore="MissingTranslation">Art</string>
+    <string name="filter_set_natural" tools:ignore="MissingTranslation">Natural</string>
+    <string name="filter_set_food" tools:ignore="MissingTranslation">Food</string>
+    <string name="filter_set_movie" tools:ignore="MissingTranslation">Movie</string>
+    <string name="filter_set_colorful" tools:ignore="MissingTranslation">Colorful</string>
+    <string name="filter_set_people" tools:ignore="MissingTranslation">People</string>
+    <string name="filter_set_popular" tools:ignore="MissingTranslation">popular</string>
+    <string name="filter_beauty" tools:ignore="MissingTranslation">Beauty</string>
+    <string name="filter_none" tools:ignore="MissingTranslation">None</string>
+    <string name="filter_glow" tools:ignore="MissingTranslation">Glow</string>
+
+    <!--Filter-->
+    <string name="slideshow_filter_none" tools:ignore="MissingTranslation">none</string>
+    <string name="slideshow_filter_warm" tools:ignore="MissingTranslation">warm</string>
+    <string name="slideshow_filter_cold" tools:ignore="MissingTranslation">cold</string>
+    <string name="slideshow_filter_hudson" tools:ignore="MissingTranslation">hudson</string>
+    <string name="slideshow_filter_sketch" tools:ignore="MissingTranslation">sketch</string>
+    <string name="slideshow_filter_portrait" tools:ignore="MissingTranslation">portrait</string>
+    <string name="slideshow_filter_retro" tools:ignore="MissingTranslation">retro</string>
+    <string name="slideshow_filter_antique" tools:ignore="MissingTranslation">antique</string>
+    <string name="slideshow_filter_brannan" tools:ignore="MissingTranslation">brannan</string>
+    <string name="slideshow_filter_hefe" tools:ignore="MissingTranslation">hefe</string>
+    <string name="slideshow_filter_inkwell" tools:ignore="MissingTranslation">inkwell</string>
+    <string name="slideshow_filter_n1977" tools:ignore="MissingTranslation">N1977</string>
+    <string name="slideshow_filter_nashville" tools:ignore="MissingTranslation">nashville</string>
+    <string name="slideshow_filter_beauty" tools:ignore="MissingTranslation">beauty</string>
+    <string name="slideshow_filter_sweety" tools:ignore="MissingTranslation">sweety</string>
+    <string name="slideshow_filter_rosy" tools:ignore="MissingTranslation">rosy</string>
+    <string name="slideshow_filter_lolita" tools:ignore="MissingTranslation">lolita</string>
+    <string name="slideshow_filter_pink" tools:ignore="MissingTranslation">pink</string>
+    <string name="slideshow_filter_rise" tools:ignore="MissingTranslation">rise</string>
+    <string name="slideshow_filter_sunset" tools:ignore="MissingTranslation">sunset</string>
+    <string name="slideshow_filter_vintage" tools:ignore="MissingTranslation">vintage</string>
+    <string name="slideshow_filter_rococo" tools:ignore="MissingTranslation">rococo</string>
+    <string name="slideshow_filter_romance" tools:ignore="MissingTranslation">romance</string>
+    <string name="slideshow_filter_lomo" tools:ignore="MissingTranslation">lomo</string>
+    <string name="slideshow_filter_latte" tools:ignore="MissingTranslation">latte</string>
+    <string name="slideshow_filter_calm" tools:ignore="MissingTranslation">calm</string>
+    <string name="slideshow_filter_invertColor" tools:ignore="MissingTranslation">invertColor</string>
+    <string name="slideshow_filter_pixelize" tools:ignore="MissingTranslation">pixelize</string>
+    <string name="slideshow_filter_cracked" tools:ignore="MissingTranslation">cracked</string>
+
+
+    <string name="filter_name_none" tools:ignore="MissingTranslation">Original</string>
+    <string name="filter_name_fairytale" tools:ignore="MissingTranslation">Fairy</string>
+    <string name="filter_name_bleach" tools:ignore="MissingTranslation">Bleach</string>
+    <string name="filter_name_blue" tools:ignore="MissingTranslation">Blue</string>
+    <string name="filter_name_instant" tools:ignore="MissingTranslation">Instant</string>
+    <string name="filter_name_process" tools:ignore="MissingTranslation">Process</string>
+    <string name="filter_name_punch" tools:ignore="MissingTranslation">Punch</string>
+    <string name="filter_name_vintage" tools:ignore="MissingTranslation">Vintage</string>
+    <string name="filter_name_latte" tools:ignore="MissingTranslation">Latte</string>
+    <string name="filter_name_litho" tools:ignore="MissingTranslation">Litho</string>
+    <string name="filter_name_contract" tools:ignore="MissingTranslation">Contract</string>
+    <string name="filter_name_legofied" tools:ignore="MissingTranslation">Legofied</string>
+    <string name="filter_name_pixelize" tools:ignore="MissingTranslation">Pixelize</string>
+    <string name="filter_name_tile_mosaic" tools:ignore="MissingTranslation">Tile Mosaic</string>
+    <string name="filter_name_blue_orange" tools:ignore="MissingTranslation">Negative Film</string>
+    <string name="filter_name_triangles_mosaic" tools:ignore="MissingTranslation">Tri Mosaic</string>
+    <string name="filter_name_height_light" tools:ignore="MissingTranslation">Height Light</string>
+    <string name="filter_name_adore" tools:ignore="MissingTranslation">Adore</string>
+    <string name="filter_name_wave" tools:ignore="MissingTranslation">Wave</string>
+    <string name="filter_name_wrap" tools:ignore="MissingTranslation">Warp</string>
+    <string name="filter_name_edge_detection" tools:ignore="MissingTranslation">Edge Detection</string>
+    <string name="filter_name_ink" tools:ignore="MissingTranslation">Ink</string>
+    <string name="filter_name_invert" tools:ignore="MissingTranslation">Invert</string>
+    <string name="filter_name_relief" tools:ignore="MissingTranslation">Relief</string>
+    <string name="filter_name_sunrise" tools:ignore="MissingTranslation">Sunrise</string>
+    <string name="filter_name_sunset" tools:ignore="MissingTranslation">Sunset</string>
+    <string name="filter_name_whitecat" tools:ignore="MissingTranslation">Bright</string>
+    <string name="filter_name_blackcat" tools:ignore="MissingTranslation">Dusk</string>
+    <string name="filter_name_skinwhiten" tools:ignore="MissingTranslation">Skin whiten</string>
+    <string name="filter_name_healthy" tools:ignore="MissingTranslation">Healthy</string>
+    <string name="filter_name_sweets" tools:ignore="MissingTranslation">Dark</string>
+    <string name="filter_name_romance" tools:ignore="MissingTranslation">Romance</string>
+    <string name="filter_name_sakura" tools:ignore="MissingTranslation">Bright white</string>
+    <string name="filter_name_daylight" tools:ignore="MissingTranslation">Daylight</string>
+    <string name="filter_name_warm" tools:ignore="MissingTranslation">Warm</string>
+    <string name="filter_name_antique" tools:ignore="MissingTranslation">Antique</string>
+    <string name="filter_name_nostalgia" tools:ignore="MissingTranslation">Nostalgia</string>
+    <string name="filter_name_calm" tools:ignore="MissingTranslation">Calm</string>
+    <string name="filter_name_tender" tools:ignore="MissingTranslation">Tender</string>
+    <string name="filter_name_cool" tools:ignore="MissingTranslation">Cool</string>
+    <string name="filter_name_emerald" tools:ignore="MissingTranslation">Emerald</string>
+    <string name="filter_name_evergreen" tools:ignore="MissingTranslation">Evergreen</string>
+    <string name="filter_name_crayon" tools:ignore="MissingTranslation">Crayon</string>
+    <string name="filter_name_sketch" tools:ignore="MissingTranslation">Sketch</string>
+    <string name="filter_name_amaro" tools:ignore="MissingTranslation">Summer</string>
+    <string name="filter_name_brannan" tools:ignore="MissingTranslation">Soft-light</string>
+    <string name="filter_name_brooklyn" tools:ignore="MissingTranslation">Dark corner</string>
+    <string name="filter_name_earlybird" tools:ignore="MissingTranslation">Warming</string>
+    <string name="filter_name_freud" tools:ignore="MissingTranslation">Overcast</string>
+    <string name="filter_name_hefe" tools:ignore="MissingTranslation">Hefeweizen</string>
+    <string name="filter_name_hudson" tools:ignore="MissingTranslation">Marble</string>
+    <string name="filter_name_inkwell" tools:ignore="MissingTranslation">BW</string>
+    <string name="filter_name_kevin" tools:ignore="MissingTranslation">Warm yellow</string>
+    <string name="filter_name_lomo" tools:ignore="MissingTranslation">LOMO</string>
+    <string name="filter_name_n1997" tools:ignore="MissingTranslation">Pink</string>
+    <string name="filter_name_nashville" tools:ignore="MissingTranslation">Ocean</string>
+    <string name="filter_name_pixar" tools:ignore="MissingTranslation">Nature</string>
+    <string name="filter_name_rise" tools:ignore="MissingTranslation">Lotus</string>
+    <string name="filter_name_sutro" tools:ignore="MissingTranslation">Haze</string>
+    <string name="filter_name_toaster2" tools:ignore="MissingTranslation">Fire</string>
+    <string name="filter_name_valencia" tools:ignore="MissingTranslation">Interference</string>
+    <string name="filter_name_walden" tools:ignore="MissingTranslation">Elegant</string>
+    <string name="filter_name_distance" tools:ignore="MissingTranslation">Distance</string>
+    <string name="filter_name_frosted" tools:ignore="MissingTranslation">Glass</string>
+    <string name="filter_name_yellow" tools:ignore="MissingTranslation">Yellow</string>
+    <string name="filter_name_yellowing" tools:ignore="MissingTranslation">Yellowing</string>
+    <string name="filter_name_glow" tools:ignore="MissingTranslation">Glow</string>
+    <string name="filter_name_fog" tools:ignore="MissingTranslation">Fog</string>
+    <string name="filter_name_thermal" tools:ignore="MissingTranslation">Thermal</string>
+    <string name="filter_name_story" tools:ignore="MissingTranslation">Story</string>
+    <string name="filter_name_spring" tools:ignore="MissingTranslation">Spring</string>
+    <string name="filter_name_depth" tools:ignore="MissingTranslation">Depth</string>
+    <string name="filter_name_pure" tools:ignore="MissingTranslation">Pure</string>
+    <string name="filter_name_whiten" tools:ignore="MissingTranslation">Whiten</string>
+    <string name="filter_name_pink" tools:ignore="MissingTranslation">Pink</string>
+    <string name="filter_name_cherry" tools:ignore="MissingTranslation">Cherry</string>
+    <string name="filter_name_sugar" tools:ignore="MissingTranslation">Sugar</string>
+    <string name="filter_name_refreshing" tools:ignore="MissingTranslation">Refreshing</string>
+    <string name="filter_name_rosy" tools:ignore="MissingTranslation">Rosy</string>
+    <string name="filter_name_gleam" tools:ignore="MissingTranslation">Gleam</string>
+    <string name="filter_name_clean" tools:ignore="MissingTranslation">Clean</string>
+    <string name="filter_name_ruddy" tools:ignore="MissingTranslation">Ruddy</string>
+    <string name="filter_name_delicious" tools:ignore="MissingTranslation">Delicious</string>
+    <string name="filter_name_peach" tools:ignore="MissingTranslation">Peach</string>
+    <string name="filter_name_honey" tools:ignore="MissingTranslation">Honey</string>
+    <string name="filter_name_lemon" tools:ignore="MissingTranslation">Lemon</string>
+    <string name="filter_name_sweet" tools:ignore="MissingTranslation">Sweet</string>
+    <string name="filter_name_fresh" tools:ignore="MissingTranslation">Fresh</string>
+    <string name="filter_name_mint" tools:ignore="MissingTranslation">Mint</string>
+    <string name="filter_name_rum" tools:ignore="MissingTranslation">Rum</string>
+    <string name="filter_name_lime" tools:ignore="MissingTranslation">Lime</string>
+    <string name="filter_name_milk" tools:ignore="MissingTranslation">Milk</string>
+    <string name="filter_name_cream" tools:ignore="MissingTranslation">Cream</string>
+    <string name="filter_name_light" tools:ignore="MissingTranslation">Light</string>
+    <string name="filter_name_coffee" tools:ignore="MissingTranslation">Coffee</string>
+    <string name="filter_name_blueberry" tools:ignore="MissingTranslation">Blueberry</string>
+    <string name="filter_name_whisky" tools:ignore="MissingTranslation">Whisky</string>
+    <string name="filter_name_caramel" tools:ignore="MissingTranslation">Caramel</string>
+
+    <string name="filter_name_violet" tools:ignore="MissingTranslation">Violet</string>
+    <string name="filter_name_orange" tools:ignore="MissingTranslation">Orange</string>
+    <string name="filter_name_light_brown" tools:ignore="MissingTranslation">Light brown</string>
+    <string name="filter_name_light_wood" tools:ignore="MissingTranslation">Light wood</string>
+    <string name="filter_name_light_red" tools:ignore="MissingTranslation">Light red</string>
+    <string name="filter_name_lime1" tools:ignore="MissingTranslation">Lime</string>
+    <string name="filter_name_cranberry" tools:ignore="MissingTranslation">Cranberry</string>
+    <string name="filter_name_gold_orange" tools:ignore="MissingTranslation">Gold</string>
+    <string name="filter_name_wood_color" tools:ignore="MissingTranslation">Wood color</string>
+    <string name="filter_name_fire_brick" tools:ignore="MissingTranslation">Fire brick</string>
+    <string name="filter_name_trendy_pink" tools:ignore="MissingTranslation">Trendy pink</string>
+    <string name="filter_name_olive_drab" tools:ignore="MissingTranslation">Olive drab</string>
+    <string name="filter_name_light_sea" tools:ignore="MissingTranslation">Light sea</string>
+    <string name="filter_name_teal" tools:ignore="MissingTranslation">Teal</string>
+    <string name="filter_name_sea_green" tools:ignore="MissingTranslation">Sea green</string>
+    <string name="filter_name_sea_salt" tools:ignore="MissingTranslation">Sea salt</string>
+    <string name="filter_name_dark_cyan" tools:ignore="MissingTranslation">Dark cyan</string>
+    <string name="filter_name_steel_blue" tools:ignore="MissingTranslation">Steel blue</string>
+    <string name="filter_name_dawn" tools:ignore="MissingTranslation">Dawn</string>
+    <string name="filter_name_old" tools:ignore="MissingTranslation">Old</string>
+    <string name="filter_name_midnight" tools:ignore="MissingTranslation">Midnight</string>
+    <string name="filter_name_retro" tools:ignore="MissingTranslation">Retro</string>
+    <string name="filter_name_biography" tools:ignore="MissingTranslation">Biography</string>
+    <string name="filter_name_gloomy" tools:ignore="MissingTranslation">Gloomy</string>
+    <string name="filter_name_lyrical" tools:ignore="MissingTranslation">Lyrical</string>
+    <string name="filter_name_dramatic" tools:ignore="MissingTranslation">Dramatic</string>
+    <string name="filter_name_journey" tools:ignore="MissingTranslation">Journey</string>
+    <string name="filter_name_spotlight" tools:ignore="MissingTranslation">Spotlight</string>
+    <string name="filter_name_scenes" tools:ignore="MissingTranslation">Scenes</string>
+    <string name="filter_name_mood" tools:ignore="MissingTranslation">Mood</string>
+    <string name="filter_name_from" tools:ignore="MissingTranslation">Form</string>
+    <string name="filter_name_plot" tools:ignore="MissingTranslation">Plot</string>
+    <string name="filter_name_comic" tools:ignore="MissingTranslation">Comic</string>
+    <string name="filter_name_ice" tools:ignore="MissingTranslation">Ice</string>
+    <string name="filter_name_cozy" tools:ignore="MissingTranslation">Cozy</string>
+    <string name="filter_name_tropic" tools:ignore="MissingTranslation">Tropic</string>
+    <string name="filter_name_rain" tools:ignore="MissingTranslation">Rain</string>
+    <string name="filter_name_dry" tools:ignore="MissingTranslation">Dry</string>
+    <string name="filter_name_classical" tools:ignore="MissingTranslation">Classical</string>
+    <string name="filter_name_vast" tools:ignore="MissingTranslation">Vast</string>
+    <string name="filter_name_gray" tools:ignore="MissingTranslation">Gray</string>
+    <string name="filter_name_decade" tools:ignore="MissingTranslation">Decade</string>
+    <string name="filter_name_black" tools:ignore="MissingTranslation">Black</string>
+    <string name="filter_name_pale" tools:ignore="MissingTranslation">Pale</string>
+    <string name="filter_name_silence" tools:ignore="MissingTranslation">Silence</string>
+    <string name="filter_name_coral" tools:ignore="MissingTranslation">Coral</string>
+    <string name="filter_name_grass" tools:ignore="MissingTranslation">Grass</string>
+    <string name="filter_name_soft" tools:ignore="MissingTranslation">Soft</string>
+
+
+    <string  translatable="false" name="array_group_1">group 1</string>
+    <string  translatable="false" name="array_group_2">group 2</string>
+    <string  translatable="false" name="array_group_3">group 3</string>
+    <string  translatable="false" name="array_group_4">group 4</string>
+    <string  translatable="false" name="array_group_5">group 5</string>
+    <string  translatable="false" name="array_group_6">group 6</string>
+    <string  translatable="false" name="array_group_7">group 7</string>
+    <string  translatable="false" name="array_group_8">group 8</string>
+    <string  translatable="false" name="array_group_9">group 9</string>
+    <string  translatable="false" name="array_group_10">group 10</string>
+    <string  translatable="false" name="array_group_11">group 11</string>
+    <string  translatable="false" name="array_group_12">group 12</string>
+    <string  translatable="false" name="array_group_13">group 13</string>
+    <string  translatable="false" name="array_group_14">group 14</string>
+    <string  translatable="false" name="array_group_15">group 15</string>
+
+
+    <string  translatable="false" name="array_none">none</string>
+    <string  translatable="false" name="array_fade">fade</string>
+    <string  translatable="false" name="array_move_left">moveL</string>
+    <string  translatable="false" name="array_move_right">moveR</string>
+    <string  translatable="false" name="array_move_top">moveT</string>
+    <string  translatable="false" name="array_move_bottom">moveB</string>
+    <string  translatable="false" name="array_shutterh">shutterH</string>
+    <string  translatable="false" name="array_shutterv">shutterV</string>
+    <string  translatable="false" name="array_square_twinkle">twinkle</string>
+    <string  translatable="false" name="array_hahamirror">magicMirr</string>
+    <string  translatable="false" name="array_circlerotate">circleRo</string>
+    <string  translatable="false" name="array_circlerzoom">circleZoom</string>
+    <string  translatable="false" name="array_ovalzoom">ovalZoom</string>
+    <string  translatable="false" name="array_wholezoom">wholeZoom</string>
+    <string  translatable="false" name="array_wipe">wipe</string>
+    <string  translatable="false" name="array_blur">blur</string>
+    <string  translatable="false" name="array_readbook">readBook</string>
+    <string  translatable="false" name="array_flashwhite">flashWhite</string>
+    <string  translatable="false" name="array_flashblack">flashBlack</string>
+    <string  translatable="false" name="array_shake">shake</string>
+    <string  translatable="false" name="array_gridshop">gridShop</string>
+    <string  translatable="false" name="array_heart">heart</string>
+    <string  translatable="false" name="array_3D">square3D</string>
+    <string  translatable="false" name="array_wave">wave</string>
+    <string  translatable="false" name="array_triangle">triangle</string>
+    <string  translatable="false" name="array_thumb_move">thumbMove</string>
+
+    <string  translatable="false" name="array_shade_plus">plus</string>
+    <string  translatable="false" name="array_shade_plus_re">plusRe</string>
+    <string  translatable="false" name="array_shade_diamond">diamond</string>
+    <string  translatable="false" name="array_shade_diamond_re">diamondRe</string>
+    <string  translatable="false" name="array_shade_square">square</string>
+    <string  translatable="false" name="array_shade_square_re">squareRe</string>
+    <string  translatable="false" name="array_push">push</string>
+    <string  translatable="false" name="array_push_l">pushLeft</string>
+    <string  translatable="false" name="array_push_r">pushRight</string>
+    <string  translatable="false" name="array_push_t">pushTop</string>
+    <string  translatable="false" name="array_push_b">pushBottom</string>
+    <string  translatable="false" name="array_split">Split</string>
+    <string  translatable="false" name="array_split_re">splitRe</string>
+    <string  translatable="false" name="array_reveal">reveal</string>
+    <string  translatable="false" name="array_reveal_re">revealRe</string>
+    <string  translatable="false" name="array_randombar">randomBar</string>
+    <string  translatable="false" name="array_axis_y">axisY</string>
+    <string  translatable="false" name="array_axis_y_re">axisYRe</string>
+    <string  translatable="false" name="array_bar_croass">barCross</string>
+    <string  translatable="false" name="array_bar_croass_re">barCrossRe</string>
+    <string  translatable="false" name="array_four_corner">fourCorner</string>
+    <string  translatable="false" name="array_four_corner_re">fourCornerRe</string>
+    <string  translatable="false" name="array_shutter_move">shutterMove</string>
+    <string  translatable="false" name="array_multi_square">mulSquare</string>
+    <string  translatable="false" name="array_multi_square_re">mulSquareRe</string>
+    <string  translatable="false" name="array_shade_dissolve">dissolve</string>
+    <string  translatable="false" name="array_multi_triangle">mulTriangle</string>
+    <string  translatable="false" name="array_multi_diamond">mulDiamond</string>
+    <string  translatable="false" name="array_multi_diamond_re">mulDiamoRe</string>
+    <string  translatable="false" name="array_two_clock">twoClock</string>
+
+    <!--mg系列-->
+    <string  translatable="false" name="array_transition_carton1">carton1</string>
+    <string  translatable="false" name="array_transition_carton2">carton2</string>
+    <string  translatable="false" name="array_transition_carton3">carton3</string>
+    <string  translatable="false" name="array_transition_carton4">carton4</string>
+    <string  translatable="false" name="array_transition_carton5">carton5</string>
+    <string  translatable="false" name="array_transition_carton6">carton6</string>
+    <string  translatable="false" name="array_transition_carton7">carton7</string>
+    <string  translatable="false" name="array_transition_carton8">carton8</string>
+    <string  translatable="false" name="array_transition_carton9">carton9</string>
+    <string  translatable="false" name="array_transition_carton10">carton10</string>
+    <string  translatable="false" name="array_transition_carton11">carton11</string>
+    <!--mg flow-->
+    <string translatable="false" name="array_transition_flow1">flow1</string>
+    <string translatable="false" name="array_transition_flow2">flow2</string>
+    <!--mg flow-->
+    <string translatable="false" name="array_transition_mg1">MG1</string>
+    <string translatable="false" name="array_transition_mg2">MG2</string>
+    <string translatable="false" name="array_transition_mg3">MG3</string>
+    <string translatable="false" name="array_transition_mg4">MG4</string>
+    <string translatable="false" name="array_transition_mg5">MG5</string>
+    <string translatable="false" name="array_transition_mg6">MG6</string>
+    <!--mg graph-->
+    <string  translatable="false" name="array_transition_graph1">graph1</string>
+    <string  translatable="false" name="array_transition_graph2">graph2</string>
+    <string  translatable="false" name="array_transition_graph3">graph3</string>
+    <string  translatable="false" name="array_transition_graph4">graph4</string>
+    <string  translatable="false" name="array_transition_graph5">graph5</string>
+    <!--mg-pen-->
+    <string  translatable="false" name="array_transition_pen1">pen1</string>
+    <string  translatable="false" name="array_transition_pen2">pen2</string>
+    <string  translatable="false" name="array_transition_pen3">pen3</string>
+    <string  translatable="false" name="array_transition_pen4">pen4</string>
+    <string  translatable="false" name="array_transition_pen5">pen5</string>
+    <string  translatable="false" name="array_transition_pen6">pen6</string>
+    <string  translatable="false" name="array_transition_pen7">pen7</string>
+    <string  translatable="false" name="array_transition_pen8">pen8</string>
+
+
+    <!--interest系列-->
+    <string translatable="false"  name="array_pag_camera1">camera1</string>
+    <string translatable="false"  name="array_pag_camera2">camera2</string>
+    <string translatable="false"  name="array_transition_page1">page1</string>
+    <string translatable="false"  name="array_transition_page2">page2</string>
+    <string translatable="false"  name="array_transition_page3">page3</string>
+    <string translatable="false"  name="array_transition_page4">page4</string>
+    <string translatable="false"  name="array_transition_leaf1">leaf1</string>
+    <string translatable="false"  name="array_transition_leaf2">leaf2</string>
+    <string translatable="false"  name="array_transition_leaf3">leaf3</string>
+    <string translatable="false"  name="array_transition_leaf4">leaf4</string>
+    <string translatable="false"  name="array_transition_leaf5">leaf5</string>
+    <string translatable="false"  name="array_transition_face1">face1</string>
+    <string translatable="false"  name="array_transition_glitch1">glitch1</string>
+    <string translatable="false"  name="array_transition_glitch2">glitch2</string>
+    <string translatable="false"  name="array_transition_glitch3">glitch3</string>
+    <string translatable="false"  name="array_transition_glitch4">glitch4</string>
+    <string translatable="false"  name="array_transition_glitch5">glitch5</string>
+    <string translatable="false"  name="array_transition_glitch6">glitch6</string>
+    <string translatable="false"  name="array_transition_glitch7">glitch7</string>
+    <string translatable="false"  name="array_transition_glitch8">glitch8</string>
+
+
+    <!--particle系列-->
+    <string name="array_transition_boom1" translatable="false">boom1</string>
+    <string  translatable="false"  name="array_transition_boom2">boom2</string>
+    <string  translatable="false"  name="array_transition_boom3">boom3</string>
+    <string  translatable="false"  name="array_transition_boom4">boom4</string>
+    <string  translatable="false"  name="array_transition_boom5">boom5</string>
+    <string  translatable="false"  name="array_pag_christmas">christmas</string>
+    <string  translatable="false"  name="array_color_heart">heart</string>
+    <string  translatable="false"  name="array_particle1">particle1</string>
+    <!--particle-halo-->
+    <string  translatable="false" name="array_halo1">halo1</string>
+    <string  translatable="false" name="array_halo2">halo2</string>
+    <string  translatable="false" name="array_halo3">halo3</string>
+    <string  translatable="false" name="array_halo4">halo4</string>
+    <string  translatable="false" name="array_halo5">halo5</string>
+    <string  translatable="false" name="array_halo6">halo6</string>
+    <string  translatable="false" name="array_halo7">halo7</string>
+    <string  translatable="false" name="array_halo8">halo8</string>
+    <string  translatable="false" name="array_halo9">halo9</string>
+
+    <!--transition-array-->
+    <string name="transitions_mix">Mix</string>
+    <string name="transitions_classic">Classic</string>
+    <string name="transitions_slide">Slide</string>
+    <string name="transitions_grid">Grid</string>
+    <string name="transitions_graph">Graph</string>
+    <string name="transitions_rock">Rock</string>
+    <string name="transitions_interest">Interest</string>
+    <string name="transitions_mg">MG</string>
+    <string name="transitions_particle">Particle</string>
+    <string name="transitions_glitch">Glitch</string>
+
+    <string name="clip_lost" tools:ignore="MissingTranslation">The original clip was lost, check your system gallery.</string>
+
 </resources>

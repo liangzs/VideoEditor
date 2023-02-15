@@ -1,7 +1,5 @@
 package com.ijoysoft.mediasdk.module.opengl.filter;
 
-import android.opengl.GLES20;
-
 import com.ijoysoft.mediasdk.module.opengl.gpufilter.utils.OpenGlUtils;
 
 import static android.opengl.GLES20.glUniformMatrix4fv;
@@ -44,8 +42,6 @@ public class NoFilter extends AFilter {
 
     @Override
     public void onSizeChanged(int width, int height) {
-//        GLES20.glViewport(0, 0, width, height);
-
         final float aspectRatio = width > height ?
                 (float) width / (float) height :
                 (float) height / (float) width;

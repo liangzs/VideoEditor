@@ -13,7 +13,6 @@ import com.ijoysoft.mediasdk.module.opengl.gpufilter.utils.OpenGlUtils;
  */
 public class GridShopTransitionFilter extends TransitionFilter {
     private int mPrograssLocation;
-    private float progress;
 
     public GridShopTransitionFilter(TransitionType transitionType) {
         super(transitionType, NO_FILTER_VERTEX_SHADER, OpenGlUtils.readShaderFromRawResource(R.raw.transition_grid_shop));
@@ -31,11 +30,11 @@ public class GridShopTransitionFilter extends TransitionFilter {
     @Override
     protected void onDrawArraysPre() {
         super.onDrawArraysPre();
-        if (progress > 1.0) {
+        if (progress > TRANSITION_PROGRESS) {
             return;
         }
         GLES20.glUniform1f(mPrograssLocation, progress);
-        progress += 0.02;
+        progress += 0.04f;
         LogUtils.i(TAG, "onDrawArraysPre->" + progress);
     }
 

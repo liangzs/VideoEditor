@@ -12,7 +12,6 @@ import com.ijoysoft.mediasdk.module.opengl.gpufilter.utils.OpenGlUtils;
  */
 public class CircleRotateTransitionFilter extends TransitionFilter {
     private int mPrograssLocation;
-    private float progress;
 
     public CircleRotateTransitionFilter(TransitionType transitionType) {
         super(transitionType, NO_FILTER_VERTEX_SHADER, OpenGlUtils.readShaderFromRawResource(R.raw.transition_circle_rotate));
@@ -31,7 +30,7 @@ public class CircleRotateTransitionFilter extends TransitionFilter {
     protected void onDrawArraysPre() {
         super.onDrawArraysPre();
         GLES20.glUniform1f(mPrograssLocation, progress);
-        progress += 0.02;
+        progress += 0.03;
         LogUtils.i(TAG, "onDrawArraysPre->" + progress);
     }
 

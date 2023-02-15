@@ -1,11 +1,10 @@
 package com.ijoysoft.mediasdk.module.opengl.transition;
 
+import android.opengl.GLES20;
+
 import com.ijoysoft.mediasdk.R;
 import com.ijoysoft.mediasdk.common.utils.LogUtils;
 import com.ijoysoft.mediasdk.module.opengl.gpufilter.utils.OpenGlUtils;
-
-import android.opengl.GLES20;
-import android.util.Log;
 
 /**
  * 如果着色器有两个纹理的话，那么在绑定纹理的时候，从0开始，然后+1
@@ -14,7 +13,6 @@ import android.util.Log;
 public class SquareTwinkleTransitionFilter extends TransitionFilter {
 
     private int mPrograssLocation;
-    private float progress;
 
     public SquareTwinkleTransitionFilter(TransitionType transitionType) {
         super(transitionType, NO_FILTER_VERTEX_SHADER, OpenGlUtils.readShaderFromRawResource(R.raw.transition_square_twinkle));
@@ -32,7 +30,8 @@ public class SquareTwinkleTransitionFilter extends TransitionFilter {
         super.onDrawArraysPre();
         GLES20.glUniform1f(mPrograssLocation, progress);
         progress += 0.03;
-        LogUtils.i(TAG, "onDrawArraysPre<-" + progress);
+        //频繁打印的日志放至-verbose级别中
+//        LogUtils.v(TAG, "onDrawArraysPre<-" + progress);
     }
 
 

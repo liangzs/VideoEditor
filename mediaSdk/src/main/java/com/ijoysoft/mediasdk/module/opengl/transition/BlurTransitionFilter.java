@@ -12,7 +12,6 @@ import com.ijoysoft.mediasdk.module.opengl.gpufilter.utils.OpenGlUtils;
  */
 public class BlurTransitionFilter extends TransitionFilter {
     private int mPrograssLocation;
-    private float progress;
 
     public BlurTransitionFilter(TransitionType transitionType) {
         super(transitionType, NO_FILTER_VERTEX_SHADER, OpenGlUtils.readShaderFromRawResource(R.raw.transition_blur));
@@ -30,12 +29,12 @@ public class BlurTransitionFilter extends TransitionFilter {
     @Override
     protected void onDrawArraysPre() {
         super.onDrawArraysPre();
-        if (progress > 1.0) {
+        if (progress > TRANSITION_PROGRESS) {
             return;
         }
         GLES20.glUniform1f(mPrograssLocation, progress);
         progress += 0.02;
-        LogUtils.i(TAG, "onDrawArraysPre->" + progress);
+//        LogUtils.i(TAG, "onDrawArraysPre->" + progress);
     }
 
     @Override

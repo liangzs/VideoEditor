@@ -1,6 +1,6 @@
 package com.ijoysoft.mediasdk.module.ffmpeg;
 
-public class JNIException extends Exception {
+public class JNIException extends RuntimeException {
 
     public JNIException() {
     }

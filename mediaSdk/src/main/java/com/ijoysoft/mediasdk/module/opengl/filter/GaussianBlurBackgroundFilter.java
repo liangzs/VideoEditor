@@ -2,12 +2,9 @@ package com.ijoysoft.mediasdk.module.opengl.filter;
 
 import android.opengl.GLES20;
 
-import java.util.Locale;
+import com.ijoysoft.mediasdk.common.utils.LogUtils;
 
-import static com.ijoysoft.mediasdk.module.opengl.filter.BackgroudFilter.ROT_0;
-import static com.ijoysoft.mediasdk.module.opengl.filter.BackgroudFilter.ROT_180;
-import static com.ijoysoft.mediasdk.module.opengl.filter.BackgroudFilter.ROT_270;
-import static com.ijoysoft.mediasdk.module.opengl.filter.BackgroudFilter.ROT_90;
+import java.util.Locale;
 
 /**
  * Locale.ENGLISH String.foramt要使用这个，不然对于欧盟的数字格式不正确
@@ -22,6 +19,8 @@ public class GaussianBlurBackgroundFilter extends AFilter {
     private int widthOffsetLocation;
     private int heightOffsetLocation;
     private int surfaceHeight, surfaceWidth;
+
+    private float[] cube;
 
     public GaussianBlurBackgroundFilter(int blurRadius, double sigma) {
         super();
@@ -41,13 +40,15 @@ public class GaussianBlurBackgroundFilter extends AFilter {
 
     @Override
     public void onSizeChanged(int width, int height) {
-        if (!scale) {
-            surfaceWidth = width;
-            surfaceHeight = height;
-        } else {
-            surfaceWidth = width / 4;
-            surfaceHeight = height / 4;
-        }
+        surfaceWidth = width;
+        surfaceHeight = height;
+//        if (!scale) {
+//            surfaceWidth = width;
+//            surfaceHeight = height;
+//        } else {
+//            surfaceWidth = width / 4;
+//            surfaceHeight = height / 4;
+//        }
     }
 
 
@@ -57,13 +58,11 @@ public class GaussianBlurBackgroundFilter extends AFilter {
         heightOffsetLocation = GLES20.glGetUniformLocation(mProgram, "texelHeightOffset");
         GLES20.glUniform1f(widthOffsetLocation, texelWidthOffset / surfaceWidth);
         GLES20.glUniform1f(heightOffsetLocation, texelHeightOffset / surfaceHeight);
-//        GLES20.glViewport(0, 0, surfaceWidth, surfaceHeight);
     }
 
     @Override
     protected void onDrawArraysAfter() {
         super.onDrawArraysAfter();
-        GLES20.glViewport(0, 0, surfaceWidth, surfaceHeight);
     }
 
     public GaussianBlurBackgroundFilter setTexelHeightOffset(float texelHeightOffset) {
@@ -120,17 +119,17 @@ public class GaussianBlurBackgroundFilter extends AFilter {
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(
-                String.format(Locale.ENGLISH,"attribute vec4 vPosition;\n" +
-                                "attribute vec4 vCoord;\n" +
-                                "uniform mat4 vMatrix;\n" +
-                                "uniform float texelWidthOffset;\n" +
-                                "uniform float texelHeightOffset;\n" +
-                                "varying vec2 blurCoordinates[%d];\n" +
-                                "void main(){\n" +
-                                "\tgl_Position = vMatrix*vPosition;\n" +
-                                "\tvec2 singleStepOffset = vec2(texelWidthOffset, texelHeightOffset);\n",
-                        1 + (numberOfOptimizedOffsets * 2)
-                ))
+                        String.format(Locale.ENGLISH, "attribute vec4 vPosition;\n" +
+                                        "attribute vec4 vCoord;\n" +
+                                        "uniform mat4 vMatrix;\n" +
+                                        "uniform float texelWidthOffset;\n" +
+                                        "uniform float texelHeightOffset;\n" +
+                                        "varying vec2 blurCoordinates[%d];\n" +
+                                        "void main(){\n" +
+                                        "\tgl_Position = vMatrix*vPosition;\n" +
+                                        "\tvec2 singleStepOffset = vec2(texelWidthOffset, texelHeightOffset);\n",
+                                1 + (numberOfOptimizedOffsets * 2)
+                        ))
                 .append("\tblurCoordinates[0] = vCoord.xy;\n");
         for (int currentOptimizedOffset = 0; currentOptimizedOffset < numberOfOptimizedOffsets; currentOptimizedOffset++) {
             stringBuilder.append(String.format(Locale.ENGLISH,
@@ -143,6 +142,7 @@ public class GaussianBlurBackgroundFilter extends AFilter {
             ));
         }
         stringBuilder.append("}\n");
+//        LogUtils.v("", "blur:vertex-" + stringBuilder.toString());
         return stringBuilder.toString();
     }
 
@@ -183,8 +183,8 @@ public class GaussianBlurBackgroundFilter extends AFilter {
                         + "uniform highp float texelWidthOffset;\n"
                         + "uniform highp float texelHeightOffset;\n")
                 .append(String.format(Locale.ENGLISH,
-                        "varying highp vec2 blurCoordinates[%d];\n",
-                        1 + (numberOfOptimizedOffsets * 2)
+                                "varying highp vec2 blurCoordinates[%d];\n",
+                                1 + (numberOfOptimizedOffsets * 2)
                         )
                 )
                 .append("vec3 hsv2rgb(vec3 c) {\n" +
@@ -204,8 +204,8 @@ public class GaussianBlurBackgroundFilter extends AFilter {
                 .append("void main(){\n")
                 .append("\tlowp vec4 sum = vec4(0.0);\n")
                 .append(String.format(Locale.ENGLISH,
-                        "\tsum += texture2D(vTexture, blurCoordinates[0]) * %f;\n",
-                        standardGaussianWeights[0]
+                                "\tsum += texture2D(vTexture, blurCoordinates[0]) * %f;\n",
+                                standardGaussianWeights[0]
                         )
                 );
 
@@ -214,10 +214,10 @@ public class GaussianBlurBackgroundFilter extends AFilter {
             double secondWeight = standardGaussianWeights[currentBlurCoordinateIndex * 2 + 2];
             double optimizedWeight = firstWeight + secondWeight;
             stringBuilder.append(String.format(Locale.ENGLISH,
-                    "\tsum += texture2D(vTexture, blurCoordinates[%d]) * %f;\n" +
-                            "\tsum += texture2D(vTexture, blurCoordinates[%d]) * %f;\n",
-                    (currentBlurCoordinateIndex * 2) + 1, optimizedWeight,
-                    (currentBlurCoordinateIndex * 2) + 2, optimizedWeight
+                            "\tsum += texture2D(vTexture, blurCoordinates[%d]) * %f;\n" +
+                                    "\tsum += texture2D(vTexture, blurCoordinates[%d]) * %f;\n",
+                            (currentBlurCoordinateIndex * 2) + 1, optimizedWeight,
+                            (currentBlurCoordinateIndex * 2) + 2, optimizedWeight
                     )
             );
         }
@@ -231,19 +231,19 @@ public class GaussianBlurBackgroundFilter extends AFilter {
                 double optimizedWeight = firstWeight + secondWeight;
                 double optimizedOffset = (firstWeight * (currentOverlowTextureRead * 2 + 1) + secondWeight * (currentOverlowTextureRead * 2 + 2)) / optimizedWeight;
                 stringBuilder.append(String.format(Locale.ENGLISH,
-                        "\tsum += texture2D(vTexture, blurCoordinates[0] + singleStepOffset * %f) * %f;\n" +
-                                "\tsum += texture2D(vTexture, blurCoordinates[0] - singleStepOffset * %f) * %f;\n",
-                        optimizedOffset, optimizedWeight,
-                        optimizedOffset, optimizedWeight
+                                "\tsum += texture2D(vTexture, blurCoordinates[0] + singleStepOffset * %f) * %f;\n" +
+                                        "\tsum += texture2D(vTexture, blurCoordinates[0] - singleStepOffset * %f) * %f;\n",
+                                optimizedOffset, optimizedWeight,
+                                optimizedOffset, optimizedWeight
                         )
                 );
             }
         }
         stringBuilder.append("vec3 rgb = rgb2hsv(sum.rgb);\n" +
-                "    vec3 hsv = rgb-vec3(0.0, 0.0, 0.2);\n" +
+                "    vec3 hsv = rgb-vec3(0.0, 0.0, 0.05);\n" +
                 "    gl_FragColor = vec4(hsv2rgb(hsv), 1.0);\n").append("}\n");
 //        stringBuilder.append("\tgl_FragColor = sum;\n")
-
+//        LogUtils.v("", "blur:fagment" + stringBuilder.toString());
         return stringBuilder.toString();
     }
 
@@ -260,12 +260,14 @@ public class GaussianBlurBackgroundFilter extends AFilter {
         return new GaussianBlurBackgroundFilter(calculatedSampleRadius, blurRadiusInPixels);
     }
 
+
     /**
-     * 旋转操作
+     * 旋转操作,跟imageOriginfiter的旋转有所不同，根据imageOriginfiter对比重新做的旋转坐标     *
      *
      * @param rotation
      */
     public void setRotation(int rotation) {
+        rotation = rotation < 0 ? rotation + 360 : rotation;
         float[] coord = getCoord();
         switch (rotation) {
             case ROT_0:
@@ -275,38 +277,29 @@ public class GaussianBlurBackgroundFilter extends AFilter {
                         1.0f, 0.0f,
                         1.0f, 1.0f,
                 };
-
-
                 break;
             case ROT_90://根据内容的旋转，然后再图纸作画，再反转角度重现得到坐标便可！
                 coord = new float[]{
-                        1.0f, 1.0f,
-                        0.0f, 1.0f,
-                        1.0f, 0.0f,
-                        0.0f, 0.0f
+                        1, 0,
+                        0, 0,
+                        1, 1,
+                        0, 1
                 };
-
                 break;
             case ROT_180:
-//                coord = new float[]{
-//                        1.0f, 1.0f,
-//                        1.0f, 0.0f,
-//                        0.0f, 1.0f,
-//                        0.0f, 0.0f,
-//                };
                 coord = new float[]{
-                        1.0f, 0.0f,
                         1.0f, 1.0f,
-                        0.0f, 0.0f,
+                        1.0f, 0.0f,
                         0.0f, 1.0f,
+                        0.0f, 0.0f,
                 };
                 break;
             case ROT_270:
                 coord = new float[]{
-                        0.0f, 0.0f,
-                        1.0f, 0.0f,
                         0.0f, 1.0f,
-                        1.0f, 1.0f
+                        1.0f, 1.0f,
+                        0.0f, 0.0f,
+                        1.0f, 0.0f
                 };
                 break;
 
@@ -314,5 +307,80 @@ public class GaussianBlurBackgroundFilter extends AFilter {
         mTexBuffer.clear();
         mTexBuffer.put(coord);
         mTexBuffer.position(0);
+    }
+
+    /**
+     * 等比缩放图片展示，只显示窗口区域
+     *
+     * @param width
+     * @param height
+     */
+    public void adjustImageScalingStretch(int mediaW, int mediaH, int rotation, int width, int height) {
+        int framewidth = mediaW;
+        int frameheight = mediaH;
+        if ((rotation == 90 || rotation == 270)) {
+            framewidth = mediaH;
+            frameheight = mediaW;
+        }
+        float ratio1 = (1f * width) / (1f * framewidth);
+        float ratio2 = (1f * height) / (1f * frameheight);
+        float ratioMax = Math.max(ratio1, ratio2);
+        // 居中后图片显示的大小
+        int imageWidthNew = Math.round(framewidth * ratioMax);
+        int imageHeightNew = Math.round(frameheight * ratioMax);
+        // 图片被拉伸的比例,以及显示比例时的偏移量
+        float ratioWidth = (1f * width) / (1f * imageWidthNew);
+        float ratioHeight = (1f * height) / (1f * imageHeightNew);
+        // 根据拉伸比例还原顶点
+
+        cube = new float[]{pos[0] / ratioWidth, pos[1] / ratioHeight, pos[2] / ratioWidth, pos[3] / ratioHeight,
+                pos[4] / ratioWidth, pos[5] / ratioHeight, pos[6] / ratioWidth, pos[7] / ratioHeight,};
+        mVerBuffer.clear();
+        mVerBuffer.put(cube).position(0);
+//        setRotation(0);
+    }
+
+    /**
+     * 只清理程序，因为纹理不是它的，所以不必要清理
+     */
+    @Override
+    public void onDestroy() {
+        GLES20.glDeleteProgram(mProgram);
+    }
+
+    /**
+     * 等比缩放图片展示，只显示窗口区域
+     *
+     * @param width
+     * @param height
+     */
+    public void adjustImageScalingCrop(int mediaW, int mediaH, int rotation, int width, int height) {
+        int originW = mediaW;
+        int originH = mediaH;
+        if ((rotation == 90 || rotation == 270)) {
+            originW = mediaH;
+            originH = mediaW;
+        }
+        float ratio1 = (1f * width) / (1f * originW);
+        float ratio2 = (1f * height) / (1f * originH);
+        float ratioMax = Math.max(ratio1, ratio2);
+        // 居中后图片显示的大小
+        int imageWidthNew = Math.round(originW * ratioMax);
+        int imageHeightNew = Math.round(originH * ratioMax);
+        //频繁打印的日志放至-verbose级别中
+        // 图片被拉伸的比例,以及显示比例时的偏移量
+        float ratioWidth = (1f * width) / (1f * imageWidthNew);
+        float ratioHeight = (1f * height) / (1f * imageHeightNew);
+        // 根据拉伸比例还原顶点
+        cube = new float[]{pos[0] / ratioWidth, pos[1] / ratioHeight, pos[2] / ratioWidth, pos[3] / ratioHeight,
+                pos[4] / ratioWidth, pos[5] / ratioHeight, pos[6] / ratioWidth, pos[7] / ratioHeight,};
+        mVerBuffer.clear();
+        mVerBuffer.put(cube).position(0);
+
+        setRotation(0);
+    }
+
+    public float[] getCube() {
+        return cube;
     }
 }

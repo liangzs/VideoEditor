@@ -3,7 +3,6 @@ package com.ijoysoft.mediasdk.module.opengl.transition;
 import android.opengl.GLES20;
 
 import com.ijoysoft.mediasdk.R;
-import com.ijoysoft.mediasdk.common.utils.LogUtils;
 import com.ijoysoft.mediasdk.module.opengl.gpufilter.utils.OpenGlUtils;
 
 /**
@@ -12,7 +11,6 @@ import com.ijoysoft.mediasdk.module.opengl.gpufilter.utils.OpenGlUtils;
  */
 public class ReadBookTransitionFilter extends TransitionFilter {
     private int mPrograssLocation;
-    private float progress;
 
     public ReadBookTransitionFilter(TransitionType transitionType) {
         super(transitionType, NO_FILTER_VERTEX_SHADER, OpenGlUtils.readShaderFromRawResource(R.raw.transition_read_book));
@@ -30,12 +28,11 @@ public class ReadBookTransitionFilter extends TransitionFilter {
     @Override
     protected void onDrawArraysPre() {
         super.onDrawArraysPre();
-        if (progress > 1.0) {
+        if (progress > TRANSITION_PROGRESS) {
             return;
         }
         GLES20.glUniform1f(mPrograssLocation, progress);
-        progress += 0.02;
-        LogUtils.i(TAG, "onDrawArraysPre->" + progress);
+        progress += 0.03;
     }
 
     @Override
@@ -46,7 +43,6 @@ public class ReadBookTransitionFilter extends TransitionFilter {
         } else {
             progress = d / 2;
         }
-        LogUtils.i(TAG, "seekTo:" + progress + ",origin:" + duration);
         GLES20.glUniform1f(mPrograssLocation, progress);
     }
 

@@ -13,6 +13,7 @@ public class MediaMatrix implements Serializable, Cloneable {
     private int offsetY;
     private int originX;
     private int originY;
+    private boolean mirror;
     /**
      * photoview控件在做旋转时，也会做缩放动作，但是和opengl的缩放不同，
      * opengl的旋转scale是1的，但是控件进行旋转的时候，它的缩放值是会发生变化的
@@ -103,6 +104,14 @@ public class MediaMatrix implements Serializable, Cloneable {
         return mediaMatrix;
     }
 
+    public boolean isMirror() {
+        return mirror;
+    }
+
+    public void setMirror(boolean mirror) {
+        this.mirror = mirror;
+    }
+
     public float getBasicScale() {
         return basicScale;
     }
@@ -110,4 +119,5 @@ public class MediaMatrix implements Serializable, Cloneable {
     public void setBasicScale(float basicScale) {
         this.basicScale = basicScale;
     }
+
 }

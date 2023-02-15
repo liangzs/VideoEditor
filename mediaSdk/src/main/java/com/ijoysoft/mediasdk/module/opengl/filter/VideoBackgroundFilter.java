@@ -1,13 +1,19 @@
 package com.ijoysoft.mediasdk.module.opengl.filter;
 
 import android.opengl.GLES20;
+import android.opengl.Matrix;
 import android.util.Log;
 
 import com.ijoysoft.mediasdk.common.global.ConstantMediaSize;
 import com.ijoysoft.mediasdk.common.utils.EasyGlUtils;
 import com.ijoysoft.mediasdk.common.utils.LogUtils;
 import com.ijoysoft.mediasdk.common.utils.MatrixUtils;
+import com.ijoysoft.mediasdk.module.entity.BGInfo;
 import com.ijoysoft.mediasdk.module.entity.MediaItem;
+import com.ijoysoft.mediasdk.module.entity.MediaMatrix;
+import com.ijoysoft.mediasdk.view.BackgroundType;
+
+import java.util.Arrays;
 
 /**
  * 处理视频播放的背景问题，其本身的的textureid是视频帧纹理id
@@ -21,54 +27,32 @@ public class VideoBackgroundFilter extends OesFilter {
     public static final int ROT_90 = 90;
     public static final int ROT_180 = 180;
     public static final int ROT_270 = 270;
-    // private BackgroudFilter backgroudFilter;
     private GaussianBlurBackgroundFilter widthBlurFilter;
     private GaussianBlurBackgroundFilter heightBlurFilter;
-    // FBO
+    private PureColorFilter pureColorFilter;
+    private ImageOriginFilter customImagefilter;
     private int[] fFrame = new int[1];
     private int[] fTexture = new int[2];
-    private boolean isPureBg;
-    private AFilter pureColorFilter;
-    private float[] rgba = new float[] { 1.0f, 1.0f, 1.0f, 1.0f };
+
+    private float[] rgba = new float[]{1.0f, 1.0f, 1.0f, 1.0f};
     private MediaItem mediaItem;
     private int fTextureSize = 2;
     private float[] cube;
     private boolean isDoRotate;
     private int matrixAngle;
     private float[] mediaItemOM;
+    private float offsetSigma;
+    private int width, height, canvasWidth, canvasHeight;
+    private BGInfo mBGInfo;
+    private int blurLevel;
+    private float[] zoomMatrix;
 
     public VideoBackgroundFilter() {
         super();
-        // backgroudFilter = new BackgroudFilter();
-        widthBlurFilter =
-                GaussianBlurBackgroundFilter.initWithBlurRadiusInPixels(8).setTexelWidthOffset(2).setScale(false);
-        heightBlurFilter =
-                GaussianBlurBackgroundFilter.initWithBlurRadiusInPixels(8).setTexelHeightOffset(2).setScale(false);
-        pureColorFilter = new AFilter() {
-            @Override
-            protected void onCreate() {
-
-            }
-
-            @Override
-            public void onSizeChanged(int width, int height) {
-
-            }
-
-            @Override
-            protected void onClear() {
-                pureColorDraw();
-            }
-        };
+        offsetSigma = 0.72f;
+        mBGInfo = new BGInfo();
     }
 
-    /**
-     * 绘传入的颜色背景
-     */
-    private void pureColorDraw() {
-        GLES20.glClearColor(rgba[0], rgba[1], rgba[2], rgba[3]);
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
-    }
 
     /**
      * 图片旋转时，出现拉伸情况
@@ -89,43 +73,28 @@ public class VideoBackgroundFilter extends OesFilter {
      * @param rotation
      */
     public void setRotation(int rotation) {
+        Log.i(TAG, "setRotationl:" + rotation);
         float[] coord;
         switch (rotation) {
-        case ROT_0:
-            // coord = new float[]{
-            // 0.0f, 0.0f,
-            // 0.0f, 1.0f,
-            // 1.0f, 0.0f,
-            // 1.0f, 1.0f,
-            // };
-            coord = new float[] { 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, };
+            case ROT_0:
+                coord = new float[]{
+                        0.0f, 1.0f,
+                        0.0f, 0.0f,
+                        1.0f, 1.0f,
+                        1.0f, 0.0f,};
+                break;
+            case ROT_90:// 根据内容的旋转，然后再图纸作画，再反转角度重现得到坐标便可！
+                coord = new float[]{1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f};
 
-            break;
-        case ROT_90:// 根据内容的旋转，然后再图纸作画，再反转角度重现得到坐标便可！
-            // coord = new float[]{
-            // 1.0f, 1.0f,
-            // 0.0f, 1.0f,
-            // 0.0f, 0.0f,
-            // 1.0f, 0.0f
-            // };
-            coord = new float[] { 1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f };
-
-            break;
-        case ROT_180:
-            // coord = new float[]{
-            // 1.0f, 1.0f,
-            // 1.0f, 0.0f,
-            // 0.0f, 1.0f,
-            // 0.0f, 0.0f,
-            // };
-            coord = new float[] { 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, };
-            break;
-        case ROT_270:
-            coord = new float[] { 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, };
-
-            break;
-        default:
-            return;
+                break;
+            case ROT_180:
+                coord = new float[]{1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,};
+                break;
+            case ROT_270:
+                coord = new float[]{0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,};
+                break;
+            default:
+                return;
         }
         mTexBuffer.clear();
         mTexBuffer.put(coord);
@@ -133,20 +102,16 @@ public class VideoBackgroundFilter extends OesFilter {
     }
 
     @Override
-    protected void onCreate() {
+    public void onCreate() {
         super.onCreate();
-        pureColorFilter.create();
-        // backgroudFilter.create();
-        widthBlurFilter.create();
-        heightBlurFilter.create();
     }
 
-    @Override
-    public void onSizeChanged(int width, int height) {
-        pureColorFilter.setSize(width, height);
-        // backgroudFilter.setSize(width, height);
-        widthBlurFilter.onSizeChanged(width, height);
-        heightBlurFilter.onSizeChanged(width, height);
+
+    public void onSurfaceChanged(int offsetX, int offsetY, int viewWidth, int viewHeight, int screenWidth, int screenHeight) {
+        this.width = viewWidth;
+        this.height = viewHeight;
+        this.canvasWidth = screenWidth;
+        this.canvasHeight = screenHeight;
         createFBo(width, height);
         adjustVideoScaling();
     }
@@ -164,7 +129,6 @@ public class VideoBackgroundFilter extends OesFilter {
     // 生成Textures
     private void genTextures(int width, int height) {
         GLES20.glGenTextures(fTextureSize, fTexture, 0);
-        Log.i("test","VideoBackgroud->genTextures:"+fTexture[0]+","+fTexture[1]);
 
         for (int i = 0; i < fTextureSize; i++) {
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, fTexture[i]);
@@ -173,7 +137,7 @@ public class VideoBackgroundFilter extends OesFilter {
             GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
             GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
             GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
         }
     }
 
@@ -185,12 +149,79 @@ public class VideoBackgroundFilter extends OesFilter {
         }
     }
 
-    public void setIsPureColor(boolean isPureColor, int[] value) {
-        this.isPureBg = isPureColor;
-        rgba[0] = ((float) value[0] / 255f);
-        rgba[1] = ((float) value[1] / 255f);
-        rgba[2] = ((float) value[2] / 255f);
-        rgba[3] = ((float) value[3] / 255f);
+    public void setIsPureColor(BGInfo bgInfo) {
+        this.mBGInfo = bgInfo;
+        switch (mBGInfo.getBackroundType()) {
+            case BackgroundType.COLOR:
+            case BackgroundType.NONE:
+                createColorBackground();
+                rgba[0] = ((float) mBGInfo.getRgbs()[0] / 255f);
+                rgba[1] = ((float) mBGInfo.getRgbs()[1] / 255f);
+                rgba[2] = ((float) mBGInfo.getRgbs()[2] / 255f);
+                rgba[3] = ((float) mBGInfo.getRgbs()[3] / 255f);
+                pureColorFilter.setIsPureColor(rgba);
+                break;
+            case BackgroundType.SELF:
+                //10- 100  10  30  50 70  90
+                // 5 15  25  35 45
+                //散发：1-5
+
+                createSelfBlurBackground();
+                break;
+            case BackgroundType.IMAGE:
+                createCustomImageFilter();
+                break;
+        }
+    }
+
+    /**
+     * 创建纯色背景
+     */
+    private void createColorBackground() {
+        if (pureColorFilter == null) {
+            pureColorFilter = new PureColorFilter();
+            pureColorFilter.create();
+            pureColorFilter.setSize(width, height);
+        }
+    }
+
+    private void createCustomImageFilter() {
+        if (customImagefilter == null) {
+            customImagefilter = new ImageOriginFilter();
+            customImagefilter.create();
+            customImagefilter.setSize(width, height);
+        }
+        if (mediaItem != null && mBGInfo.getCustomBitmap() != null) {
+            customImagefilter.initTexture(mBGInfo.getCustomBitmap());
+            customImagefilter.adjustImageScalingStretch(mediaItem.getRotation(), width, height);
+        }
+    }
+
+    /**
+     * 用自身做背景
+     */
+    private void createSelfBlurBackground() {
+        blurLevel = (int) (mBGInfo.getBlurLevel() * 0.5f);//1-50程度系数可改,偏移量offset则从1-5过渡;
+        offsetSigma = 0.06f * blurLevel;
+        offsetSigma = offsetSigma > 2 ? 2 : offsetSigma;
+        if (widthBlurFilter != null) {
+            widthBlurFilter.onClear();
+        }
+        if (heightBlurFilter != null) {
+            heightBlurFilter.onDestroy();
+        }
+        widthBlurFilter =
+                GaussianBlurBackgroundFilter.initWithBlurRadiusInPixels(blurLevel).setTexelWidthOffset(offsetSigma).setScale(true);
+        heightBlurFilter =
+                GaussianBlurBackgroundFilter.initWithBlurRadiusInPixels(blurLevel).setTexelHeightOffset(offsetSigma).setScale(true);
+        widthBlurFilter.create();
+        widthBlurFilter.onSizeChanged(width, height);
+        heightBlurFilter.create();
+        heightBlurFilter.onSizeChanged(width, height);
+        if (mediaItem != null) {
+            int rotation = (matrixAngle + mediaItem.getRotation()) % 360;
+            widthBlurFilter.adjustImageScalingStretch(mediaItem.getWidth(), mediaItem.getHeight(), rotation, width, height);
+        }
     }
 
     /**
@@ -198,12 +229,12 @@ public class VideoBackgroundFilter extends OesFilter {
      * MatrixUtils.rotate(SM, 90);和调顶点位置相通
      */
     private void adjustVideoScaling() {
-        float outputWidth = ConstantMediaSize.showViewWidth;
-        float outputHeight = ConstantMediaSize.showViewHeight;
+        float outputWidth = width;
+        float outputHeight = height;
         if (mediaItem != null) {
             int framewidth = mediaItem.getWidth();
             int frameheight = mediaItem.getHeight();
-            LogUtils.d(TAG, "matrixAngle:" + matrixAngle + ",mediaItem.getRotation():" + mediaItem.getRotation());
+            LogUtils.d(TAG, "matrixAngle:" + matrixAngle + ",mediaItem.getAfterRotation():" + mediaItem.getRotation());
             int rotation = (matrixAngle + mediaItem.getRotation()) % 360;
             if ((rotation == 90 || rotation == 270)) {
                 framewidth = mediaItem.getHeight();
@@ -239,31 +270,21 @@ public class VideoBackgroundFilter extends OesFilter {
                             + ",ratioHeight:" + ratioHeight);
                 }
             }
+            float pos[] = {
+                    -1.0f, 1.0f,
+                    -1.0f, -1.0f,
+                    1.0f, 1.0f,
+                    1.0f, -1.0f,
+            };
             // 根据拉伸比例还原顶点
-            cube = new float[] { pos[0] / ratioWidth, pos[1] / ratioHeight, pos[2] / ratioWidth, pos[3] / ratioHeight,
-                    pos[4] / ratioWidth, pos[5] / ratioHeight, pos[6] / ratioWidth, pos[7] / ratioHeight, };
+            cube = new float[]{pos[0] / ratioWidth, pos[1] / ratioHeight, pos[2] / ratioWidth, pos[3] / ratioHeight,
+                    pos[4] / ratioWidth, pos[5] / ratioHeight, pos[6] / ratioWidth, pos[7] / ratioHeight,};
             mVerBuffer.clear();
             mVerBuffer.put(cube).position(0);
+
         }
     }
 
-    /**
-     * 这里只负责做旋转的动作，包括旋转后的顶点动态变化，以及纹理的旋转
-     * 缩放和平移放在videodrawer的matrixshow去管理，记得先旋转后缩放
-     * @param currentMediaItem
-     */
-    public void setMaxtrix(MediaItem currentMediaItem) {
-        mediaItemOM = MatrixUtils.getOriginalMatrix();
-        setMatrix(mediaItemOM);
-        heightBlurFilter.setMatrix(mediaItemOM);
-        doRotaion(0);
-        if (currentMediaItem.getMediaMatrix() != null) {
-            doRotaion(currentMediaItem.getMediaMatrix().getAngle());
-            MatrixUtils.rotate(mediaItemOM, currentMediaItem.getMediaMatrix().getAngle());
-            setMatrix(mediaItemOM);
-            heightBlurFilter.setMatrix(mediaItemOM);
-        }
-    }
 
     /**
      * 绘画背景，对外提供接口，因为视频是GL_TEXTURE_EXTERNAL_OES，需转化
@@ -271,38 +292,76 @@ public class VideoBackgroundFilter extends OesFilter {
      */
     public void drawBackground() {
         // 黑色背景
-        GLES20.glViewport(0, 0, ConstantMediaSize.currentScreenWidth, ConstantMediaSize.currentScreenHeight);
+        GLES20.glViewport(0, 0, canvasWidth, canvasHeight);
         GLES20.glClearColor(0.114f, 0.114f, 0.114f, 1.0f);
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
         // 显示区背景
-        GLES20.glViewport(0, 0, ConstantMediaSize.showViewWidth, ConstantMediaSize.showViewHeight);
-        if (!isPureBg) {
-            //当前视频帧
-            EasyGlUtils.bindFrameTexture(fFrame[0], fTexture[0]);
-            mVerBuffer.clear();
-            mVerBuffer.put(pos).position(0);
-            draw();
-            EasyGlUtils.unBindFrameBuffer();
-            // 模糊width方向
-            widthBlurFilter.setTextureId(fTexture[0]);
-            EasyGlUtils.bindFrameTexture(fFrame[0], fTexture[1]);
-            widthBlurFilter.draw();
-            EasyGlUtils.unBindFrameBuffer();
-            // 模糊height方向
-            heightBlurFilter.setTextureId(fTexture[1]);
-            EasyGlUtils.bindFrameTexture(fFrame[0], fTexture[0]);
-            heightBlurFilter.draw();
-            mVerBuffer.clear();
-            mVerBuffer.put(cube).position(0);
-            draw();// 绘画视频的帧
-            EasyGlUtils.unBindFrameBuffer();
-        } else {
-            EasyGlUtils.bindFrameTexture(fFrame[0], fTexture[0]);
-            pureColorFilter.draw();
-            draw();// 绘画视频的帧
-            EasyGlUtils.unBindFrameBuffer();
+        GLES20.glViewport(0, 0, width, height);
+        switch (mBGInfo.getBackroundType()) {
+            case BackgroundType.COLOR:
+            case BackgroundType.NONE:
+                EasyGlUtils.bindFrameTexture(fFrame[0], fTexture[0]);
+                pureColorFilter.draw();
+                drawZoomScale();
+                EasyGlUtils.unBindFrameBuffer();
+                break;
+            case BackgroundType.SELF:
+                drawBackgroundSelf();
+                break;
+            case BackgroundType.IMAGE:
+                EasyGlUtils.bindFrameTexture(fFrame[0], fTexture[0]);
+                customImagefilter.draw();
+                drawZoomScale();
+                EasyGlUtils.unBindFrameBuffer();
+                break;
         }
     }
+
+    /**
+     * 缩放展示区域
+     */
+    private void drawZoomScale() {
+        if (mBGInfo.getZoomScale() != 0) {
+            zoomMatrix = Arrays.copyOf(cube, cube.length);
+            for (int i = 0; i < zoomMatrix.length; i++) {
+                zoomMatrix[i] *= mBGInfo.getZoomScale();
+            }
+            mVerBuffer.clear();
+            mVerBuffer.put(zoomMatrix).position(0);
+            draw();
+            return;
+        }
+        mVerBuffer.clear();
+        mVerBuffer.put(cube).position(0);
+        draw();
+    }
+
+    /**
+     * 自身糊度
+     */
+    private void drawBackgroundSelf() {
+        if (widthBlurFilter == null) {
+            createSelfBlurBackground();
+        }
+        EasyGlUtils.bindFrameTexture(fFrame[0], fTexture[0]);
+        mVerBuffer.clear();
+        mVerBuffer.put(pos).position(0);
+        draw();// GL_TEXTURE_EXTERNAL_OES 转GL_TEXTURE_2D
+        EasyGlUtils.unBindFrameBuffer();
+        // 模糊width方向
+        widthBlurFilter.setTextureId(fTexture[0]);
+        EasyGlUtils.bindFrameTexture(fFrame[0], fTexture[1]);
+        widthBlurFilter.draw();
+        EasyGlUtils.unBindFrameBuffer();
+        // 模糊height方向
+        heightBlurFilter.setTextureId(fTexture[1]);
+
+        EasyGlUtils.bindFrameTexture(fFrame[0], fTexture[0]);
+        heightBlurFilter.draw();
+        drawZoomScale();
+        EasyGlUtils.unBindFrameBuffer();
+    }
+
 
     /**
      * 获取fbo的渲染纹理
@@ -325,11 +384,45 @@ public class VideoBackgroundFilter extends OesFilter {
 
     /**
      * 视频帧的显示及更新
+     * 这里只负责做旋转的动作，包括旋转后的顶点动态变化，以及纹理的旋转
+     * * 缩放和平移放在videodrawer的matrixshow去管理，记得先旋转后缩放
      */
     public void setVideoFrameRatioUpdate(MediaItem mediaItem) {
         this.mediaItem = mediaItem;
-        adjustVideoScaling();
+        mediaItemOM = MatrixUtils.getOriginalMatrix();
+        setMatrix(mediaItemOM);
+        doRotaion(0);
+        if (mediaItem.getMediaMatrix() != null) {
+//            doRotaion(mediaItem.getMediaMatrix().getAngle());
+            MatrixUtils.rotate(mediaItemOM, mediaItem.getMediaMatrix().getAngle());
+            getScaleTranlation(mediaItemOM, mediaItem.getMediaMatrix());
+            setMatrix(mediaItemOM);
+        }
+        //ratio
+//        adjustVideoScaling();
     }
+
+
+    /**
+     * 对media进行缩放，平移操作
+     */
+    public float[] getScaleTranlation(float[] matrix, MediaMatrix mediaMatrix) {
+        if (mediaMatrix == null) {
+            return matrix;
+        }
+        if (mediaMatrix.getScale() != 0 || mediaMatrix.getOffsetX() != 0 || mediaMatrix.getOffsetY() != 0) {
+            float scale = mediaMatrix.getScale();
+            int x = mediaMatrix.getOffsetX();
+            int y = mediaMatrix.getOffsetY();
+            MatrixUtils.scale(matrix, scale, scale);
+            float tranx = (float) x / (float) ConstantMediaSize.showViewWidth;
+            float trany = (float) y / (float) ConstantMediaSize.showViewHeight;
+            LogUtils.i(TAG, "x:" + x + ",y:" + y + ",scale:" + scale + ",tranx:" + tranx + "," + trany);
+            Matrix.translateM(matrix, 0, tranx, trany, 0f);
+        }
+        return matrix;
+    }
+
 
     @Override
     public void onDestroy() {

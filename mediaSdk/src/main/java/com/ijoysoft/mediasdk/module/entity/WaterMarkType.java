@@ -1,7 +1,8 @@
 package com.ijoysoft.mediasdk.module.entity;
 
 public enum WaterMarkType {
-    CHARACTER(0, "文字"), DOODLE(1, "涂鸦"), PICTURE(2, "贴图"), WATERMARK(3, "水印");
+    CHARACTER(0, "文字"), DOODLE(1, "涂鸦"), PICTURE(2, "贴图"),
+    WATERMARK(3, "水印");
 
     private int id;
     private String detail;
@@ -10,6 +11,7 @@ public enum WaterMarkType {
         this.id = id;
         this.detail = detail;
     }
+
     public static WaterMarkType getType(int id) {
         switch (id) {
             case 0:

@@ -37,7 +37,7 @@ public class MagicDatObstractFilter extends GPUImageFilter {
 
     public void onDestroy() {
         super.onDestroy();
-        if(inputTextureHandles!=null){
+        if (inputTextureHandles != null) {
             GLES20.glDeleteTextures(inputTextureHandles.length, inputTextureHandles, 0);
             for (int i = 0; i < inputTextureHandles.length; i++)
                 inputTextureHandles[i] = -1;
@@ -77,7 +77,7 @@ public class MagicDatObstractFilter extends GPUImageFilter {
                     mDataBuffer.arrayOffset() + bitmapFileDescription.startPos,
                     bitmapFileDescription.endPos);
             saveBitmapAsPng(bitmap, bitmapFileDescription.name);
-            inputTextureHandles[i] = OpenGlUtils.loadTexture(bitmap, OpenGlUtils.NO_TEXTURE, true);
+            inputTextureHandles[i] = OpenGlUtils.loadTexture(bitmap, OpenGlUtils.NO_TEXTURE);
         }
     }
 

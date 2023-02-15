@@ -7,7 +7,7 @@ uniform sampler2D vTexture1;
 const ivec2 size= ivec2(4); // = ivec2(4)
 const float pause=0.1; // = 0.1
 const float dividerWidth= 0.05; // = 0.05
-const vec4 bgcolor=vec4(0.0, 0.0, 0.0, 1.0); // = vec4(0.0, 0.0, 0.0, 1.0)
+const vec4 bgcolor=vec4(0.114, 0.114, 0.114, 1.0); // = vec4(0.0, 0.0, 0.0, 1.0)
 const float randomness= 0.1; // = 0.1
 
 float rand (vec2 co) {

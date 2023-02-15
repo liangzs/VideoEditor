@@ -15,26 +15,21 @@ package com.ijoysoft.mediasdk.module.mediacodec;
  * limitations under the License.
  */
 
+import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
 import android.opengl.Matrix;
 import android.util.Log;
-import android.view.Surface;
 
 import com.ijoysoft.mediasdk.common.global.ConstantMediaSize;
-import com.ijoysoft.mediasdk.common.utils.ColorUtil;
 import com.ijoysoft.mediasdk.common.utils.LogUtils;
 import com.ijoysoft.mediasdk.common.utils.MatrixUtils;
-import com.ijoysoft.mediasdk.common.utils.ObjectUtils;
 import com.ijoysoft.mediasdk.module.entity.DoodleItem;
 import com.ijoysoft.mediasdk.module.entity.MediaItem;
 import com.ijoysoft.mediasdk.module.entity.MediaMatrix;
-import com.ijoysoft.mediasdk.module.entity.MediaType;
 import com.ijoysoft.mediasdk.module.entity.RatioType;
-import com.ijoysoft.mediasdk.module.entity.VideoInfo;
-import com.ijoysoft.mediasdk.module.opengl.MediaDrawer;
-import com.ijoysoft.mediasdk.module.playControl.ImagePlayer;
+import com.ijoysoft.mediasdk.module.opengl.theme.action.ActionStatus;
 import com.ijoysoft.mediasdk.module.playControl.MediaConfig;
-import com.ijoysoft.mediasdk.module.playControl.VideoPlayer;
+import com.ijoysoft.mediasdk.module.playControl.MediaRenderBus;
 
 import java.util.List;
 
@@ -42,6 +37,8 @@ import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.egl.EGLSurface;
+
+import kotlin.Triple;
 
 /**
  * Holds state associated with a Surface used for MediaCodec decoder output.
@@ -62,82 +59,66 @@ import javax.microedition.khronos.egl.EGLSurface;
 /**
  * 如果是视频文件，则通过SurfaceTexture.updateTexImage()去更新，如果是图片
  * 则设置图片背景滤镜去推动，中途加转场，没有直接采用imageplayer是因为不需要imageplayer去推动图片
+ *
  * @Date 20191216 做初始化时，过滤不需要的纹理
  */
 public class OutputSurface implements SurfaceTexture.OnFrameAvailableListener {
     private static final String TAG = "OutputSurface";
-    private static final boolean VERBOSE = false;
+    private static final boolean VERBOSE = true;
     private EGL10 mEGL;
     private EGLDisplay mEGLDisplay;
     private EGLContext mEGLContext;
     private EGLSurface mEGLSurface;
-    private SurfaceTexture mSurfaceTexture;
-    private Surface mSurface;
-    private Object mFrameSyncObject = new Object(); // guards mFrameAvailable
-    private boolean mFrameAvailable;
-
-    private MediaDrawer mDrawer;
-    private int mWidth, mHeight;
+    private int mshowWidth, mshowHeight, canvasWidth, canvasHeight, offX, offY;
     private MediaItem currentMediaItem;
     private MediaConfig mediaConfig;
     private List<MediaItem> mediaItems;
-    private ImagePlayer imagePlayer;
-    private VideoPlayer videoPlayer;
+    //渲染总线
+    private MediaRenderBus renderBus;
 
     /**
      * Creates an OutputSurface using the current EGL context.  Creates a Surface that can be
      * passed to MediaCodec.configure().
      */
-    public OutputSurface(List<DoodleItem> doodleItems, List<MediaItem> list, MediaConfig mediaConfig) {
+    public OutputSurface(List<DoodleItem> doodleItems, List<MediaItem> list, List<Bitmap> widgetMaps,
+                         MediaConfig mediaConfig) {
         this.mediaConfig = mediaConfig;
         mediaItems = list;
         if (list.isEmpty()) {
             return;
         }
         currentMediaItem = list.get(0);
-        Log.i(TAG, currentMediaItem.toString());
-        Log.i(TAG, mediaConfig.toString());
         if (currentMediaItem.getWidth() <= 0 || currentMediaItem.getHeight() <= 0) {
-            currentMediaItem.setWidth(ConstantMediaSize.showMainViewWidth);
-            currentMediaItem.setHeight(ConstantMediaSize.showMainViewHeight);
+            currentMediaItem.setWidth(ConstantMediaSize.showViewWidth);
+            currentMediaItem.setHeight(ConstantMediaSize.showViewHeight);
         }
         // 到时候根据是否有角度，进行兑换宽高
-        ConstantMediaSize.currentScreenWidth = mediaConfig.getExportWidth()[0];
-        ConstantMediaSize.currentScreenHeight = mediaConfig.getExportWidth()[1];
-        calcPreviewRatio(ConstantMediaSize.currentScreenWidth, ConstantMediaSize.currentScreenHeight);
-        // 背景颜色
-        mDrawer = new MediaDrawer();
-        mDrawer.setDoodle(doodleItems);
-        mDrawer.onSurfaceCreated();
-        mDrawer.onSurfaceChanged(ConstantMediaSize.offsetX, ConstantMediaSize.offsetY, mWidth, mHeight);
-        if (checkExistsVideo()) {
-            videoPlayer = new VideoPlayer();
-            videoPlayer.onSurfaceCreated();
-            videoPlayer.onSurfaceChanged(ConstantMediaSize.offsetX, ConstantMediaSize.offsetY, mWidth, mHeight);
-            videoPlayer.onVideoChanged(currentMediaItem);
-            mSurfaceTexture = videoPlayer.getSurfaceTexture();
-            mSurfaceTexture.setOnFrameAvailableListener(this);
-            mSurface = new Surface(mSurfaceTexture);
-        }
+        canvasWidth = mediaConfig.getExportWidth(false)[0];
+        canvasHeight = mediaConfig.getExportWidth(false)[1];
+        calcPreviewRatio(canvasWidth, canvasHeight);
 
-        if (checkExistsPhoto()) {
-            imagePlayer = new ImagePlayer(null);
-            imagePlayer.setDataSource(list, currentMediaItem);
-            imagePlayer.onSurfaceCreated();
-            imagePlayer.onSurfaceChanged(0, 0, mWidth, mHeight);
-        }
+        renderBus = new MediaRenderBus(null);
+        renderBus.setIsMurging(true);
+        renderBus.setDataSource(list, doodleItems, mediaConfig);
+        renderBus.locationRender(currentMediaItem);
+        renderBus.setWidgetDataSource(widgetMaps);
+        renderBus.setInnerBorder(mediaConfig.getInnerBorder());
+        renderBus.setGlobalParticles(mediaConfig.getGlobalParticles());
+        renderBus.setPureColor(mediaConfig.getBGInfo());
+        renderBus.onSurfaceCreated();
+        renderBus.setInitCreate(false);
+        renderBus.onSurfaceChanged(offX, offY, mshowWidth, mshowHeight, canvasWidth, canvasHeight);
+        renderBus.checkVideoMurge();
 
-        if (!ObjectUtils.isEmpty(mediaConfig.getRgba())) {
-            int[] rgba = ColorUtil.hex2Rgb(mediaConfig.getRgba());
-            if (videoPlayer != null) {
-                videoPlayer.setPureColor(true, rgba);
+    }
+
+    private MediaItem getFirstPhotoItem() {
+        for (MediaItem mediaItem : mediaItems) {
+            if (mediaItem.isImage()) {
+                return mediaItem;
             }
-            if (imagePlayer != null) {
-                imagePlayer.setIsPureColor(true, rgba);
-            }
-
         }
-
+        return null;
     }
 
     /**
@@ -148,59 +129,35 @@ public class OutputSurface implements SurfaceTexture.OnFrameAvailableListener {
      */
     private void calcPreviewRatio(int screenWidth, int screenHeight) {
         if (mediaConfig == null) {
-            ConstantMediaSize.showViewWidth = screenWidth;
-            ConstantMediaSize.showViewHeight = screenHeight;
+            mshowWidth = screenWidth;
+            mshowHeight = screenHeight;
             return;
         }
+        RatioType ratioType = mediaConfig.getRatioType();
         int showWidth = 0;
         int showHeight = 0;
         int offsetX = 0;
         int offsetY = 0;
-        // float ratio1 = outputWidth / framewidth;
-        // float ratio2 = outputHeight / frameheight;
-        // float ratioMax = Math.min(ratio1, ratio2);
-        // // 居中后图片显示的大小
-        // float imageWidthNew = Math.round(framewidth * ratioMax);
-        // float imageHeightNew = Math.round(frameheight * ratioMax);
-        switch (mediaConfig.getRatioType()) {
-        case NONE:
-            showWidth = showHeight = screenHeight;
-            offsetX = offsetY = 0;
-            break;
-        case _1_1:
-            showWidth = showHeight = screenHeight;
-            offsetX = offsetY = 0;
-            break;
-        case _9_16:
-            showHeight = screenHeight;
-            showWidth = (int) (0.5625 * showHeight);
-            offsetX = (screenWidth - showWidth) / 2;
-            offsetY = 0;
-            break;
-        case _16_9:
-            showWidth = screenWidth;
-            showHeight = (int) (0.5625 * showWidth);
-            offsetY = (screenWidth - showHeight) / 2;
-            offsetX = 0;
-            break;
-        case _3_4:
-            showHeight = screenHeight;
-            showWidth = (int) (0.75 * showHeight);
-            offsetX = (screenWidth - showWidth) / 2;
-            offsetY = 0;
-            break;
-        case _4_3:
-            showWidth = screenWidth;
-            showHeight = (int) (0.75 * showWidth);
-            offsetY = (screenWidth - showHeight) / 2;
-            offsetX = 0;
-            break;
+        if (ratioType == null) {
+            ratioType = RatioType._1_1;
         }
-        mWidth = ConstantMediaSize.showViewWidth = showWidth;
-        mHeight = ConstantMediaSize.showViewHeight = showHeight;
-        ConstantMediaSize.offsetX = offsetX;
-        ConstantMediaSize.offsetY = offsetY;
-        Log.i(TAG, "calRatio:" + mWidth + "," + mHeight + "," + offsetX + "," + offsetY);
+        float screenRatio = screenWidth * 1f / screenHeight;
+        float showRatio = ratioType.getRatioValue();
+        if (screenRatio > showRatio) {
+            showHeight = screenHeight;
+            showWidth = (int) (showHeight * showRatio);
+            offsetX = (screenWidth - showWidth) / 2;
+            offsetY = 0;
+        } else {
+            showWidth = screenWidth;
+            showHeight = (int) (showWidth / showRatio);
+            offsetX = 0;
+            offsetY = (screenHeight - showHeight) / 2;
+        }
+        this.mshowWidth = showWidth;
+        this.mshowHeight = showHeight;
+        this.offX = offsetX;
+        this.offY = offsetY;
     }
 
     /**
@@ -216,50 +173,13 @@ public class OutputSurface implements SurfaceTexture.OnFrameAvailableListener {
             mEGL.eglDestroyContext(mEGLDisplay, mEGLContext);
             // mEGL.eglTerminate(mEGLDisplay);
         }
-        if(mSurface!=null){
-            mSurface.release();
-        }
         mEGLDisplay = null;
         mEGLContext = null;
         mEGLSurface = null;
         mEGL = null;
-        mSurface = null;
-        mSurfaceTexture = null;
+        renderBus.onDestroy();
     }
 
-    /**
-     * Returns the Surface that we draw onto.
-     */
-    public Surface getSurface() {
-        return mSurface;
-    }
-
-    /**
-     * Latches the next buffer into the texture.  Must be called from the thread that created
-     * the OutputSurface object, after the onFrameAvailable callback has signaled that new
-     * data is available.
-     */
-    public void awaitNewImage() {
-        final int TIMEOUT_MS = 500;
-        synchronized (mFrameSyncObject) {
-            while (!mFrameAvailable) {
-                try {
-                    // Wait for onFrameAvailable() to signal us. Use a timeout to avoid
-                    // stalling the test if it doesn't arrive.
-                    mFrameSyncObject.wait(TIMEOUT_MS);
-                    if (!mFrameAvailable) {
-                        // TODO: if "spurious wakeup", continue while loop
-                        throw new RuntimeException("Surface frame wait timed out");
-                    }
-                } catch (InterruptedException ie) {
-                    // shouldn't happen
-                    throw new RuntimeException(ie);
-                }
-            }
-            mFrameAvailable = false;
-        }
-        // mSurfaceTexture.updateTexImage();
-    }
 
     /**
      * Draws the data from SurfaceTexture onto the current EGL surface.
@@ -267,32 +187,13 @@ public class OutputSurface implements SurfaceTexture.OnFrameAvailableListener {
      *
      * @param mediaPostion 主要是判断涂鸦层的显示时间
      */
-    public void drawImage(boolean isVideo, int mediaPostion, int curPostion) {
-        mDrawer.setCurrentDuration(mediaPostion);
-        if (!isVideo) {
-            imagePlayer.setCurrentDuration(curPostion);
-            imagePlayer.onDrawFrame();
-            mDrawer.setInputTexture(imagePlayer.getOutputTexture());
-        } else {
-            videoPlayer.setCurrentVideoDuration(curPostion);
-            videoPlayer.onDrawFrame();
-            mDrawer.setInputTexture(videoPlayer.getOutputTexture());
-        }
-        mDrawer.onDrawFrame();
+    public void drawImage(int mediaPostion, long curPostion) {
+        renderBus.setCurrentMurPts(curPostion);
+        renderBus.onDrawFrame(mediaPostion);
     }
 
     @Override
     public void onFrameAvailable(SurfaceTexture st) {
-        if (VERBOSE)
-            LogUtils.d(TAG, "new frame available");
-        synchronized (mFrameSyncObject) {
-            if (mFrameAvailable) {
-                return;
-//                throw new RuntimeException("mFrameAvailable already set, frame could be dropped");
-            }
-            mFrameAvailable = true;
-            mFrameSyncObject.notifyAll();
-        }
     }
 
     /**
@@ -310,40 +211,14 @@ public class OutputSurface implements SurfaceTexture.OnFrameAvailableListener {
         }
     }
 
-    /**
-     * 添加涂鸦成,根据不一样时间长度，显示不同时长的涂鸦
-     */
-    public void addDoodle(DoodleItem doodleItem) {
-        mDrawer.addDoodle(doodleItem);
-    }
-
-    public void onVideoSizeChanged(VideoInfo info) {
-        mDrawer.onSurfaceChanged(0, 0, info.width, info.height);
-    }
 
     /**
      * 对图片的originAfiter进行初始化准备工作
      * 记得在queuEvent中进行执行
      */
-    public void mediaPrepare(MediaItem item) {
-        currentMediaItem = item;
-        if (currentMediaItem.getMediaType() != MediaType.VIDEO) {
-            imagePlayer.setCurrentMediaItem(currentMediaItem);
-            imagePlayer.playPrepare();
-        } else {
-            if (currentMediaItem.getAfilter() != null) {
-                videoPlayer.changeFilter(currentMediaItem.getAfilter());
-            }
-            videoPlayer.onVideoChanged(item);
-            videoPlayer.setVideoFrameRatioUpdate(currentMediaItem);
-            MediaItem preMediaItem = getPreMediaItem();
-            videoPlayer.playPrepare(preMediaItem);
-        }
-        if (mediaConfig.getRatioType() == RatioType._4_3 || mediaConfig.getRatioType() == RatioType._16_9) {
-            mDrawer.preViewRotate(true);
-        } else {
-            mDrawer.preViewRotate(false);
-        }
+    public void mediaPrepare(int index, int currentPostion) {
+        currentMediaItem = mediaItems.get(index);
+        renderBus.switchPlayer(new Triple(index, currentPostion, false));
     }
 
     /**
@@ -358,52 +233,12 @@ public class OutputSurface implements SurfaceTexture.OnFrameAvailableListener {
             int x = mediaMatrix.getOffsetX();
             int y = mediaMatrix.getOffsetY();
             MatrixUtils.scale(matrix, scale, scale);
-            float tranx = (float) x / (float) ConstantMediaSize.showViewWidth;
-            float trany = (float) y / (float) ConstantMediaSize.showViewHeight;
+            float tranx = (float) x / (float) mshowWidth;
+            float trany = (float) y / (float) mshowHeight;
             Log.i(TAG, "x:" + x + ",y:" + y + ",scale:" + scale + ",tranx:" + tranx + "," + trany);
             Matrix.translateM(matrix, 0, tranx, trany, 0f);
         }
         return matrix;
-    }
-
-    private MediaItem getPreMediaItem() {
-        int index = 0;
-        for (int i = 0; i < mediaItems.size(); i++) {
-            if (mediaItems.get(i) == currentMediaItem) {
-                index = i - 1;
-                break;
-            }
-        }
-        if (index != -1) {
-            return mediaItems.get(index);
-        }
-        return null;
-    }
-
-    /**
-     * 检查是否有滤镜
-     * @return
-     */
-    private boolean checkExistsPhoto() {
-        for (MediaItem mediaItem : mediaItems) {
-            if (mediaItem.getMediaType() == MediaType.PHOTO) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * 检查是否有转场
-     * @return
-     */
-    private boolean checkExistsVideo() {
-        for (MediaItem mediaItem : mediaItems) {
-            if (mediaItem.getMediaType() == MediaType.VIDEO) {
-                return true;
-            }
-        }
-        return false;
     }
 
 }

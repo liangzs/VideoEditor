@@ -12,7 +12,7 @@ import com.ijoysoft.mediasdk.module.opengl.gpufilter.utils.OpenGlUtils;
  */
 public class HaHaMirrorTransitionFilter extends TransitionFilter {
     private int mPrograssLocation;
-    private float progress;
+
 
     public HaHaMirrorTransitionFilter(TransitionType transitionType) {
         super(transitionType, NO_FILTER_VERTEX_SHADER, OpenGlUtils.readShaderFromRawResource(R.raw.transition_haha_mirror));
@@ -31,7 +31,7 @@ public class HaHaMirrorTransitionFilter extends TransitionFilter {
     protected void onDrawArraysPre() {
         super.onDrawArraysPre();
         GLES20.glUniform1f(mPrograssLocation, progress);
-        progress += 0.04;
+        progress += 0.03;
         LogUtils.i(TAG, "onDrawArraysPre->" + progress);
     }
 

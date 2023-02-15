@@ -1,18 +1,23 @@
 package com.ijoysoft.mediasdk.module.ffmpeg;
 
+import androidx.annotation.FloatRange;
+import androidx.core.math.MathUtils;
+
 import com.ijoysoft.mediasdk.common.global.ConstantMediaSize;
 import com.ijoysoft.mediasdk.common.global.ConstantPath;
 import com.ijoysoft.mediasdk.common.utils.FileUtils;
 import com.ijoysoft.mediasdk.common.utils.LogUtils;
+import com.ijoysoft.mediasdk.common.utils.ObjectUtils;
 import com.ijoysoft.mediasdk.common.utils.TimeUtil;
 import com.ijoysoft.mediasdk.module.entity.AudioDuration;
 import com.ijoysoft.mediasdk.module.entity.AudioInsertItem;
-import com.ijoysoft.mediasdk.module.entity.FFmpegListProgress;
 import com.ijoysoft.mediasdk.module.entity.TransationType;
 
-import java.io.File;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -63,8 +68,16 @@ public class VideoEditManager {
         if (srcPath.length < 1) {
             return new String[]{};
         }
+        FileUtils.checkOrCreateParentFolder(destFile);
         boolean isDiffer = false;
-        String suffix = srcPath[0].substring(srcPath[0].lastIndexOf("."));
+        int suffixIndex = srcPath[0].lastIndexOf(".");
+        String suffix;
+        if (suffixIndex != -1) {
+            suffix = srcPath[0].substring(suffixIndex);
+        } else {
+            suffix = ".mp3";
+        }
+
         for (String string : srcPath) {
             if (!string.endsWith(suffix)) {
                 isDiffer = true;
@@ -72,23 +85,26 @@ public class VideoEditManager {
             }
         }
         String resultPath = ConstantPath.MUERGEFILELIST;
-        FileUtils.checkFileExist(resultPath);
         if (customPath != null && !customPath.isEmpty()) {
             resultPath = customPath;
         }
         FileUtils.insertVideoFileName(resultPath, srcPath);
-        String commandStr = "ffmpeg -d -y -f concat -safe 0 -i %s -c copy %s";
+
+        String[] commands = new String[]{"ffmpeg", "-d", "-y", "-f", "concat",
+                "-safe", "0", "-i", resultPath, "-c", "copy", destFile};
+
         if (isDiffer | isCopy) {
-            commandStr = "ffmpeg -d -y -f concat -safe 0 -i %s %s";
+            commands = new String[]{"ffmpeg", "-d", "-y", "-f", "concat",
+                    "-safe", "0", "-i", resultPath, destFile};
         }
-        commandStr = String.format(Locale.ENGLISH, commandStr, resultPath, destFile);
-        LogUtils.i(TAG, "VideoMurgeFromFilelist->commandStr:" + commandStr);
-        String[] commands = commandStr.split(" ");
         if (isExecute) {
             FFmpegCmd.getInstance().execute(commands, listener);
         }
         return commands;
     }
+
+
+//    public static void
 
     /**
      * 视频合成，考虑不同编码以及涂鸦等用到overlay的情况下，都统一转场这种格式，方便多视频合成
@@ -181,16 +197,10 @@ public class VideoEditManager {
                                     CallCmdListener listener, boolean isExecute) {
         String[] commands = new String[]{"ffmpeg", "-d", "-i", intputPath, "-vn", "-acodec", "copy", "-ss", startTime,
                 "-to", endTime, "-y", destPath};
-        StringBuilder sb = new StringBuilder();
-        for (String str : commands) {
-            sb.append(str).append(" ");
-        }
-        LogUtils.i(TAG, "command:" + sb.toString());
         if (isExecute) {
             FFmpegCmd.getInstance().execute(commands, listener);
         }
         return commands;
-
     }
 
     /**
@@ -208,22 +218,20 @@ public class VideoEditManager {
      * @param endTime    结束时间00:00:00.000
      * @param listener   监听
      */
-    public static void cutAudioLossle(String intputPath, String destPath, String startTime, String endTime,
-                                      int duration, CallCmdListener listener) {
+    public static String[] cutAudioLossle(String intputPath, String destPath, String startTime, String endTime,
+                                          int duration, CallCmdListener listener, boolean isExcute) {
         String[] commands = new String[]{"ffmpeg", "-d", "-i", intputPath, "-vn", "-ss", startTime, "-to", endTime,
                 "-y", destPath};
-        StringBuilder sb = new StringBuilder();
-        for (String str : commands) {
-            sb.append(str).append(" ");
+        if (isExcute) {
+            FFmpegCmd.getInstance().executeProgress(commands, listener, duration);
         }
-        LogUtils.i(TAG, "command:" + sb.toString());
-        FFmpegCmd.getInstance().executeProgress(commands, listener, duration);
-
+        return commands;
     }
 
     /**
      * 修改音频声音
      * 0.5小0.5倍，2则大两倍，-5dp减少5db，+5dp加5db
+     * 由于合成的声音变小，所以在原有幅度上增幅10db
      *
      * @param audioOrMusicUrl 音频源
      * @param outUrl          输出地址
@@ -231,19 +239,15 @@ public class VideoEditManager {
      */
     public static String[] changeAudioVolome(String audioOrMusicUrl, float vol, String outUrl, CallCmdListener listener,
                                              boolean isExecute) {
-        StringBuilder sb = new StringBuilder("ffmpeg");
-        sb.append(" -i");
-        sb.append(" ").append(audioOrMusicUrl);
-        sb.append(" -af");
-        sb.append(" volume=");
-        sb.append(vol);
-        sb.append(" ").append(outUrl);
-        String[] command = sb.toString().split(" ");
-        LogUtils.i(TAG, "command:" + Arrays.toString(command));
+        FileUtils.checkOrCreateParentFolder(outUrl);
+        String[] commands = new String[]{"ffmpeg", "-d", "-i", audioOrMusicUrl, "-af"
+                , "volume=" + vol + "[1];[1]volume=5dB", outUrl};
+
+//        LogUtils.i(TAG, "command:" + Arrays.toString(command));
         if (isExecute) {
-            FFmpegCmd.getInstance().execute(command, listener);
+            FFmpegCmd.getInstance().execute(commands, listener);
         }
-        return command;
+        return commands;
     }
 
     /**
@@ -256,6 +260,7 @@ public class VideoEditManager {
      */
     public static void changeAudioVol(String audioOrMusicUrl, float vol, String outUrl, CallCmdListener listener) {
         LogUtils.w(TAG, "audioOrMusicUrl:" + audioOrMusicUrl + "\nvol:" + vol + "\noutUrl:" + outUrl);
+        FileUtils.checkOrCreateParentFolder(outUrl);
         StringBuilder sb = new StringBuilder("ffmpeg");
         sb.append(" -i");
         sb.append(" ").append(audioOrMusicUrl);
@@ -286,31 +291,14 @@ public class VideoEditManager {
      * @param outputUrl    输出地址
      * @param listener     监听
      */
-    public static void composeVideoAudio(String videoUrl, String musicOrAudio, String outputUrl,
-                                         CallCmdListener listener) {
-        LogUtils.w(TAG, "videoUrl:" + videoUrl + "\nmusicOrAudio:" + musicOrAudio + "\noutputUrl:" + outputUrl);
-        StringBuilder sb = new StringBuilder("ffmpeg");
-        sb.append(" -d");
-        sb.append(" -i");
-        sb.append(" ").append(videoUrl);
-        sb.append(" -i");
-        sb.append(" ").append(musicOrAudio);
-        sb.append(" -vcodec");
-        sb.append(" copy");
-        // if (!PhoneAdatarList.checkMurgeAudioToneChange()) {
-        // sb.append(" -acodec");
-        // sb.append(" copy");
-        // }
-        sb.append(" -threads");
-        sb.append(" 5");
-        sb.append(" -movflags");
-        sb.append(" faststart");
-        sb.append(" -shortest");
-        sb.append(" -y");
-        sb.append(" ").append(outputUrl);
-        String command = sb.toString();
-        LogUtils.i(TAG, "command:" + command);
-        FFmpegCmd.getInstance().execute(command.split(" "), listener);
+    public static String[] composeVideoAudio(String videoUrl, String musicOrAudio, String outputUrl,
+                                             CallCmdListener listener, boolean isExcute) {
+        String[] commands = new String[]{"ffmpeg", "-d", "-i", videoUrl, "-i", musicOrAudio, "-vcodec", "copy", "-threads"
+                , "5", "-movflags", "faststart", "-shortest", "-y", outputUrl};
+        if (isExcute) {
+            FFmpegCmd.getInstance().execute(commands, listener);
+        }
+        return commands;
     }
 
     /**
@@ -324,6 +312,7 @@ public class VideoEditManager {
     public static void composeAudio(String audio1, String audio2, String outputUrl, CallCmdListener listener) {
         LogUtils.w(TAG, "audio1:" + audio1 + "\naudio2:" + audio2 + "\noutputUrl:" + outputUrl);
         StringBuilder sb = new StringBuilder("ffmpeg");
+        sb.append(" -d");
         sb.append(" -i");
         sb.append(" ").append(audio1);
         sb.append(" -i");
@@ -343,6 +332,47 @@ public class VideoEditManager {
     }
 
     /**
+     * 多个音频合并
+     * http://ffmpeg.org/ffmpeg-filters.html#amix
+     * duration
+     * How to determine the end-of-stream.
+     * longest
+     * The duration of the longest input. (default)
+     * shortest
+     * The duration of the shortest input.
+     * first
+     * The duration of the first input.
+     *
+     * @param outputUrl 输出地址
+     * @param listener  监听
+     */
+    public static String[] anixMultiAudio(String outputUrl, boolean isExecute, CallCmdListener listener, String... paths) {
+        if (paths == null || paths.length < 2) {
+            return null;
+        }
+        FileUtils.checkOrCreateParentFolder(outputUrl);
+        int length = paths.length;
+        StringBuilder sb = new StringBuilder("ffmpeg");
+        sb.append(" -d");
+        for (String path : paths) {
+            sb.append(" -i");
+            sb.append(" ").append(path);
+        }
+        sb.append(" -filter_complex");
+        sb.append(" amix=inputs=" + length + ":duration=longest:dropout_transition=" + length);
+        sb.append(" -y");
+        sb.append(" ").append(outputUrl);
+        String command = sb.toString();
+
+
+        String[] commands = command.split(" ");
+        if (isExecute) {
+            FFmpegCmd.getInstance().execute(commands, listener);
+        }
+        return commands;
+    }
+
+    /**
      * 多个音频拼接,用了-filter-complex，记得不要用空格和双引号
      * ffmpeg -i 1.mp3 -i 2.mp3 -i 3.mp3 -filter_complex '[0:0][1:0][2:0]concat=n=3:v=0:a=1[a]' -map [a] result1.mp3
      * <p>
@@ -352,38 +382,79 @@ public class VideoEditManager {
      * @param outputUrl 输出地址
      * @param listener  监听
      */
-    public static String[] composeMultiAudio(String outputUrl, CallCmdListener listener, boolean isExcute,
-                                             String... src) {
-        // StringBuilder sb = new StringBuilder("ffmpeg -d ");
-        // int len = src.length;
-        // StringBuilder filterBuilder = new StringBuilder(" -filter_complex ");
-        // for (int i = 0; i < len; i++) {
-        // sb.append(" -i ").append(src[i]);
-        // filterBuilder.append("[").append(i).append(":0]");
-        // }
-        // filterBuilder.append("concat=n=").append(len).append(":v=0:a=1[a]");
-        // sb.append(filterBuilder.toString());
-        // sb.append(" -map [a]");
-        // sb.append(" ").append(outputUrl);
-        // String command = sb.toString();
-        // LogUtils.i(TAG, "command:" + command);
-        // FFmpegCmd.getInstance().execute(command.split(" "), listener);
-        StringBuilder sb = new StringBuilder("ffmpeg -d -i concat:");
+    public static List<String[]> composeMultiAudio(String outputUrl, CallCmdListener listener, boolean isExcute,
+                                                   String... src) {
+        FileUtils.checkOrCreateParentFolder(outputUrl);
+        List<String[]> listCmd = new ArrayList<>();
+        // 这里出现一个问题,concat连接的长度不能超过1024，如果超过了1024则需要进行分包合成
         int len = src.length;
+        StringBuilder sb = new StringBuilder();
+        List<StringBuilder> list = new ArrayList<>();
+        int count = 0;
         for (int i = 0; i < len; i++) {
             sb.append(src[i]);
+            count++;
+            if (sb.length() > 600) {
+                list.add(sb);
+                sb = new StringBuilder();
+                count = 0;
+                continue;
+            }
             if (i < len - 1) {
                 sb.append("|");
             }
         }
-        sb.append(" -c copy");
-        sb.append(" ").append(outputUrl);
-        String[] command = sb.toString().split(" ");
-        LogUtils.i(TAG, "command:" + sb.toString());
-        if (isExcute) {
-            FFmpegCmd.getInstance().execute(command, listener);
+        if (list.size() > 0) {
+//            System.out.println("1..");
+            List<String> paths = new ArrayList<>();
+            if (count == 0 && list.size() == 1) {//刚好凑整，0个
+                String[] command = composeMultiAudioConcat(list.get(0).toString(), outputUrl);
+                listCmd.add(command);
+                if (isExcute) {
+                    FFmpegCmd.getInstance().execute(command, listener);
+                }
+//                System.out.println("0..");
+                return listCmd;
+            } else if (count == 1) {//只有一个
+                paths.add(sb.toString());
+//                System.out.println("1.." );
+            } else if (count > 1) {//还是有多个，得重新compose
+//                System.out.println("多个.." );
+                list.add(sb);
+            }
+            String path;
+            for (int i = 0; i < list.size(); i++) {
+//                path = "--------------ConstantPath.createMultiAudios()-------" + i + "--------";
+//                path = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.mp2";
+                path = ConstantPath.createMultiAudios();
+                paths.add(path);
+                String[] command = composeMultiAudioConcat(list.get(i).toString(), path);
+                listCmd.add(command);
+                if (isExcute) {
+                    FFmpegCmd.getInstance().execute(command, listener);
+                }
+            }
+            //用生成的再拼接-级联
+            listCmd.addAll(composeMultiAudio(outputUrl, null, false, paths.toArray(new String[paths.size()])));
+        } else {
+            String[] command = composeMultiAudioConcat(sb.toString(), outputUrl);
+            listCmd.add(command);
+            if (isExcute) {
+                FFmpegCmd.getInstance().execute(command, listener);
+            }
         }
-        return command;
+        return listCmd;
+    }
+
+    private static String[] composeMultiAudioConcat(String concat, String output) {
+
+        return new String[]{"ffmpeg", "-d", "-i", "concat:" + concat, "-c", "copy", output};
+//        StringBuilder sb = new StringBuilder("ffmpeg -d -i concat:");
+//        sb.append(concat);
+//        sb.append(" -c copy");
+//        sb.append(" ").append(output);
+////        LogUtils.i(TAG, "command:" + sb.toString());
+//        return sb.toString().split(" ");
     }
 
     /**
@@ -396,6 +467,7 @@ public class VideoEditManager {
      */
     public static void extractVideo(String videoUrl, String outUrl, CallCmdListener listener) {
         StringBuilder sb = new StringBuilder("ffmpeg");
+        sb.append(" -d");
         sb.append(" -i");
         sb.append(" ").append(videoUrl);
         sb.append(" -vcodec");
@@ -416,6 +488,7 @@ public class VideoEditManager {
      */
     public static void extractAudioAac(String videoUrl, String outUrl, CallCmdListener listener) {
         StringBuilder sb = new StringBuilder("ffmpeg");
+        sb.append(" -d");
         sb.append(" -i");
         sb.append(" ").append(videoUrl);
         sb.append(" -acodec");
@@ -436,24 +509,8 @@ public class VideoEditManager {
      * @param outUrl   输出
      */
     public static String[] extractAudioMp3(String videoUrl, String outUrl, CallCmdListener listener, boolean isExcute) {
-        // StringBuilder sb = new StringBuilder("ffmpeg");
-        // sb.append(" -d");
-        // sb.append(" -i");
-        // sb.append(" ").append(videoUrl);
-        // sb.append(" -c:a");
-        // sb.append(" libmp3lame");
-        // sb.append(" -vn");
-        // sb.append(" -y");
-        // sb.append(" ").append(outUrl);
-        // String command = sb.toString();
-        // LogUtils.i(TAG, "command:" + command);
-        // FFmpegCmd.getInstance().execute(command.split(" "), listener);
-        String[] commands = new String[]{"ffmpeg", "-d", "-i", videoUrl, "-c:a", "libmp3lame", "-vn", "-y", outUrl};
-        StringBuilder sb = new StringBuilder();
-        for (String str : commands) {
-            sb.append(str).append(" ");
-        }
-        LogUtils.i(TAG, "command:" + sb.toString());
+        FileUtils.checkOrCreateParentFolder(outUrl);
+        String[] commands = new String[]{"ffmpeg", "-i", videoUrl, "-c:a", "libmp3lame", "-vn", "-y", outUrl};
         if (isExcute) {
             FFmpegCmd.getInstance().execute(commands, listener);
         }
@@ -461,24 +518,50 @@ public class VideoEditManager {
     }
 
     /**
-     * 调整视频播放速度
+     * 提取单独的音频并做裁剪动作
+     * ffmpeg -i input.mp4 -c:a  libmp3lame -vn -y ouput.mp3
+     *
+     * @param videoUrl 音频地址
+     * @param outUrl   输出
+     */
+    public static String[] extractAudioMp3byTrim(String videoUrl, String outUrl, String startTime, String endTime) {
+        FileUtils.checkOrCreateParentFolder(outUrl);
+        String[] commands = new String[]{"ffmpeg", "-d", "-i", videoUrl, "-c:a", "libmp3lame", "-vn",
+                "-ss", startTime,
+                "-to", endTime, "-y", outUrl};
+        return commands;
+    }
+
+    /**
+     * 调整视频+音频播放速度
      */
     public static void adjustVideoSpeed(String path, float speed, String output, CallCmdListener listener) {
+        FileUtils.checkOrCreateParentFolder(output);
         String filter = String.format(Locale.ENGLISH, "[0:v]setpts=%f*PTS[v];[0:a]atempo=%f[a]", 1 / speed, speed);
-        StringBuilder sb = new StringBuilder("ffmpeg");
-        sb.append(" -i");
-        sb.append(" ").append(path);
-        sb.append(" -filter_complex");
-        sb.append(" ").append(filter);
-        sb.append(" -map");
-        sb.append(" [v]");
-        sb.append(" -map");
-        sb.append(" [a]");
-        sb.append(" -y");
-        sb.append(" ").append(output);
-        String command = sb.toString();
-        LogUtils.i(TAG, "command:" + command);
-        FFmpegCmd.getInstance().execute(command.split(" "), listener);
+        String[] commands = new String[]{"ffmpeg", "-i", path, "-filter_complex"
+                , filter, "-map", "[v]", "-map", "[a]", "-y", output};
+        FFmpegCmd.getInstance().execute(commands, listener);
+    }
+
+    /**
+     * 调整音频播放速度
+     * atempo 范围是0.5-2
+     * 如果超过2倍，则重新乘其乘2的值
+     * ffmpeg -i input.mkv -filter:a "atempo=2.0,atempo=2.0" -vn output.mkv
+     */
+    public static String[] adjustAudioSpeed(String path, @FloatRange(from = 0.25f, to = 4f) float speed, String output, boolean isExcute, CallCmdListener listener) {
+        //0.5-2.0
+        String[] commands = new String[]{"ffmpeg", "-i", path, "-filter:a", "atempo=" + speed, "-vn", output};
+        if (speed > 2.0) {
+            commands = new String[]{"ffmpeg", "-i", path, "-filter:a", "atempo=2.0", "atempo=" + TimeUtil.getDecimalTwo(speed / 2.0f), "-vn", output};
+        }
+        if (speed < 0.5f) {
+            commands = new String[]{"ffmpeg", "-i", path, "-filter:a", "atempo=0.5", "atempo=" + TimeUtil.getDecimalTwo(speed / 0.5f), "-vn", output};
+        }
+        if (isExcute) {
+            FFmpegCmd.getInstance().execute(commands, listener);
+        }
+        return commands;
     }
 
     /**
@@ -608,6 +691,7 @@ public class VideoEditManager {
      * @param listener       监听
      */
     public static void murgeTransationbyFade(String firstImagePath, String outputPath, CallCmdListener listener) {
+        FileUtils.checkOrCreateParentFolder(outputPath);
         StringBuilder sb = new StringBuilder("ffmpeg");
         sb.append(" -loop");
         sb.append(" 1");
@@ -650,6 +734,7 @@ public class VideoEditManager {
      */
     public static void insertAudiobyLocation(String videoPath, String audioPath, int start, int end, String outPath,
                                              CallCmdListener listener) {
+        FileUtils.checkOrCreateParentFolder(outPath);
         String filter = String.format(Locale.ENGLISH,
                 "[1:0]adelay=%d|%d,afade=d=3,areverse,afade=d=3,areverse[delay];[0:1][delay]amix=inputs=2", start,
                 start);
@@ -713,6 +798,7 @@ public class VideoEditManager {
      */
     public static String[] changeMultiVolume(String inputUrl, String outputUrl, CallCmdListener listener,
                                              ArrayList<AudioDuration> list, boolean isExecute) {
+        FileUtils.checkOrCreateParentFolder(outputUrl);
         // 先做过滤，如果volume是0.5，即没有做音量调整的，那就没有这么蛋疼闲操心的去改变音量了
         List<AudioDuration> result = (List<AudioDuration>) list.clone();
         Iterator it = result.iterator();
@@ -734,23 +820,29 @@ public class VideoEditManager {
         StringBuilder filterBuilder = new StringBuilder();
         if (result.isEmpty()) {
             filterBuilder.append("1");
-        } else {
-            filterBuilder.append(result.get(0).getVolume());
         }
+        // else {
+        // filterBuilder.append(result.get(0).getVolume());
+        // }
         String endBlacket = "";
-        // for (int i = 0; i < result.size(); i++) {
-        // start = TimeUtil.getSecond(result.get(i).getStart());
-        // end = TimeUtil.getSecond(result.get(i).getEnd());
-        // volume = result.get(i).getVolume();
-        // endBlacket += ")";
-        // if (i != result.size() - 1) {
-        // filterBuilder.append("if(between(t,").append(start).append(",").append(end).append("),").append(volume)
-        // .append(",");
-        // } else {
-        // filterBuilder.append("if(between(t,").append(start).append(",").append(end).append("),").append(volume)
-        // .append(",0.5").append(endBlacket);
-        // }
-        // }
+        if (result.size() > 0) {
+            filterBuilder.append("\'");
+            for (int i = 0; i < result.size(); i++) {
+                start = TimeUtil.getSecond(result.get(i).getStart());
+                end = TimeUtil.getSecond(result.get(i).getEnd());
+                volume = result.get(i).getVolume();
+                endBlacket += ")";
+                if (i != result.size() - 1) {
+                    filterBuilder.append("if(between(t,").append(start).append(",").append(end).append("),")
+                            .append(volume).append(",");
+                } else {
+                    filterBuilder.append("if(between(t,").append(start).append(",").append(end).append("),")
+                            .append(volume).append(",0.5").append(endBlacket);
+                }
+            }
+            filterBuilder.append("\'");
+        }
+
         sb.append(filterBuilder.toString());
         sb.append(":eval=frame");
         sb.append(" -y");
@@ -772,9 +864,10 @@ public class VideoEditManager {
      */
     public static String[] createSilenceAudio(String outputUrl, float duration, CallCmdListener callCmdListener,
                                               boolean isExcute) {
+        FileUtils.checkOrCreateParentFolder(outputUrl);
         String[] commands = new String[]{"ffmpeg", "-d", "-f", "lavfi", "-i", "aevalsrc=0", "-t", "" + duration,
                 "-acodec", "libmp3lame", "-y", outputUrl};
-        LogUtils.i(TAG, "command:" + Arrays.toString(commands));
+//        LogUtils.i(TAG, "command:" + Arrays.toString(commands));
         if (isExcute) {
             FFmpegCmd.getInstance().execute(commands, callCmdListener);
         }
@@ -790,6 +883,7 @@ public class VideoEditManager {
      */
     public static String[] createSilenceAudioAAC(String outputUrl, float duration, CallCmdListener callCmdListener,
                                                  boolean isExcute) {
+        FileUtils.checkOrCreateParentFolder(outputUrl);
         String[] commands = new String[]{"ffmpeg", "-d", "-f", "lavfi", "-i", "aevalsrc=0", "-t", "" + duration,
                 "-acodec", "aac", "-y", outputUrl};
         LogUtils.i(TAG, "command:" + Arrays.toString(commands));
@@ -809,24 +903,84 @@ public class VideoEditManager {
      *
      * @param outputUrl
      * @param list
-     * @param listener
      */
-    public static void inserMultiAudio(String outputUrl, String silencePath, List<AudioInsertItem> list,
-                                       CallCmdListener listener) {
+    public static List<String[]> inserMultiAudio(String outputUrl, String silencePath, List<AudioInsertItem> list) {
+        FileUtils.checkOrCreateParentFolder(outputUrl);
+        final int splitCount = 10;
+        List<String[]> listCmd = new ArrayList<>();
+        int times = list.size() / splitCount;
+        if (times == 0) {
+            String[] command = insertMultiAudioBydelay(0, list.size(), list, silencePath, outputUrl);
+            listCmd.add(command);
+            // FFmpegCmd.getInstance().execute(command, listener);
+            return listCmd;
+        }
+        if (list.size() % splitCount > 0) {
+            times++;
+        }
+        String inputPath = silencePath;
+        String outPath = "";
+        List<String> outputs = new ArrayList<>();
+        for (int i = 0; i < times; i++) {
+            // outPath = "liangze/create/i"+i+".mp3";
+            outPath = ConstantPath.createMultiAudios();
+            int start = i * splitCount;
+            int end = (i + 1) * splitCount;
+            if (i + 1 == times) {
+                end = list.size();
+            }
+            String[] command = insertMultiAudioBydelay(start, end, list, inputPath, outPath);
+//            inputPath = outPath;
+            listCmd.add(command);
+            outputs.add(outPath);
+        }
+        //多音频混音
+        outPath = ConstantPath.createMultiAudios();
+        String[] commands = anixMultiAudio(outPath, false, null, outputs.toArray(new String[outputs.size()]));
+//        LogUtils.i(TAG, "command:" + Arrays.toString(commands));
+        listCmd.add(commands);
+        // 改变音量，多次混音导致音量大大降低
+        commands = new String[]{"ffmpeg", "-d", "-i", outPath, "-af", "volume=15dB", "-y", outputUrl};
+//        LogUtils.i(TAG, "command:" + Arrays.toString(commands));
+        listCmd.add(commands);
+        return listCmd;
+        // FFmpegCmd.getInstance().executeList(listCmd, listener);
+    }
+
+    public void changeVolume(String inputpath, String outputPath, float volume) {
+
+    }
+
+    /**
+     * [0:a]aformat=sample_fmts=fltp:channel_layouts=stereo,volume=0.4[a0];
+     *
+     * @param start
+     * @param end
+     * @param list
+     * @param silencePath
+     * @param output
+     * @return
+     */
+    private static String[] insertMultiAudioBydelay(int start, int end, List<AudioInsertItem> list, String silencePath,
+                                                    String output) {
+        FileUtils.checkOrCreateParentFolder(output);
+        //排序audios
+        Collections.sort(list, (o1, o2) -> Integer.compare(o1.getStart(),
+                o2.getStart()));
         int fading = ConstantMediaSize.FADE_SECOND;
         StringBuilder sb = new StringBuilder("ffmpeg");
         StringBuilder endBlacket = new StringBuilder("[0]");
         sb.append(" -d");
         sb.append(" -i");
         sb.append(" ").append(silencePath);
-        for (int i = 0; i < list.size(); i++) {
+        for (int i = start; i < end; i++) {
             sb.append(" -i ").append(list.get(i).getPath());
         }
         sb.append(" -filter_complex ");
         int tempEnd = 0;
-        for (int i = 0; i < list.size(); i++) {
+        for (int i = start; i < end; i++) {
             if (list.get(i).getStart() > 0) {
-                sb.append("[").append((i + 1)).append("]");
+                sb.append("[").append((i + 1 - start)).append("]");
                 sb.append("adelay=");
                 sb.append(list.get(i).getStart()).append("|").append(list.get(i).getStart());
             }
@@ -840,45 +994,44 @@ public class VideoEditManager {
                 sb.append(",afade=t=out:st=").append(tempEnd).append(":d=").append(fading);
             }
             if (list.get(i).getStart() > 0 || list.get(i).isFade()) {
-                sb.append("[audio").append(i + 1).append("];");
-                endBlacket.append("[audio").append(i + 1).append("]");
+                sb.append("[audio").append(i + 1 - start).append("];");
+                endBlacket.append("[audio").append(i + 1 - start).append("]");
             } else {
-                endBlacket.append("[").append((i + 1)).append("]");
+                endBlacket.append("[").append((i + 1 - start)).append("]");
             }
-
         }
         sb.append(endBlacket.toString());
-        sb.append("amix=").append(list.size() + 1);
+        sb.append("amix=").append(end - start + 1);
         sb.append(" -y ");
-        sb.append(outputUrl);
+        sb.append(output);
         String command = sb.toString();
-        LogUtils.i(TAG, "command:" + command);
-        FFmpegCmd.getInstance().execute(command.split(" "), listener);
+        return command.split(" ");
     }
 
     /**
      * 裁剪视频 精确到毫秒级别
      * ffmpeg -ss 00:05:43 -t 124  -i 1.mp4   -vcodec copy -acodec copy -avoid_negative_ts 1 -y result.mp4   音视频同步
+     * 这里需要进行细分，因为出现了这样的情况，音频的copy出了问题，视频是没有问题，但是音频出现了这个中情况：MP4文件竟然包含了amr_nb这种编码
+     * 但是这种编码只支持3gp的情况的，所以使用copy就出现了错误，所以音频也做一次检查，如果是aac格式则直接复制，如果不是aac则不作复制
+     * acc对应的android系统格式是：mp4a-latm
+     * <p>
+     * ffmpeg -ss 00:00:00 -t 10  -i HUAWEI_SUPERpm4.mp4   -vf  "scale=720:-2" -y result.mp4
      *
      * @param intputPath 视频源
      * @param destPath   结果目标地址
      * @param startTime  开始时间 00:00:02  .400 格式调用timeUtil
      * @param listener   监听回调
      */
-    public static void cutVideo(String intputPath, String destPath, String startTime, CallCmdListener listener,
-                                int totalTime) {
-        String[] commands;
-        if (FileUtils.checkVideoH264(intputPath) || !intputPath.endsWith(".mp4")) {
-            commands = new String[]{"ffmpeg", "-d", "-ss", startTime, "-t",
-                    String.valueOf(TimeUtil.getSecondOneDecimal(totalTime)), "-i", intputPath, "-vcodec", "copy",
-                    "-acodec", "copy", "-avoid_negative_ts", "1", "-y", destPath};
-        } else {
-            commands = new String[]{"ffmpeg", "-d", "-ss", startTime, "-t",
-                    String.valueOf(TimeUtil.getSecondOneDecimal(totalTime)), "-i", intputPath, "-avoid_negative_ts",
-                    "1", "-y", destPath};
-        }
+    public static String[] cutVideo(String intputPath, String destPath, String startTime, CallCmdListener listener,
+                                    int totalTime, int cutWidth, boolean isExcute) {
+        FileUtils.checkOrCreateParentFolder(destPath);
+        String[] commands = dealVideoCut(intputPath, destPath, startTime, totalTime, cutWidth, true);
+
         LogUtils.i(TAG, "command:" + Arrays.toString(commands));
-        FFmpegCmd.getInstance().executeProgress(commands, listener, totalTime);
+        if (isExcute) {
+            FFmpegCmd.getInstance().executeProgress(commands, listener, totalTime);
+        }
+        return commands;
     }
 
     /**
@@ -888,43 +1041,16 @@ public class VideoEditManager {
      * @param intputPath    视频源
      * @param destPathLeft  结果目标地址
      * @param split         开始时间 00:00:02  .400 格式调用timeUtil
-     * @param listener      监听回调
      * @param destPathRight 这里遇到一很大的問題就是被微信壓縮過的視頻，-ss進行取不到關鍵幀了
      */
-    public static void splitVideo(String intputPath, final String destPathLeft, String destPathRight, int split,
-                                  int totalTime, final CallCmdListener listener) {
+    public static List<String[]> splitVideo(String intputPath, final String destPathLeft, String destPathRight,
+                                            int split, int totalTime, int cutWidth) {
+        FileUtils.checkOrCreateParentFolder(destPathLeft);
         String splitTime = TimeUtil.getCutForamt(split);
         final List<String[]> list = new ArrayList<>();
-        List<FFmpegListProgress> helpers = new ArrayList<>();
-        String[] commands;
-        helpers.add(new FFmpegListProgress(split));
-        if (FileUtils.checkVideoH264(intputPath) || !intputPath.endsWith(".mp4")) {
-            commands = new String[]{"ffmpeg", "-i", intputPath, "-vcodec", "copy", "-acodec", "copy", "-to",
-                    splitTime, "-y", destPathLeft};
-            list.add(commands);
-            LogUtils.i(TAG, "command:" + Arrays.toString(commands));
-            commands = new String[]{"ffmpeg", "-d", "-ss", splitTime, "-t",
-                    String.valueOf(TimeUtil.getSecondOneDecimal(totalTime-split)), "-i", intputPath, "-vcodec", "copy",
-                    "-acodec", "copy", "-avoid_negative_ts", "1", "-y", destPathRight};
-
-        } else {
-            commands = new String[]{"ffmpeg", "-i", intputPath, "-to", splitTime, "-y", destPathLeft};
-            list.add(commands);
-            LogUtils.i(TAG, "command:" + Arrays.toString(commands));
-            commands = new String[]{"ffmpeg", "-d", "-ss", splitTime, "-t",
-                    String.valueOf(TimeUtil.getSecondOneDecimal(totalTime-split)), "-i", intputPath, "-avoid_negative_ts",
-                    "1", "-y", destPathRight};
-
-        }
-//        commands = new String[]{"ffmpeg", "-i", intputPath, "-ss", splitTime, "-y", destPathRight};
-//        if (!intputPath.endsWith(".mp4")) {
-//            commands = new String[]{"ffmpeg", "-i", intputPath, "-vcodec", "copy", "-acodec", "copy", "-ss", splitTime, "-y", destPathRight};
-//        }
-        LogUtils.i(TAG, "command:" + Arrays.toString(commands));
-        list.add(commands);
-        helpers.add(new FFmpegListProgress(totalTime - split));
-        FFmpegCmd.getInstance().executeList(list, listener);
-//        FFmpegCmd.getInstance().executeListProgress(list, helpers, listener);
+        list.add(dealVideoCut(intputPath, destPathLeft, splitTime, totalTime - split, cutWidth, false));
+        list.add(dealVideoCut(intputPath, destPathRight, splitTime, totalTime - split, cutWidth, true));
+        return list;
     }
 
     private static String change2mkv(String path) {
@@ -943,57 +1069,27 @@ public class VideoEditManager {
      * @param inputPath 视频源
      * @param
      * @param end       00:00:02  .400 格式调用timeUtil
-     * @param listener  监听回调
      */
-    public static void cutVideoDeleteMiddle(String inputPath, String outputPath, int start, int end, int totalTime,
-                                            final CallCmdListener listener) {
+    public static List<String[]> cutVideoDeleteMiddle(String inputPath, String outputPath, int start, int end,
+                                                      int totalTime, int cutWidth) {
+        FileUtils.checkOrCreateParentFolder(outputPath);
         String cutStartTime = TimeUtil.getCutForamt(start);
         String cutEndTime = TimeUtil.getCutForamt(end);
-        List<FFmpegListProgress> helpers = new ArrayList<>();
-        String pathName = inputPath.substring(0, inputPath.lastIndexOf("."));
-        String suffix = inputPath.substring(inputPath.lastIndexOf("."));
-        final String outputPath1 = pathName + "1" + suffix;
-        final String outputPath2 = pathName + "2" + suffix;
-        final List<String[]> list = new ArrayList<>();
-        String[] commands;
-        helpers.add(new FFmpegListProgress(start));
-        helpers.add(new FFmpegListProgress(totalTime - end));
-        if (FileUtils.checkVideoH264(inputPath) || !inputPath.endsWith(".mp4")) {
-            commands = new String[]{"ffmpeg", "-d", "-i", inputPath, "-vcodec", "copy", "-acodec", "copy", "-to",
-                    cutStartTime, "-y", outputPath1};
-            LogUtils.i(TAG, "command:" + Arrays.toString(commands));
-            list.add(commands);
-
-            commands = new String[]{"ffmpeg", "-d", "-ss", cutEndTime, "-t",
-                    String.valueOf(TimeUtil.getSecondOneDecimal(totalTime)), "-i", inputPath, "-vcodec", "copy",
-                    "-acodec", "copy", "-avoid_negative_ts", "1", "-y", outputPath2};
-            LogUtils.i(TAG, "command:" + Arrays.toString(commands));
+//        List<FFmpegListProgress> helpers = new ArrayList<>();
+        String suffix;
+        if (inputPath.lastIndexOf(".") != -1) {
+            suffix = inputPath.substring(inputPath.lastIndexOf("."));
         } else {
-            commands = new String[]{"ffmpeg", "-d", "-i", inputPath, "-to", cutStartTime, "-y", outputPath1};
-            LogUtils.i(TAG, "command:" + Arrays.toString(commands));
-            list.add(commands);
-            commands = new String[]{"ffmpeg", "-d", "-ss", cutEndTime, "-t",
-                    String.valueOf(TimeUtil.getSecondOneDecimal(totalTime)), "-i", inputPath, "-avoid_negative_ts",
-                    "1", "-y", outputPath2};
-            LogUtils.i(TAG, "command:" + Arrays.toString(commands));
+            suffix = ".mp3";
         }
-//        commands = new String[]{"ffmpeg", "-d", "-i", inputPath, "-ss", cutEndTime, "-y", outputPath2};
-//        if (!inputPath.endsWith(".mp4")) {
-//            commands = new String[]{"ffmpeg", "-d", "-i", inputPath, "-vcodec", "copy", "-acodec", "copy", "-ss",
-//                    cutEndTime, "-y", outputPath2};
-//        }
-        list.add(commands);
-        helpers.add(new FFmpegListProgress(end - start));
-        list.add(videoMurgeFromFilelist(null, outputPath, false, false, listener, outputPath1, outputPath2));
-        FFmpegCmd.getInstance().executeListProgress(list, helpers, new SingleCmdListener() {
-            @Override
-            public void next() {
-                FileUtils.deleteDir(new File(outputPath1));
-                FileUtils.deleteDir(new File(outputPath2));
-                listener.onNext();
-                listener.onStop(0);
-            }
-        });
+        final String outputPath1 = ConstantPath.getVideoTrimPath() + "murge_1" + suffix;
+        final String outputPath2 = ConstantPath.getVideoTrimPath() + "murge_2" + suffix;
+        final List<String[]> list = new ArrayList<>();
+
+        list.add(dealVideoCut(inputPath, outputPath1, cutStartTime, totalTime, cutWidth, false));
+        list.add(dealVideoCut(inputPath, outputPath2, cutEndTime, totalTime, cutWidth, true));
+        list.add(videoMurgeFromFilelist(null, outputPath, false, false, null, outputPath1, outputPath2));
+        return list;
     }
 
     /**
@@ -1007,14 +1103,10 @@ public class VideoEditManager {
      * @return
      */
     public static String[] cutVideoTo(String inputPath, String outputPath, String cutStartTime, int totalTime,
-                                      CallCmdListener listener, boolean isExcute) {
-        String[] commands;
-        if (FileUtils.checkVideoH264(inputPath) || !inputPath.endsWith(".mp4")) {
-            commands = new String[]{"ffmpeg", "-d", "-i", inputPath, "-vcodec", "copy", "-acodec", "copy", "-to",
-                    cutStartTime, "-y", outputPath};
-        } else {
-            commands = new String[]{"ffmpeg", "-d", "-i", inputPath, "-to", cutStartTime, "-y", outputPath};
-        }
+                                      CallCmdListener listener, boolean isExcute, int cutWidth) {
+        FileUtils.checkOrCreateParentFolder(outputPath);
+        String[] commands = dealVideoCut(inputPath, outputPath, cutStartTime, totalTime, cutWidth, false);
+
         LogUtils.i(TAG, "command:" + Arrays.toString(commands));
         if (isExcute) {
             FFmpegCmd.getInstance().executeProgress(commands, listener, totalTime);
@@ -1033,9 +1125,14 @@ public class VideoEditManager {
      * @return
      */
     public static String[] cutVideoToCopy(String inputPath, String outputPath, String cutStartTime, int totalTime,
-                                          CallCmdListener listener, boolean isExcute) {
+                                          CallCmdListener listener, boolean isExcute, int cutWidth) {
+        FileUtils.checkOrCreateParentFolder(outputPath);
         String[] commands = new String[]{"ffmpeg", "-d", "-i", inputPath, "-vcodec", "copy", "-acodec", "copy", "-to",
                 cutStartTime, "-y", outputPath};
+        if (cutWidth != 0) {
+            commands = new String[]{"ffmpeg", "-d", "-i", inputPath, "-vf", "scale=" + cutWidth + ":-2", "-to",
+                    cutStartTime, "-y", outputPath};
+        }
         LogUtils.i(TAG, "command:" + Arrays.toString(commands));
         if (isExcute) {
             FFmpegCmd.getInstance().executeProgress(commands, listener, totalTime);
@@ -1045,7 +1142,9 @@ public class VideoEditManager {
 
     /**
      * 从cutStartTime点到结尾进行裁剪
-     *     * ffmpeg -ss 00:05:43 -t 124  -i 1.mp4   -vcodec copy -acodec copy -avoid_negative_ts 1 -y result.mp4   音视频同步
+     * * ffmpeg -ss 00:05:43 -t 124  -i 1.mp4   -vcodec copy -acodec copy -avoid_negative_ts 1 -y result.mp4   音视频同步
+     * "-acodec", "copy",
+     *
      * @param inputPath
      * @param outputPath
      * @param cutEndTime
@@ -1054,24 +1153,9 @@ public class VideoEditManager {
      * @return
      */
     public static String[] cutVideoFrom(String inputPath, String outputPath, String cutEndTime, int totalTime,
-                                        CallCmdListener listener, boolean isExcute) {
-        String[] commands;
-//        if (FileUtils.checkVideoH264(inputPath) || !inputPath.endsWith(".mp4")) {
-////        if (!inputPath.endsWith(".mp4")) {
-//            commands = new String[]{"ffmpeg", "-d", "-i", inputPath, "-vcodec", "copy", "-acodec", "copy", "-ss",
-//                    cutEndTime, "-y", outputPath};
-//        } else {
-//            commands = new String[]{"ffmpeg", "-d", "-i", inputPath, "-ss", cutEndTime, "-y", outputPath};
-//        }
-        if (FileUtils.checkVideoH264(inputPath) || !inputPath.endsWith(".mp4")) {
-            commands = new String[]{"ffmpeg", "-d", "-ss", cutEndTime, "-t",
-                    String.valueOf(TimeUtil.getSecondOneDecimal(totalTime)), "-i", inputPath, "-vcodec", "copy",
-                    "-acodec", "copy", "-avoid_negative_ts", "1", "-y", outputPath};
-        } else {
-            commands = new String[]{"ffmpeg", "-d", "-ss", cutEndTime, "-t",
-                    String.valueOf(TimeUtil.getSecondOneDecimal(totalTime)), "-i", inputPath, "-avoid_negative_ts",
-                    "1", "-y", outputPath};
-        }
+                                        CallCmdListener listener, boolean isExcute, int cutWidth) {
+        FileUtils.checkOrCreateParentFolder(outputPath);
+        String[] commands = dealVideoCut(inputPath, outputPath, cutEndTime, totalTime, cutWidth, true);
         LogUtils.i(TAG, "command:" + Arrays.toString(commands));
         if (isExcute) {
             FFmpegCmd.getInstance().executeProgress(commands, listener, totalTime);
@@ -1079,17 +1163,17 @@ public class VideoEditManager {
         return commands;
     }
 
-
-//    public static String[] cutVideo(String inputPath, String outputPath, String cutEndTime, String endTime, int totalTime,
-//                                    CallCmdListener listener, boolean isExcute) {
-//        String[] commands = new String[]{"ffmpeg", "-d", "-i", inputPath, "-vcodec", "copy", "-acodec", "copy", "-ss",
-//                cutEndTime, "-to", endTime, "-y", outputPath};
-//        LogUtils.i(TAG, "command:" + Arrays.toString(commands));
-//        if (isExcute) {
-//            FFmpegCmd.getInstance().executeProgress(commands, listener, totalTime);
-//        }
-//        return commands;
-//    }
+    // public static String[] cutVideo(String inputPath, String outputPath, String cutEndTime, String endTime, int
+    // totalTime,
+    // CallCmdListener listener, boolean isExcute) {
+    // String[] commands = new String[]{"ffmpeg", "-d", "-i", inputPath, "-vcodec", "copy", "-acodec", "copy", "-ss",
+    // cutEndTime, "-to", endTime, "-y", outputPath};
+    // LogUtils.i(TAG, "command:" + Arrays.toString(commands));
+    // if (isExcute) {
+    // FFmpegCmd.getInstance().executeProgress(commands, listener, totalTime);
+    // }
+    // return commands;
+    // }
 
     /**
      * ffmpeg -i output.mp4 -c:v libx264 -vf scale=352:640 -r 60 -c:a copy -strict experimental -f mpegts 3.ts
@@ -1106,6 +1190,7 @@ public class VideoEditManager {
      */
     public static String[] changeScaleAsTs(String inputPath, String outputPath, boolean changeScale, int width,
                                            int height, boolean isExcute, CallCmdListener listener) {
+        FileUtils.checkOrCreateParentFolder(outputPath);
         String audioFormat = "copy";
         if (!inputPath.endsWith(".mp4")) {
             audioFormat = "libmp3lame";
@@ -1128,4 +1213,157 @@ public class VideoEditManager {
         return commands;
     }
 
+
+    /**
+     * ffmpeg -i input.mp4 -b:v 10000k -vf scale=1080:1920 video_1080_1920.mp4
+     * 修改video的分辨率和码率值
+     */
+    public static String[] videoBitResolution(String inputPath, String outPath, float bitRate, int[] resolution, boolean isExcute, CallCmdListener listener) {
+        //resulution 不为奇数
+        if (bitRate < 0) {
+            throw new IllegalArgumentException("bitRate must >0");
+        }
+        if (resolution == null || resolution.length < 2 || resolution[0] < 0 || resolution[1] < 0) {
+            throw new IllegalArgumentException("resolution must >0");
+        }
+        if (resolution[0] % 2 == 1 || resolution[1] % 2 == 1) {
+            throw new IllegalArgumentException("resolution must even number! width:" + resolution[0] + "  height:" + resolution[1]);
+        }
+        FileUtils.checkOrCreateParentFolder(outPath);
+
+        String[] commands = new String[]{"ffmpeg", "-d", "-i", inputPath, "-y", "-b:v", bitRate + "k",
+                "-vf", "scale=" + resolution[0] + ":" + resolution[1], "-vsync", "2", "-y", outPath};
+        if (isExcute) {
+            FFmpegCmd.getInstance().execute(commands, listener);
+        }
+        return commands;
+    }
+
+    /**
+     * ffmpeg -i result.mp4 result.gif
+     *
+     * @return
+     */
+    public static String[] video2Gif(String inputPath, String outPath, long startTime, long endTime, boolean isExcute, CallCmdListener listener) {
+
+        if (ObjectUtils.isEmpty(inputPath) || ObjectUtils.isEmpty(outPath)) {
+            throw new IllegalArgumentException("inputPath| outPath  must not null");
+        }
+        FileUtils.checkOrCreateParentFolder(outPath);
+        String[] commands = new String[]{"ffmpeg", "-d", "-i", inputPath, "-ss", TimeUtil.getCutForamt(startTime), "-to", TimeUtil.getCutForamt(endTime), "-y", outPath};
+        if (isExcute) {
+            FFmpegCmd.getInstance().execute(commands, listener);
+        }
+        return commands;
+    }
+
+    /**
+     * 先加测是否复制视频码流，然后检测是否复制音频码流，最后检测宽高是否为偶数
+     *
+     * @return
+     */
+    private static String[] dealVideoCut(String inputPath, String outputPath, String startTime, int totalTime, int cutWidth, boolean from) {
+        String[] commands;
+        if (from) {
+            if (FileUtils.checkVideoH264(inputPath) || inputPath.endsWith(".mp4")) {
+                commands = new String[]{"ffmpeg", "-d", "-ss", startTime, "-t",
+                        String.valueOf(TimeUtil.getSecondOneDecimal(totalTime)), "-i", inputPath, "-vcodec", "copy",
+                        "-acodec", "copy", "-avoid_negative_ts", "1", "-y", outputPath};
+                // 如果是MP4文件的同时，再次检测此文件的音频是否是aac的音频
+                if (!FileUtils.checkVideoAacMp3(inputPath) && inputPath.endsWith(".mp4")) {
+                    commands = new String[]{"ffmpeg", "-d", "-ss", startTime, "-t",
+                            String.valueOf(TimeUtil.getSecondOneDecimal(totalTime)), "-i", inputPath, "-vcodec", "copy",
+                            "-avoid_negative_ts", "1", "-y", outputPath};
+                }
+            } else {
+                commands = new String[]{"ffmpeg", "-d", "-ss", startTime, "-t",
+                        String.valueOf(TimeUtil.getSecondOneDecimal(totalTime)), "-i", inputPath, "-acodec", "copy", "-avoid_negative_ts",
+                        "1", "-y", outputPath};
+            }
+            if (cutWidth % 2 != 0) {
+                commands = new String[]{"ffmpeg", "-d", "-ss", startTime, "-t",
+                        String.valueOf(TimeUtil.getSecondOneDecimal(totalTime)), "-i", inputPath, "-vf",
+                        "scale=" + cutWidth + ":-2", "-y", outputPath};
+            }
+            return commands;
+        }
+
+
+        if (FileUtils.checkVideoH264(inputPath) || inputPath.endsWith(".mp4")) {
+            commands = new String[]{"ffmpeg", "-d", "-i", inputPath, "-vcodec", "copy", "-acodec", "copy", "-to",
+                    startTime, "-y", outputPath};
+
+            if (!FileUtils.checkVideoAacMp3(inputPath) && inputPath.endsWith(".mp4")) {
+                commands = new String[]{"ffmpeg", "-d", "-i", inputPath, "-vcodec", "copy", "-to",
+                        startTime, "-y", outputPath};
+            }
+        } else {
+            commands = new String[]{"ffmpeg", "-d", "-i", inputPath, "-to", startTime, "-y", outputPath};
+        }
+        if (cutWidth % 2 != 0) {
+            commands = new String[]{"ffmpeg", "-d", "-i", inputPath, "-to", startTime, "-vf",
+                    "scale=" + cutWidth + ":-2", "-y", outputPath};
+        }
+        return commands;
+    }
+
+
+    /**
+     * ffmpeg  -i india.mp4  -vf reverse -af areverse  -ss 00:00:06 -to 00:00:15 -c:v libx264  -y result.mp4
+     * 指定编码为mp4
+     * preset与编码速度和质量有关，可优化编码速度（每秒编码帧数）和压缩效率（比特流中每比特的质量）之间的权衡。
+     * 以x265为例，preset有ultrafast，superfast，veryfast，faster，fast，medium，slow，slower，veryslow，placebo这10个级别，
+     * 每个级别的preset对应一组编码参数，不同级别的preset对应的编码参数集不一致。preset级别越高，编码速度越慢，解码后的质量也越高；
+     * 级别越低，速度也越快，解码后的图像质量也就越差，从左到右，编码速度越来越慢，编码质量越来越好，其中placebo不建议使用，没有太大意义
+     * 对视频的质量要求很严格时才使用veryslow。ultrafast产生的视频可能会非常大，使用前也需要仔细思考
+     */
+    public static String[] videoReverse(String inputPath, String outPath, boolean isExcute, CallCmdListener listener) {
+        if (ObjectUtils.isEmpty(inputPath) || ObjectUtils.isEmpty(outPath)) {
+            throw new IllegalArgumentException("inputPath| outPath  must not null");
+        }
+        FileUtils.checkOrCreateParentFolder(outPath);
+//        String[] commands = new String[]{"ffmpeg", "-d", "-i", inputPath, "-vf", "reverse",
+//                "-y", outPath};
+        String[] commands = new String[]{"ffmpeg", "-d", "-i", inputPath, "-vf", "reverse", "-af", "areverse",
+                "-preset", "ultrafast", "-y", outPath};
+//        String[] commands = new String[]{"ffmpeg", "-d", "-i", inputPath, "-vf", "reverse", "-af", "areverse",
+//                "-preset", "superfast", "-y", outPath};
+//        String[] commands = new String[]{"ffmpeg", "-d", "-i", inputPath, "-ss", TimeUtil.getCutForamt(startTime),
+//                "-to", TimeUtil.getCutForamt(endTime), "-vf", "reverse", "-af", "areverse",
+//                "-c:v", "libx264", "-y", outPath};
+        if (isExcute) {
+            FFmpegCmd.getInstance().execute(commands, listener);
+        }
+        return commands;
+    }
+
+    /**
+     * 裁剪视频，然后剔除音频
+     *
+     * @param inputPath
+     * @param outputPath
+     * @param startTime
+     * @param totalTime
+     * @param cutWidth
+     * @return
+     */
+    public static String[] cutVideoRemoveAudio(String inputPath, String outputPath, String startTime, int totalTime, int cutWidth) {
+        FileUtils.checkOrCreateParentFolder(outputPath);
+        String[] commands;
+        if (FileUtils.checkVideoH264(inputPath) || inputPath.endsWith(".mp4")) {
+            commands = new String[]{"ffmpeg", "-d", "-ss", startTime, "-t",
+                    String.valueOf(TimeUtil.getSecondOneDecimal(totalTime)), "-i", inputPath, "-vcodec", "copy",
+                    "-an", "-avoid_negative_ts", "1", "-y", outputPath};
+        } else {
+            commands = new String[]{"ffmpeg", "-d", "-ss", startTime, "-t",
+                    String.valueOf(TimeUtil.getSecondOneDecimal(totalTime)), "-i", inputPath, "-an", "-avoid_negative_ts",
+                    "1", "-y", outputPath};
+        }
+        if (cutWidth % 2 != 0) {
+            commands = new String[]{"ffmpeg", "-d", "-ss", startTime, "-t",
+                    String.valueOf(TimeUtil.getSecondOneDecimal(totalTime)), "-i", inputPath, "-vf",
+                    "scale=" + cutWidth + ":-2", "-an", "-y", outputPath};
+        }
+        return commands;
+    }
 }

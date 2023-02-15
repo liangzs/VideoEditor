@@ -42,7 +42,6 @@
             android:id="@+id/drag_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:background="@color/drag_view_color"
             android:orientation="vertical"
             app:behavior_peekHeight="184dp"
             app:layout_behavior="@string/bottom_sheet_behavior">
@@ -97,7 +96,6 @@
 
             <TextView
                 android:id="@+id/button_next"
-                style="@style/NormalTextStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:layout_marginEnd="16dp"
@@ -107,7 +105,7 @@
                 android:paddingHorizontal="2dp"
                 android:text="@string/next"
                 android:textColor="@color/white"
-                android:textSize="vm_select_next_text_size"
+                android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="@+id/space"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/space" />
@@ -120,7 +118,7 @@
                 android:layout_marginStart="3dp"
                 android:layout_marginTop="3dp"
                 android:text="@string/drag_tip"
-                android:textColor="@color/white_alpha_50"
+                android:textColor="@color/white_50_color"
                 android:textSize="10sp"
                 app:layout_constraintStart_toStartOf="@id/iv_clear"
                 app:layout_constraintTop_toBottomOf="@id/iv_clear" />

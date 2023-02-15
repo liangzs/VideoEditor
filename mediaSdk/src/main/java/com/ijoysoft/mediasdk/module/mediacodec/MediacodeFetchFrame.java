@@ -656,7 +656,7 @@ public class MediacodeFetchFrame {
             checkGlError("glBindTexture mTextureID");
 
             GLES20.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_MIN_FILTER,
-                    GLES20.GL_NEAREST);
+                    GLES20.GL_LINEAR);
             GLES20.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_MAG_FILTER,
                     GLES20.GL_LINEAR);
             GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_WRAP_S,

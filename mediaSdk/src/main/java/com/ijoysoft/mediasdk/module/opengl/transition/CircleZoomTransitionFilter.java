@@ -13,12 +13,12 @@ import com.ijoysoft.mediasdk.module.opengl.gpufilter.utils.OpenGlUtils;
  */
 public class CircleZoomTransitionFilter extends TransitionFilter {
     private int mPrograssLocation;
-    private float progress;
     private int ratioLocation;
-    private int ratio;
+    private float ratio;
 
     public CircleZoomTransitionFilter(TransitionType transitionType) {
-        super(transitionType, NO_FILTER_VERTEX_SHADER, OpenGlUtils.readShaderFromRawResource(R.raw.transition_circle_zoom));
+        super(transitionType, NO_FILTER_VERTEX_SHADER,
+                OpenGlUtils.readShaderFromRawResource(R.raw.transition_circle_zoom));
 
     }
 
@@ -34,7 +34,10 @@ public class CircleZoomTransitionFilter extends TransitionFilter {
     @Override
     public void onSizeChanged(int width, int height) {
         super.onSizeChanged(width, height);
-        ratio = ConstantMediaSize.showViewHeight / ConstantMediaSize.showViewWidth;
+        ratio = Float.valueOf(ConstantMediaSize.showViewHeight) / Float.valueOf(ConstantMediaSize.showViewWidth);
+//        if (ratio > 1.0f) {
+//            ratio = 1.0f / ratio;
+//        }
 
     }
 
@@ -58,6 +61,13 @@ public class CircleZoomTransitionFilter extends TransitionFilter {
 
         LogUtils.i(TAG, "seekTo:" + progress + ",origin:" + duration);
         GLES20.glUniform1f(mPrograssLocation, progress);
+    }
+
+    @Override
+    public void updateProgress(float p) {
+        this.progress = p > 1 ? 1 : p;
+        GLES20.glUniform1f(mPrograssLocation, progress);
+        GLES20.glUniform1f(ratioLocation, ratio);
     }
 
     @Override

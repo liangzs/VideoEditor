@@ -13,11 +13,9 @@ import com.ijoysoft.mediasdk.module.opengl.gpufilter.utils.OpenGlUtils;
 public class FadeTransitionFilter extends TransitionFilter {
 
     private int mPrograssLocation;
-    private float progress;
 
     public FadeTransitionFilter(TransitionType transitionType) {
         super(transitionType, NO_FILTER_VERTEX_SHADER, OpenGlUtils.readShaderFromRawResource(R.raw.transition_fade));
-
     }
 
     @Override
@@ -30,12 +28,13 @@ public class FadeTransitionFilter extends TransitionFilter {
     @Override
     protected void onDrawArraysPre() {
         super.onDrawArraysPre();
-        if (progress > 1.0) {
+        if (progress > TRANSITION_PROGRESS) {
             return;
         }
         GLES20.glUniform1f(mPrograssLocation, progress);
         progress += 0.04;
-        LogUtils.i(TAG, "onDrawArraysPre<-" + progress);
+        //频繁打印的日志放至-verbose级别中
+//        LogUtils.v(TAG, "onDrawArraysPre<-" + progress);
     }
 
 

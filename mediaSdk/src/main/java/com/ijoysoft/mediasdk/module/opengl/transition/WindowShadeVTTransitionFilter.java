@@ -1,7 +1,6 @@
 package com.ijoysoft.mediasdk.module.opengl.transition;
 
 import android.opengl.GLES20;
-import android.util.Log;
 
 import com.ijoysoft.mediasdk.R;
 import com.ijoysoft.mediasdk.common.utils.LogUtils;
@@ -15,10 +14,9 @@ public class WindowShadeVTTransitionFilter extends TransitionFilter {
 
     private int countLocation;
     private int smoothnessLocation;
-    private static final float COUNT = 15.0f;
+    private static final float COUNT = 10.0f;
     private static final float SMOOTHNESS = 10.0f;
     private int mPrograssLocation;
-    private float progress;
 
     public WindowShadeVTTransitionFilter(TransitionType transitionType) {
         super(transitionType, NO_FILTER_VERTEX_SHADER, OpenGlUtils.readShaderFromRawResource(R.raw.transition_window_shade_vt));
@@ -40,7 +38,6 @@ public class WindowShadeVTTransitionFilter extends TransitionFilter {
         super.onDrawArraysPre();
         GLES20.glUniform1f(mPrograssLocation, progress);
         progress += 0.04;
-        Log.i(TAG, "onDrawArraysPre->" + progress);
         GLES20.glUniform1f(countLocation, COUNT);
         GLES20.glUniform1f(smoothnessLocation, SMOOTHNESS);
     }
