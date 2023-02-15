@@ -57,6 +57,7 @@ class VideoFragment : ViewBindingFragment<FragmentVideoLayoutBinding>(), SelectF
         if (activity is SelectClipActivity) {
             proxy!!.isAddClip = (activity as SelectClipActivity?)!!.isAddClip
         }
+        //test
         mMediaRecyclerAdapter = MediaRecyclerAdapter(proxy)
         adapter = mMediaRecyclerAdapter
         gridAdapter = GridMediaAdapter(proxy!!)
