@@ -1,55 +1,49 @@
 package com.ijoysoft.mediasdk.view;
 
+import static com.ijoysoft.mediasdk.common.global.ConstantMediaSize.isTheme;
+
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.SurfaceTexture;
-import android.media.MediaMetadataRetriever;
-import android.media.MediaPlayer;
 import android.opengl.GLException;
 import android.opengl.GLSurfaceView;
-import android.os.Handler;
+import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.Surface;
 
 import com.ijoysoft.mediasdk.common.global.ConstantMediaSize;
-import com.ijoysoft.mediasdk.common.global.ThreadPoolMaxThread;
-import com.ijoysoft.mediasdk.common.utils.BitmapUtil;
-import com.ijoysoft.mediasdk.common.utils.ColorUtil;
 import com.ijoysoft.mediasdk.common.utils.LogUtils;
 import com.ijoysoft.mediasdk.common.utils.ObjectUtils;
-import com.ijoysoft.mediasdk.module.entity.AudioDuration;
 import com.ijoysoft.mediasdk.module.entity.AudioMediaItem;
+import com.ijoysoft.mediasdk.module.entity.BGInfo;
 import com.ijoysoft.mediasdk.module.entity.DoodleItem;
 import com.ijoysoft.mediasdk.module.entity.DurationInterval;
 import com.ijoysoft.mediasdk.module.entity.MediaItem;
 import com.ijoysoft.mediasdk.module.entity.MediaMatrix;
 import com.ijoysoft.mediasdk.module.entity.MediaType;
 import com.ijoysoft.mediasdk.module.entity.RatioType;
+import com.ijoysoft.mediasdk.module.entity.ResolutionType;
 import com.ijoysoft.mediasdk.module.entity.VideoMediaItem;
-import com.ijoysoft.mediasdk.module.mediacodec.PhoneAdatarList;
-import com.ijoysoft.mediasdk.module.opengl.MediaDrawer;
-import com.ijoysoft.mediasdk.module.opengl.gpufilter.helper.MagicFilterType;
+import com.ijoysoft.mediasdk.module.opengl.InnerBorder;
+import com.ijoysoft.mediasdk.module.opengl.particle.GlobalParticles;
+import com.ijoysoft.mediasdk.module.opengl.particle.PAGNoBgParticle;
+import com.ijoysoft.mediasdk.module.opengl.particle.ParticleDrawerManager;
+import com.ijoysoft.mediasdk.module.opengl.theme.ThemeHelper;
 import com.ijoysoft.mediasdk.module.opengl.transition.TransitionFilter;
-import com.ijoysoft.mediasdk.module.opengl.transition.TransitionType;
 import com.ijoysoft.mediasdk.module.playControl.AudioPlayer;
-import com.ijoysoft.mediasdk.module.playControl.ImagePlayer;
+import com.ijoysoft.mediasdk.module.playControl.IMediaCallback;
 import com.ijoysoft.mediasdk.module.playControl.MediaConfig;
-import com.ijoysoft.mediasdk.module.playControl.MediaPlayerWrapper;
-import com.ijoysoft.mediasdk.module.playControl.MediaSeriesFrameCallBack;
-import com.ijoysoft.mediasdk.module.playControl.VideoPlayer;
+import com.ijoysoft.mediasdk.module.playControl.MediaRenderBus;
+import com.ijoysoft.mediasdk.module.playControl.RecordPlayer;
 
 import java.nio.IntBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import static com.ijoysoft.mediasdk.common.global.ConstantMediaSize.THUMTAIL_HEIGHT;
-import static com.ijoysoft.mediasdk.common.global.ConstantMediaSize.THUMTAIL_WIDTH;
+import kotlin.Triple;
+import kotlin.Unit;
 
 /**
  * 图片播放用imageplayer，视频播放用VideoPlayer
@@ -60,105 +54,77 @@ import static com.ijoysoft.mediasdk.common.global.ConstantMediaSize.THUMTAIL_WID
  */
 public class MediaPreviewView extends GLSurfaceView implements GLSurfaceView.Renderer {
     private static final String TAG = "MediaPreviewView";
-    private MediaPlayerWrapper mMediaPlayer;
-    private MediaDrawer mOpenglDrawer;
-    private VideoPlayer mVideoPlayer;
-    private ImagePlayer mImagePlayer;
-    private List<MediaItem> playList = new ArrayList<>();
-    private int curIndex;
-    private MediaItem currentMediaItem;
-    // 视频之间进行切换，上一个视频已经播放结束，但是会发出一帧渲染.所以要屏蔽这帧渲染
-    private boolean isSwitching;
-    private int totalTime;
-    private boolean isLooper;
-    private boolean isPlaying;
+    private static final int FLUSH_RATE = 3;
+    private List<MediaItem> mediaList = new ArrayList<>();
     private MediaPreviewCallback mediaPreviewCallback;
     private MediaPreviewChangeCallback mMediaPreviewChangeCallback;
     private AudioPlayer audioPlayer;
+    private RecordPlayer recordPlayer;
+
     private int audioCount = 0; // 减少音频检测频率
     private int currentPosition;
-    private RatioType ratioType;
-    private int showWidth;
-    private int showHeight;
-    private int screenW;
+    private int totalTime;
+    private int curIndex;
+    private MediaItem currentMediaItem;
+    //渲染总线
+    private MediaRenderBus renderBus;
+    private int showWidth, showHeight;
+    private int mWidth, mHeight;
     private int offsetX, offsetY;
-    private boolean isAutoPlay;
-    private boolean isMainControl;
     private ScreenShotCallback screenShotCallback;
-    private boolean isTakeScreenShot;
-    private Handler handler = new Handler();
-    private String rgbaHexString;
-    private Surface surface;
-    private boolean isMusicFading;
-    private boolean isClipTrimResume;
-    private boolean isResuming;
-    /**
-     * 视频回调控制
-     */
-    private MediaPlayerWrapper.IMediaCallback videoCallback = new MediaPlayerWrapper.IMediaCallback() {
-        @Override
-        public void onVideoPrepare() {
+    private boolean isPlaying, isTakeScreenShot, isMurging, isDataSource;
+    private boolean isThemeChanging;//正在进行主题切中，做预处理状态
+    //做一些动作时，不做progress的更新，因为出exoplayer视频播放时，做了seek(0,0)操作之后，progress值依然不是0的
+    private boolean isNoProgressFrame;
+    private MediaConfig mediaConfig;
 
-        }
+    //针对seekbar这些操作，会产生很多渲染任务，在接入gthread前做一个缓存任务，同类型的只保留一次渲染
+    private List<String> renderSingleTasks;
 
-        @Override
-        public void onVideoStart() {
-        }
 
-        @Override
-        public void onVideoPause() {
-        }
-
-        @Override
-        public void onCompletion(MediaPlayer mp) {
-            playNextMedia();
-        }
-
-        @Override
-        public void onVideoChanged(final MediaItem info) {
-            queueEvent(new Runnable() {
-                @Override
-                public void run() {
-                    mVideoPlayer.onVideoChanged(info);
-                }
-            });
-        }
-    };
-
-    // 音频回调控制
-    private ImagePlayer.ImageCallback imageCallback = new ImagePlayer.ImageCallback() {
-        @Override
-        public void start() {
-
-        }
-
-        @Override
-        public void onComplete() {
-            playNextMedia();
-        }
-
-        @Override
-        public void parse() {
-
-        }
-
+    private IMediaCallback mediaCallback = new IMediaCallback() {
         @Override
         public void render() {
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    requestRender();
-                }
-            });
+            requestRender();
         }
-    };
 
-    private VideoPlayer.VideoDrawerCallback videoDrawerCallback = new VideoPlayer.VideoDrawerCallback() {
+        @Override
+        public void onPrepare() {
+
+        }
+
+        @Override
+        public void onStart() {
+
+        }
+
         @Override
         public void onPause() {
             pause();
         }
+
+        //视频回调,如果是走了seekto，那么curIndex的值已经是提前赋值了，
+        //由于exoplayer的seekto操作会从新走这个回调，所以这个回调不是播放结束的回调，不应该再走这个方法
+        @Override
+        public void onComplet(int index) {
+            playNextMedia();
+        }
+
+        @Override
+        public void onComplet() {
+            playNextMedia();
+        }
+
+        @Override
+        public void onVideoChanged(MediaItem info) {
+        }
+
+        @Override
+        public void preTranComplete() {
+            isPlaying = false;
+        }
     };
+
 
     public MediaPreviewView(Context context) {
         super(context, null);
@@ -169,21 +135,32 @@ public class MediaPreviewView extends GLSurfaceView implements GLSurfaceView.Ren
         init();
     }
 
+    /**
+     * 这里关键字很重要RENDERMODE_WHEN_DIRTY，如果去除glview会自动刷新
+     */
     private void init() {
         setEGLContextClientVersion(2);
         setRenderer(this);
         setRenderMode(RENDERMODE_WHEN_DIRTY);// when the surface is created, or when {@link #requestRender} is called.
         setPreserveEGLContextOnPause(false);// 按理说true更合适
         setCameraDistance(100);
-        mOpenglDrawer = new MediaDrawer();
-        mVideoPlayer = new VideoPlayer();
-        mVideoPlayer.setVideoDrawerCallback(videoDrawerCallback);
-
-        // 初始化Drawer和VideoPlayer
-        mMediaPlayer = MediaPlayerWrapper.getInstance();
-        mMediaPlayer.setOnCompletionListener(videoCallback);
-        mImagePlayer = new ImagePlayer(imageCallback);
         audioPlayer = new AudioPlayer();
+        recordPlayer = new RecordPlayer();
+        renderBus = new MediaRenderBus(mediaCallback);
+        renderBus.setRenderTask(this::addRenderTask);
+        mediaConfig = new MediaConfig.Builder().build();
+        renderSingleTasks = new ArrayList<>();
+    }
+
+    /**
+     * 添加渲染环境任务
+     *
+     * @return
+     */
+    private Unit addRenderTask(Runnable r) {
+        LogUtils.v("MediaPreviewView", "add renderTask..");
+        queueEvent(r);
+        return null;
     }
 
     @Override
@@ -192,64 +169,37 @@ public class MediaPreviewView extends GLSurfaceView implements GLSurfaceView.Ren
         if (currentMediaItem == null) {
             return;
         }
-        mOpenglDrawer.onSurfaceCreated();
-        mVideoPlayer.onSurfaceCreated();
-        SurfaceTexture surfaceTexture = mVideoPlayer.getSurfaceTexture();
-        // 这句很重要，是告诉surface转gl过程中，有帧来了
-        surfaceTexture.setOnFrameAvailableListener(new SurfaceTexture.OnFrameAvailableListener() {
-            @Override
-            public void onFrameAvailable(SurfaceTexture surfaceTexture) {
-                requestRender();
-            }
-        });
-        surface = new Surface(surfaceTexture);
-        mMediaPlayer.setSurface(surface);
-        mImagePlayer.onSurfaceCreated();
-        mMediaPlayer.prepare();
-        if (isAutoPlay) {
-            start();
-        } else {
-            if (isCurrentVideo()) {
-                updateTransitionAndAfilterVideo();
-                mMediaPlayer.bindSurface();
-                mMediaPlayer.seekTo(0);
-                if (PhoneAdatarList.checkAlwayAutoPlayVideo()) {
-                    mMediaPlayer.start(0);
-                }
-            }
-        }
+        renderBus.onSurfaceCreated();
     }
 
     // 控制比例显示
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
-        LogUtils.i(TAG, "onSurfaceChanged:" + width + "," + height);
-        ConstantMediaSize.currentScreenHeight = height;
-        ConstantMediaSize.currentScreenWidth = width;
-        calcPreviewRatio(width, height);
-        if (currentMediaItem == null) {
+        this.mWidth = width;
+        this.mHeight = height;
+        if (isMurging) {
             return;
         }
-        LogUtils.i(TAG,
-                "showWidth:" + showWidth + ",showHeight:" + showHeight + ",offsetX:" + offsetX + ",offsetY:" + offsetY);
-        /**
-         * 在主控台进行调用此函数，保证单例数据只有一次初始化
-         */
-        // if (isMainControl) {
-        // FBOManager.getInstance().createFBo(showWidth, showHeight);
-        // isMainControl = false;
-        // }
-        mOpenglDrawer.onSurfaceChanged(offsetX, offsetY, showWidth, showHeight);
-        mImagePlayer.onSurfaceChanged(offsetX, offsetY, showWidth, showHeight);
-        mVideoPlayer.onSurfaceChanged(offsetX, offsetY, showWidth, showHeight);
-        screenW = width;
-        if (!isAutoPlay && !isCurrentVideo()) {
-            mImagePlayer.setCurrentMediaItem(currentMediaItem);
-            mImagePlayer.playPrepare();
+        ConstantMediaSize.canvasHeight = height;
+        ConstantMediaSize.canvasWidth = width;
+        LogUtils.i(TAG, "onSurfaceChanged:mWidth" + mWidth + ",mHeight:" + mHeight + ",showWidth:" + showWidth + ",showHeight:" + showHeight);
+        if (currentMediaItem == null) {
+            LogUtils.e(TAG, "onSurfaceChanged:currentMediaItem is null");
+            return;
         }
+        calcPreviewRatio(width, height);
+        renderBus.onSurfaceChanged(offsetX, offsetY, showWidth, showHeight, width, height);
         if (mediaPreviewCallback instanceof MediaPreviewLayoutCallback) {
             ((MediaPreviewLayoutCallback) mediaPreviewCallback).mediaPreviewLayout();
         }
+        if (isDataSource) {
+            start();
+            isDataSource = false;
+        }
+    }
+
+    public void setMurging(boolean isMurging) {
+        this.isMurging = isMurging;
     }
 
     // 每帧的渲染的时候，把该帧内容功能保存视频文件
@@ -259,36 +209,28 @@ public class MediaPreviewView extends GLSurfaceView implements GLSurfaceView.Ren
             return;
         }
         currentPosition = getCurPosition();
-        // LogUtils.i(TAG, "currentPosition:" + currentPosition + ",ID:" + currentMediaItem.getEqualId());
-        if (!isCurrentVideo()) {
-            mImagePlayer.onDrawFrame();
-            mOpenglDrawer.setInputTexture(mImagePlayer.getOutputTexture());
-        } else {
-            mVideoPlayer.setCurrentVideoDuration(getCurVideoPosition());
-            mVideoPlayer.onDrawFrame();
-            mOpenglDrawer.setInputTexture(mVideoPlayer.getOutputTexture());
-        }
-        mOpenglDrawer.setCurrentDuration(currentPosition);
-        mOpenglDrawer.onDrawFrame();
+        renderBus.onDrawFrame(currentPosition);
         audioCount++;
         // 音频播放
-        if (audioCount % 3 == 0) {
+        if (audioCount % FLUSH_RATE == 0) {
             audioPlayer.ondrawFramePlay(currentPosition);
+            recordPlayer.ondrawFramePlay(currentPosition);
             if (audioCount >= 3333) {
                 audioCount = 0;
             }
         }
-        if (mediaPreviewCallback != null)
-            mediaPreviewCallback.progress(currentPosition);
-
-        if (isTakeScreenShot) {
-            isTakeScreenShot = false;
-            if (screenShotCallback != null) {
-                Bitmap bitmap = createBitmapFromGLSurface(offsetX, offsetY, showWidth, showHeight, gl);
-                screenShotCallback.result(bitmap);
-            }
+        if (isNoProgressFrame) {
+            isNoProgressFrame = false;
+            return;
         }
-        // LogUtils.i(TAG, "onDrawFrame:" + "end.....");
+        if (mediaPreviewCallback != null) {
+            mediaPreviewCallback.progress(currentPosition);
+        }
+        if (isTakeScreenShot && screenShotCallback != null) {
+            Bitmap bitmap = createBitmapFromGLSurface(offsetX, offsetY, showWidth, showHeight, gl);
+            screenShotCallback.result(bitmap);
+            isTakeScreenShot = false;
+        }
     }
 
     /**
@@ -297,47 +239,38 @@ public class MediaPreviewView extends GLSurfaceView implements GLSurfaceView.Ren
      * 如果是图片带角度其实是9:16这样的，采取16:9的方式了
      */
     public void calcPreviewRatio(int screenWidth, int screenHeight) {
-        if (ratioType == null) {
-            ratioType = RatioType._1_1;
-        }
-        switch (ratioType) {
-            case NONE:
-                showWidth = showHeight = screenHeight;
-                offsetX = offsetY = 0;
-                break;
-            case _1_1:
-                showWidth = showHeight = screenHeight;
-                offsetX = offsetY = 0;
-                break;
-            case _9_16:
-                showHeight = screenHeight;
-                showWidth = (int) (0.5625 * showHeight);
-                offsetX = (screenWidth - showWidth) / 2;
-                offsetY = 0;
-                break;
-            case _16_9:
-                showWidth = screenWidth;
-                showHeight = (int) (0.5625 * showWidth);
-                offsetY = (screenWidth - showHeight) / 2;
-                offsetX = 0;
-                break;
-            case _3_4:
-                showHeight = screenHeight;
-                showWidth = (int) (0.75 * showHeight);
-                offsetX = (screenWidth - showWidth) / 2;
-                offsetY = 0;
-                break;
-            case _4_3:
-                showWidth = screenWidth;
-                showHeight = (int) (0.75 * showWidth);
-                offsetY = (screenWidth - showHeight) / 2;
-                offsetX = 0;
-                break;
+        RatioType ratioType = mediaConfig.getRatioType() != null ? mediaConfig.getRatioType() : RatioType._9_16;
+        float screenRatio = screenWidth * 1f / screenHeight;
+        float showRatio = ratioType.getRatioValue();
+        if (screenRatio > showRatio) {
+            showHeight = screenHeight;
+            showWidth = (int) (showHeight * showRatio);
+            offsetX = (screenWidth - showWidth) / 2;
+            offsetY = 0;
+        } else {
+            showWidth = screenWidth;
+            showHeight = (int) (showWidth / showRatio);
+            offsetX = 0;
+            offsetY = (screenHeight - showHeight) / 2;
         }
         ConstantMediaSize.showViewWidth = showWidth;
         ConstantMediaSize.showViewHeight = showHeight;
         ConstantMediaSize.offsetX = offsetX;
         ConstantMediaSize.offsetY = offsetY;
+    }
+
+
+    /**
+     * 当前media对象是否是视频
+     *
+     * @return
+     */
+    public boolean checkIsVideo() {
+        if (currentMediaItem == null) {
+            return false;
+        }
+        renderBus.locationRender(currentMediaItem);
+        return false;
     }
 
     /**
@@ -356,24 +289,31 @@ public class MediaPreviewView extends GLSurfaceView implements GLSurfaceView.Ren
     }
 
     /**
-     * 播放图片
+     * 播放结束，会回到第一帧
      *
-     * @param
+     * @return
+     * @date 只设置seek为0, 不重新requestrender，画面保持在最后
      */
-    private void startPlayImage() {
-        mImagePlayer.setCurrentMediaItem(currentMediaItem);
-        queueEvent(new Runnable() {
-            @Override
-            public void run() {
-                long l = System.currentTimeMillis();
-                mImagePlayer.playPrepare();
-//                Log.i("test", "one:" + (System.currentTimeMillis() - l));
-                mVideoPlayer.changeFilter(currentMediaItem.getAfilter());
-                isSwitching = false;
-                mImagePlayer.playResume();
-            }
-        });
+    public void onFinishReset() {
+        onFinishResetByProgress(0);
     }
+
+    public void onFinishResetByProgress(int progress) {
+        if (ObjectUtils.isEmpty(mediaList)) {
+            return;
+        }
+        pause();
+        //画面不回到首帧
+        curIndex = 0;
+        currentPosition = 0;
+        currentMediaItem = mediaList.get(curIndex);
+        renderBus.onFinishResetByProgress(progress);
+        //检测视频是否为最后一个文件，如果视频是最后一个文件，播放结束时候，会走渲染回调，要取消这个回调
+        if (mediaPreviewCallback != null) {
+            mediaPreviewCallback.progress(0);
+        }
+    }
+
 
     /**
      * isPlaying now
@@ -387,38 +327,40 @@ public class MediaPreviewView extends GLSurfaceView implements GLSurfaceView.Ren
      */
     public void pause() {
         isPlaying = false;
-        if (currentMediaItem == null) {
-            return;
-        }
         audioPlayer.pause();
+        recordPlayer.pause();
+        renderBus.pause();
         if (mediaPreviewCallback != null) {
             mediaPreviewCallback.parse();
         }
-        if (isCurrentVideo()) {
-            mMediaPlayer.pause();
-            return;
-        } else {
-            mImagePlayer.playPause();
-        }
     }
+
+    /**
+     * 还是视频的问题，如果存在大分辨率视频，比如2k以上视频文件
+     * 当走onPuase的时候，释放exoplayer对象,然后再onresume重建对象
+     */
+    public void onVideoPause() {
+//        if (existVideo()) {
+//            videoRender.onVideoPause();
+//        }
+    }
+
 
     /**
      * start play video
      */
     public void start() {
-        isPlaying = true;
         if (currentMediaItem == null) {
             return;
         }
-        if (isCurrentVideo()) {
-            updateTransitionAndAfilterVideo();
-            mMediaPlayer.start(0);
-        } else {
-            startPlayImage();
-        }
-        audioPlayer.resume();
-        if (mediaPreviewCallback != null) {
-            mediaPreviewCallback.start();
+        renderBus.start(mediaConfig.isAutoPlay());
+        if (mediaConfig.isAutoPlay()) {
+            isPlaying = true;
+            audioPlayer.resume();
+            recordPlayer.resume();
+            if (mediaPreviewCallback != null) {
+                mediaPreviewCallback.start();
+            }
         }
     }
 
@@ -428,155 +370,82 @@ public class MediaPreviewView extends GLSurfaceView implements GLSurfaceView.Ren
         }
         isPlaying = true;
         audioPlayer.resume();
-        if (isCurrentVideo()) {
-            mMediaPlayer.start(0);
-        } else {
-            mImagePlayer.playResume();
-        }
+        recordPlayer.resume();
+        renderBus.resume();
     }
 
-    public void trimResume() {
-        if (currentMediaItem == null) {
-            return;
-        }
-        isPlaying = true;
+    public void resumeAudio() {
         audioPlayer.resume();
-        if (isCurrentVideo()) {
-            mMediaPlayer.start(mMediaPlayer.getCurrentPosition());
-        }
+        recordPlayer.resume();
     }
 
     /**
      * 播放结束
      */
     public void onDestroy() {
-        if (currentMediaItem == null) {
-            return;
+        renderBus.onDestroy();
+        if (audioPlayer != null) {
+            audioPlayer.onDestroy();
         }
-        mImagePlayer.onDestroy();
-        audioPlayer.onDestroy();
-        mOpenglDrawer.onDestroy();
-        mVideoPlayer.onDestroy();
-        mediaPreviewCallback = null;
-        if (playList != null) {
-            for (MediaItem mediaItem : playList) {
-                if (mediaItem.getAfilter() != null) {
-                    mediaItem.getAfilter().destroy();
-                }
+        if (recordPlayer != null) {
+            recordPlayer.onDestroy();
+        }
+
+        if (mediaList != null) {
+            for (MediaItem mediaItem : mediaList) {
+//                if (mediaItem.getAfilter() != null) {
+//                    mediaItem.getAfilter().destroy();
+//                }
                 if (mediaItem.getTransitionFilter() != null) {
                     mediaItem.getTransitionFilter().onDestroy();
                 }
             }
         }
-
-        // mMediaPreviewChangeCallback = null;
-        // mMediaPlayer.pause();
-        // FBOManager.getInstance().onDestroy();
+        mediaPreviewCallback = null;
+        mMediaPreviewChangeCallback = null;
+        screenShotCallback = null;
+        //清空回调
+        mediaCallback = null;
     }
 
     public void onMainDestroy() {
-        mMediaPlayer.stop();
-        mMediaPlayer.release();
+//        renderBus.onMainDestroy();
+    }
+
+
+    /**
+     * 是否转置编辑，即不预览翻转效果
+     */
+    public void setReverseEdit(boolean flag) {
+        renderBus.videoReveasePlay(flag);
     }
 
     /**
      * 设置视频的播放地址,当视频的.getCurrentPosition>2的时候
      * 可以去除视频前置的transitionfilter
      */
-    public void setDataSource(List<MediaItem> dataSource, List<DoodleItem> doodleItems, boolean justPlay,
-                              MediaConfig mediaConfig, boolean changePath) {
-        if (dataSource == null) {
+    public void setDataSource(List<MediaItem> dataSource, List<DoodleItem> doodleItems, MediaConfig mediaConfig) {
+        if (ObjectUtils.isEmpty(dataSource)) {
             return;
         }
-        isAutoPlay = justPlay;
         curIndex = 0;
-        playList = dataSource;
-        for (int i = 0; i < dataSource.size(); i++) {
-            if (i == 0) {
-                currentMediaItem = dataSource.get(i);
-                if (mOnChangeCurItemListener != null) {
-                    mOnChangeCurItemListener.onChangeCurItem(currentMediaItem);
-                }
-                mImagePlayer.setDataSource(playList, currentMediaItem);
-                if (currentMediaItem instanceof VideoMediaItem) {
-                    mVideoPlayer.setVideoMediaItem(currentMediaItem);
-                    LogUtils.i(TAG, "mOpenglDrawer.setVideoFrameRatio:" + currentMediaItem.getWidth() + ","
-                            + currentMediaItem.getHeight());
-                }
-            }
-        }
-        if (changePath) {
-            mMediaPlayer.setDataSource(dataSource);
-        } else {
-            mMediaPlayer.setOriginDataSource(dataSource);
-        }
-        mOpenglDrawer.setDoodle(doodleItems);
+        mediaList = dataSource;
+        currentMediaItem = dataSource.get(0);
+        renderBus.setDataSource(dataSource, doodleItems, mediaConfig);
+        checkIsVideo();
         computeTotalTime();
-        if (mediaConfig != null) {
-            if (mediaConfig.getRatioType() != null) {
-                ratioType = mediaConfig.getRatioType();
-            }
-            setAudioFadingPlay(mediaConfig.isFading());
-            if (!ObjectUtils.isEmpty(mediaConfig.getRgba())) {
-                setPureColor(true, mediaConfig.getRgba());
-            }
-        }
+        this.mediaConfig = mediaConfig;
+        setAudioFadingPlay(mediaConfig.isFading());
+        isDataSource = true;
     }
 
     /**
-     * 主控制台调用
-     *
-     * @param dataSource
-     * @param doodleItems
-     * @param justPlay
-     * @param mediaConfig
-     * @param changePath
-     * @param isMainControl
+     * 设置控件素材
      */
-    public void setDataSource(List<MediaItem> dataSource, List<DoodleItem> doodleItems, boolean justPlay,
-                              MediaConfig mediaConfig, boolean changePath, boolean isMainControl) {
-        setDataSource(dataSource, doodleItems, justPlay, mediaConfig, changePath);
-        this.isMainControl = isMainControl;
+    public void setWidgetDataSource(List<Bitmap> widgetDataSource) {
+        renderBus.setWidgetDataSource(widgetDataSource);
     }
 
-    public void setClipDataSource(List<MediaItem> dataSource) {
-        mMediaPlayer.setDataSourceUpdate(dataSource);
-    }
-
-    /**
-     * 单独预览
-     *
-     * @param mediaItem
-     */
-    public void previewClipMediaItem(MediaItem mediaItem) {
-        mImagePlayer.isPreviewTransition(false);
-        mImagePlayer.setTransitionShow(false);
-        mVideoPlayer.isPreviewTransition(false);
-        mVideoPlayer.setTransitionShow(false);
-        curIndex = 0;
-        currentMediaItem = mediaItem;
-        playList.clear();
-        playList.add(mediaItem);
-        computeTotalTime();
-        if (currentMediaItem.getMediaType() == MediaType.VIDEO) {
-            mVideoPlayer.setRotation(currentMediaItem.getRotation());
-            mMediaPlayer.wholeSeekTo(currentMediaItem, 0);
-            updateTransitionAndAfilterVideo();
-            requestRender();
-        } else {
-            // 更新滤镜
-            updateTransitionAndAfilterImage();
-            requestRender();
-        }
-    }
-
-    /**
-     * 清除子页面中mediaplayer对surface的占有
-     */
-    public void clearMediaPlayerStatus() {
-        mMediaPlayer.clearMediaPlayerStatus();
-        mMediaPlayer.setOnCompletionListener(null);
-    }
 
     /**
      * 对于子项的操作确认之后，要更新主项的数据
@@ -584,52 +453,43 @@ public class MediaPreviewView extends GLSurfaceView implements GLSurfaceView.Ren
      * @param dataSource
      */
     public void updateDataSource(List<MediaItem> dataSource) {
-        if (dataSource == null || dataSource.size() == 0) {
+        if (ObjectUtils.isEmpty(dataSource)) {
             return;
         }
-        playList = dataSource;
-        // curIndex = 0;
-        // currentMediaItem = dataSource.get(curIndex);
-        mImagePlayer.setDataSource(playList, currentMediaItem);
-        if (isClipTrimResume) {
-            mMediaPlayer.setSourceUpdate(playList);
-            isClipTrimResume = false;
-        } else {
-            mMediaPlayer.setDataSourceUpdate(playList);
+        //发现竟然出现了null的情况,只能再做一次循环过滤
+        Iterator<MediaItem> iterator = dataSource.iterator();
+        while (iterator.hasNext()) {
+            if (iterator.next() == null) {
+                iterator.remove();
+            }
         }
-        mMediaPlayer.setOnCompletionListener(videoCallback);
+        mediaList = dataSource;
+
+        if (curIndex > mediaList.size() - 1) {
+            curIndex = mediaList.size() - 1;
+        }
+        computeTotalTime();
+        renderBus.updateDataSource(mediaList);
     }
 
-    public boolean isClipTrimResume() {
-        return isClipTrimResume;
-    }
-
-    public void setClipTrimResume(boolean clipTrimResume) {
-        isClipTrimResume = clipTrimResume;
-    }
 
     /**
      * 一个单元文件播放完毕
      */
     public void playNextMedia() {
-        Log.i(TAG, "playNextMedia");
-        if (isResuming) {
+        LogUtils.i(TAG, "playNextMedia");
+        if (!isPlaying) {
             return;
         }
         if (!hasNext()) {
-            if (isLooper) {
-                curIndex = 0;
-                playNextMedia();
-                return;
-            }
             audioPlayer.stop();
+            recordPlayer.stop();
             if (mediaPreviewCallback != null) {
                 mediaPreviewCallback.onFinish();
             }
             isPlaying = false;
             return;
         }
-        curIndex++;
         switchPlayer();
     }
 
@@ -643,150 +503,122 @@ public class MediaPreviewView extends GLSurfaceView implements GLSurfaceView.Ren
      * @return
      */
     public boolean hasNext() {
-        if (curIndex >= playList.size() - 1) {
-            return false;
-        }
-        return true;
+        return curIndex < mediaList.size() - 1;
     }
 
     // 跳转到指定的时间点，只能跳到关键帧
     public void seekTo(int progress) {
         long duration = 0;
-        for (int i = 0; i < playList.size(); i++) {
-            duration += playList.get(i).getTempDuration();
+        for (int i = 0; i < mediaList.size(); i++) {
+            duration += mediaList.get(i).getFinalDuration();
             if (duration > progress) {
-                long ti = progress - (duration - playList.get(i).getTempDuration());
-                LogUtils.i(TAG, "currentIndex:" + curIndex + ",index:" + i + ",ti:" + ti + ", progress==" + progress);
+                long ti = progress - (duration - mediaList.get(i).getFinalDuration());
                 setSeekTo(i, (int) ti);
                 break;
             }
         }
     }
 
-    // 跳转到指定的时间点，只能跳到关键帧
-    public void seekToIndex(int index) {
-        setSeekTo(index, 0);
-    }
-
-    /**
-     * seek触摸结束时进行跳转，只执行一次，主要是控制audioplayer
-     *
-     * @param progress
-     */
-    public void seekToEnd(int progress) {
-        long duration = 0;
-        for (int i = 0; i < playList.size(); i++) {
-            duration += playList.get(i).getTempDuration();
-            if (duration > progress) {
-                long ti = progress - (duration - playList.get(i).getTempDuration());
-                LogUtils.i(TAG, "ti - progress:" + ti);
-                setSeekTo(i, (int) ti);
-                break;
-            }
-        }
-        audioPlayer.seekTo(progress);
-    }
 
     /**
      * 设置跳转位置
+     * 如果有做切换，进行currentRender的切换
      *
      * @param i
      * @param ti
      */
-    private void setSeekTo(int i, final int ti) {
-        if (currentMediaItem == null) {
-            return;
-        }
-        if (mMediaPlayer.isPlaying() || mImagePlayer.isPlaying()) {
-            pause();
-        }
-        LogUtils.i(TAG, "setSeekTo:ti:" + ti);
-        if (curIndex == i) {// 同个media
-            if (currentMediaItem.getMediaType() == MediaType.VIDEO) {
-                mMediaPlayer.seekTo(ti);
-                LogUtils.i(TAG,
-                        "getCurrentPosition:" + mMediaPlayer.getCurrentPosition() + "," + mMediaPlayer.toString());
-            } else {
-                mImagePlayer.seekTo(ti);
-            }
-        } else {// 不同media
-            LogUtils.i(TAG, "setSeekTo:" + ti + ",i=" + i + ",curIndex=" + curIndex);
+    public void setSeekTo(int i, int ti) {
+        renderBus.setSeekTo(i, ti, curIndex != i);
+        if (curIndex != i) {// 同个media
             curIndex = i;
-            currentMediaItem = playList.get(i);
-            if (currentMediaItem.getMediaType() == MediaType.VIDEO) {
-                updateTransitionAndAfilterVideo();
-                mMediaPlayer.wholeSeekTo(currentMediaItem, ti);
-                if (mVideoPlayer.getSurfaceTexture() != null) {
-                    queueEvent(new Runnable() {
-                        @Override
-                        public void run() {
-                            mVideoPlayer.getSurfaceTexture().updateTexImage();
-                        }
-                    });
-                }
-                // requestRender();
-            } else {
-                mImagePlayer.seekTo(ti);
-                // 更新转场和滤镜
-                updateTransitionAndAfilterImage();
-            }
+            currentMediaItem = mediaList.get(i);
         }
     }
 
     /**
-     * 转场和滤镜是通过判断当前元素设置的值
-     * 如果是贴图，时间轴保存在贴图本身的属性中
+     * seek触摸结束时进行跳转，只执行一次，主要是控制audioplayer
+     * isRotation 当两个视频进行切换时，上下两个视频存在的角度不一样，则错出现旋转帧显示
+     *
+     * @param progress
      */
-    private void updateTransitionAndAfilterImage() {
-        queueEvent(new Runnable() {
-            @Override
-            public void run() {
-                if (isCurrentVideo()) {
-                    if (currentMediaItem.getAfilter() != null) {
-                        mVideoPlayer.changeFilter(currentMediaItem.getAfilter());
-                    }
-                } else {
-                    mImagePlayer.setCurrentMediaItem(currentMediaItem);
-                    mImagePlayer.playPrepare();
+    public void seekToEnd(int progress) {
+        renderBus.seekToEnd();
+        long duration = 0;
+        int i;
+        for (i = 0; i < mediaList.size(); i++) {
+            duration += mediaList.get(i).getFinalDuration();
+            if (duration >= progress) {
+                long ti = progress - (duration - mediaList.get(i).getFinalDuration());
+                if (curIndex != i) {// 同个media
+                    LogUtils.i(TAG, "seekToEnd:" + ti + ",i=" + i + ",curIndex=" + curIndex);
+                    curIndex = i;
+                    currentMediaItem = mediaList.get(i);
                 }
-            }
-        });
-    }
-
-    private void updateTransitionAndAfilterVideo() {
-        if (currentMediaItem.getMediaType() != MediaType.VIDEO) {
-            return;
-        }
-        queueEvent(new Runnable() {
-            @Override
-            public void run() {
-                mVideoPlayer.setVideoFrameRatioUpdate(currentMediaItem);
-                if (currentMediaItem instanceof VideoMediaItem) { // TODO: 2019/7/29 出现类转换异常 ？
-                    MediaItem preMediaItem = getPreMediaItem();
-                    mVideoPlayer.playPrepare(preMediaItem);
-                    if (currentMediaItem.getAfilter() != null) {
-                        mVideoPlayer.changeFilter(currentMediaItem.getAfilter());
-                    } else {
-                        mVideoPlayer.changeFilter(MagicFilterType.NONE);
-                    }
-                }
-
-            }
-        });
-    }
-
-    private MediaItem getPreMediaItem() {
-        int index = 0;
-        for (int i = 0; i < playList.size(); i++) {
-            if (playList.get(i) == currentMediaItem) {
-                index = i - 1;
+                renderBus.setSeekTo(curIndex, (int) ti, currentMediaItem.isImage());
                 break;
             }
         }
-        if (index != -1) {
-            return playList.get(index);
+        try {
+            audioPlayer.seekTo(progress);
+            recordPlayer.seekTo(progress);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return null;
+    }
+
+    /**
+     * 片段编辑
+     *
+     * @param curIndex
+     * @param progress
+     */
+    public void seekToForce(int curIndex, int progress) {
+        this.curIndex = curIndex;
+        currentMediaItem = mediaList.get(curIndex);
+        renderBus.setSeekTo(curIndex, progress, true);
+        try {
+            audioPlayer.seekTo(progress);
+            recordPlayer.seekTo(progress);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 音频设置进度
+     *
+     * @param progress
+     */
+    public void audioSeek(int progress) {
+        try {
+            audioPlayer.seekTo(progress);
+            recordPlayer.seekTo(progress);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void seekVideoIndex(int index) {
+        if (index < 0 || index > mediaList.size() - 1) {
+            return;
+        }
+        curIndex = index;
+        currentMediaItem = mediaList.get(index);
+    }
+
+    public void seekToIndex(int index) {
+        if (index < 0 || index > mediaList.size() - 1) {
+            return;
+        }
+        curIndex = index;
+        currentMediaItem = mediaList.get(index);
+        renderBus.setSeekTo(curIndex, 0, true);
+        int duration = 0;
+        for (int i = 0; i < index; i++) {
+            duration += mediaList.get(i).getFinalDuration();
+        }
+        audioPlayer.seekTo(duration);
+        recordPlayer.seekTo(duration);
     }
 
     /**
@@ -795,26 +627,16 @@ public class MediaPreviewView extends GLSurfaceView implements GLSurfaceView.Ren
      * @param
      */
     private void switchPlayer() {
-        LogUtils.i(TAG, "switchPlayer-->index:" + curIndex);
-        currentMediaItem = playList.get(curIndex);
+        //分开两个动作
+        curIndex++;
+        if (curIndex >= mediaList.size()) {
+            return;
+        }
+        currentMediaItem = mediaList.get(curIndex);
         if (mMediaPreviewChangeCallback != null) {
             mMediaPreviewChangeCallback.onChange(curIndex);
         }
-        LogUtils.i(TAG, "switchPlayer-->equid:" + currentMediaItem.getEqualId());
-        if (isCurrentVideo()) {
-            isSwitching = false;
-            mMediaPlayer.switchPlayer(currentMediaItem);
-            updateTransitionAndAfilterVideo();
-            queueEvent(new Runnable() {
-                @Override
-                public void run() {
-                    mVideoPlayer.getSurfaceTexture().updateTexImage();
-                }
-            });
-            // requestRender();
-        } else {
-            startPlayImage();
-        }
+        renderBus.switchPlayer(new Triple(curIndex, getCurPosition(), false));
     }
 
     /**
@@ -823,47 +645,43 @@ public class MediaPreviewView extends GLSurfaceView implements GLSurfaceView.Ren
      * @return
      */
     public int getCurPosition() {
-        int position = 0;
-        // TODO: 2019/7/16
-        if (playList.isEmpty()) {
+        if (mediaList.isEmpty()) {
             return 0;
         }
+        int position = 0;
         for (int i = 0; i < curIndex; i++) {
-            position += playList.get(i).getTempDuration(); // TODO 修改時間
+            position += mediaList.get(i).getFinalDuration(); // TODO 修改時間
         }
-        // LogUtils.i(TAG, "getCurPosition->position-start:" + position);
-        int currentOffet = currentMediaItem.getMediaType() == MediaType.VIDEO ? mMediaPlayer.getCurrentPosition()
-                : mImagePlayer.getCurrentPostion();
-        // LogUtils.i(TAG, "getCurPosition->currentOffet:" + currentOffet);
+        int currentOffet = renderBus.getCurPosition();
         position += currentOffet;
-        // LogUtils.i(TAG, "getCurPosition->position:" + position);
+        LogUtils.v("MediaPreviewView", "position:" + position + ",getCurPosition:" + currentOffet + ",curIndex:" + curIndex);
         return position;
-    }
-
-    public int getCurVideoPosition() {
-        if (isCurrentVideo()) {
-            return mMediaPlayer.getCurrentPosition();
-        }
-        return 0;
-    }
-
-    /**
-     * 获取当前文件播放的时长
-     *
-     * @param curIndex
-     * @return
-     */
-    public int getCurVideoDuration(int curIndex) {
-        return (int) playList.get(curIndex).getTempDuration();
     }
 
     /**
      * 计算总的时间，视频占多少时间，图片默认是4s时间
      */
-    private void computeTotalTime() {
-        for (MediaItem mediaItem : playList) {
-            totalTime += mediaItem.getTempDuration();
+    public long computeTotalTime() {
+        totalTime = 0;
+        for (MediaItem mediaItem : mediaList) {
+            totalTime += mediaItem.getFinalDuration();
         }
+        if (isTheme() && !ThemeHelper.isTimeTheme(ConstantMediaSize.themeType)) {
+            totalTime = totalTime - ConstantMediaSize.themeType.getEndOffset();
+        }
+        return totalTime;
+    }
+
+    /**
+     * 检查第一个媒体文件是否是视频
+     *
+     * @return
+     */
+    public boolean checkFirstIsVideo() {
+        if (ObjectUtils.isEmpty(mediaList)) {
+            return false;
+        }
+        return mediaList.get(0).isVideo();
     }
 
     /**
@@ -876,27 +694,22 @@ public class MediaPreviewView extends GLSurfaceView implements GLSurfaceView.Ren
     }
 
     /**
-     * 特殊场景需要从新计算
+     * totaltime
      *
      * @return
      */
-    public int getUpateTotalTime() {
-        int tempTotalTime = 0;
-        for (MediaItem mediaItem : playList) {
-            tempTotalTime += mediaItem.getTempDuration();
+    public int getTotalOriginTime() {
+        int time = 0;
+        for (MediaItem mediaItem : mediaList) {
+            if (mediaItem.isVideo()) {
+                time += mediaItem.getVideoOriginDuration();
+            } else {
+                time += mediaItem.getFinalDuration();
+            }
         }
-        totalTime = tempTotalTime;
-        return totalTime;
+        return time;
     }
 
-    /**
-     * 设置是否循环播放
-     *
-     * @param isLooper
-     */
-    public void setLooper(boolean isLooper) {
-        this.isLooper = isLooper;
-    }
 
     /**
      * 播放暂停开关
@@ -922,11 +735,14 @@ public class MediaPreviewView extends GLSurfaceView implements GLSurfaceView.Ren
 
     public interface MediaPreviewCallback {
 
-        void start();
+        default void start() {
+        }
 
-        void parse();
+        default void parse() {
+        }
 
-        void progress(int position);// ms
+        default void progress(int position) {
+        }
 
         void onFinish();
 
@@ -934,6 +750,7 @@ public class MediaPreviewView extends GLSurfaceView implements GLSurfaceView.Ren
 
     public interface MediaPreviewLayoutCallback extends MediaPreviewCallback {
         void mediaPreviewLayout();
+
     }
 
     public void setMediaPreviewChangeCallback(MediaPreviewChangeCallback mediaPreviewChangeCallback) {
@@ -944,107 +761,77 @@ public class MediaPreviewView extends GLSurfaceView implements GLSurfaceView.Ren
         void onChange(int index);
     }
 
-    public interface MediaRecordCallback {
-        void progress(int progress);
-
-        void finish();
-    }
 
     public interface ScreenShotCallback {
         void result(Bitmap bitmap);
     }
 
-    private MediaRecordCallback mediaRecordCallback;
-
-    public MediaRecordCallback getMediaRecordCallback() {
-        return mediaRecordCallback;
-    }
-
-    public void setMediaRecordCallback(MediaRecordCallback mediaRecordCallback) {
-        this.mediaRecordCallback = mediaRecordCallback;
-    }
-
     public List<MediaItem> getDataSource() {
-        return playList;
+        return mediaList;
+    }
+
+    /**
+     * 控制竖屏播放比例
+     */
+    public void setRatioNoRender(RatioType ratioType) {
+        if (mediaConfig.getRatioType() == ratioType) {
+            return;
+        }
+        mediaConfig.setRatioType(ratioType);
+        ConstantMediaSize.ratioType = ratioType;
+        calcPreviewRatio(mWidth, mHeight);
+
     }
 
     /**
      * 控制竖屏播放比例
      */
     public void setRatio(RatioType ratioType) {
-        LogUtils.i(TAG, "setRatio--" + ratioType.name());
-        this.ratioType = ratioType;
-        calcPreviewRatio(screenW, screenW);
-        queueEvent(new Runnable() {
-            @Override
-            public void run() {
-                mOpenglDrawer.onSurfaceChanged(offsetX, offsetY, showWidth, showHeight);
-                mImagePlayer.onSurfaceChanged(offsetX, offsetY, showWidth, showHeight);
-                mImagePlayer.playPrepare();
-                mVideoPlayer.onSurfaceChanged(offsetX, offsetY, showWidth, showHeight);
-                if (!isPlaying) {
-                    requestRender();
-                }
+        if (mediaConfig.getRatioType() == ratioType) {
+            return;
+        }
+        boolean isplayer = isPlaying;
+        pause();
+        mediaConfig.setRatioType(ratioType);
+        ConstantMediaSize.ratioType = ratioType;
+        calcPreviewRatio(mWidth, mHeight);
+        queueEvent(() -> {
+            renderBus.onSurfaceChanged(offsetX, offsetY, showWidth, showHeight, mWidth, mHeight);
+            renderBus.mediaPrepare();
+            if (ThemeHelper.isChangeThemeReset(ConstantMediaSize.themeType)) {
+                seekTo(0);
+            }
+            if (isplayer) {
+                resume();
+            } else {
+                requestRender();
             }
         });
     }
 
-    /**
-     * 控制竖屏播放比例
-     */
-    public void setRatioLajiPhone(RatioType ratioType, int w, int h) {
-        this.ratioType = ratioType;
-        calcPreviewRatio(w, h);
-        queueEvent(new Runnable() {
-            @Override
-            public void run() {
-                mOpenglDrawer.onSurfaceChanged(offsetX, offsetY, showWidth, showHeight);
-                mImagePlayer.onSurfaceChanged(offsetX, offsetY, showWidth, showHeight);
-                mImagePlayer.playPrepare();
-            }
-        });
-    }
 
     /**
      * 是否纯色
      * 十六进制color转rgb数组本别除255
-     *
-     * @param flag
-     * @param hexColor 16进制color
+     * <p>
+     * 16进制color
      */
-    public void setPureColor(boolean flag, String hexColor) {
-        hexColor = hexColor == null ? "#FFFFFFFF" : hexColor;
-        if (hexColor.length() == 7) {
-            hexColor = hexColor.replace("#", "#FF");
-        }
-        LogUtils.i(TAG, hexColor);
-        try {
-            int[] rgba = ColorUtil.hex2Rgb(hexColor);
-            mImagePlayer.setIsPureColor(flag, rgba);
-            mVideoPlayer.setPureColor(flag, rgba);
-            this.rgbaHexString = "";
-            if (flag) {
-                this.rgbaHexString = hexColor;
+    public void setPureColor(BGInfo bgInfo, boolean isRender) {
+        mediaConfig.setBGInfo(bgInfo);
+        queueEvent(() -> {
+            renderBus.setColorInfo(bgInfo);
+            if (!isPlaying && isRender) {
+                noTransitionDraw();
             }
-            if (!isCurrentVideo()) {
-                queueEvent(new Runnable() {
-                    @Override
-                    public void run() {
-                        mImagePlayer.playPrepare();
-                        requestRender();
-                    }
-                });
-            }
+        });
+    }
 
-            if (!isPlaying && isCurrentVideo()) {
-                if (isCurrentVideo()) {
-                    requestRender();
-                }
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    /**
+     * 类似切换背景的时候，要预览实时效果，
+     * 现在默认加上了转场，导致很多情况达不到实时预览
+     */
+    private void noTransitionDraw() {
+        renderBus.noTransitionDraw();
     }
 
     /**
@@ -1053,363 +840,81 @@ public class MediaPreviewView extends GLSurfaceView implements GLSurfaceView.Ren
      * @param index
      */
     public void previewMediaItem(int index) {
-        mImagePlayer.isPreviewTransition(false);
-        mImagePlayer.setTransitionShow(false);
-        mVideoPlayer.isPreviewTransition(false);
-        mVideoPlayer.setTransitionShow(false);
-        setSeekTo(index, 0);
-        // 出现一种情况，如果是视频的时候第一次进来的时候，在queueEvent做的矩阵计算没有这么快，
-        // 导致角度不对，所以是视频的时候就多requestRender多次避免这种情况法神
-        if (isCurrentVideo()) {
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    requestRender();
-                }
-            }, 200);
-
+        if (index >= mediaList.size() || index < 0) {
+            return;
         }
-    }
-
-    public void previewMediaItem(int index, boolean preview) {
-        mImagePlayer.isPreviewTransition(preview);
-        mImagePlayer.setTransitionShow(preview);
-        mVideoPlayer.isPreviewTransition(preview);
-        mVideoPlayer.setTransitionShow(preview);
-        setSeekTo(index, 0);
+        curIndex = index;
+        currentMediaItem = mediaList.get(index);
+        renderBus.previewMediaItem(curIndex, !isPlaying);
+        audioPlayer.seekTo(getCurPosition());
+        recordPlayer.seekTo(getCurPosition());
     }
 
     /**
      * 播放转场
+     * seekto前一片段的尾部，然后走正常的片段切换
+     * 旧逻辑：如果preIndex是视频片段，则不进行seek，直接用黑屏过渡方案
+     * 新逻辑：无论如何都seek
      */
     public void previewTransition(int index, TransitionFilter transitionFilter) {
-        if (index < 1) {
+        if (index < 1 /*|| mediaList.get(index - 1).getDuration() < ConstantMediaSize.TRANSITION_PREVIEW*/) {
             return;
         }
-        LogUtils.i(TAG, "previewTransition:" + index);
-        curIndex = index;
-        currentMediaItem = playList.get(index);
-        if (transitionFilter == null || transitionFilter.getTransitionType() == TransitionType.NONE
-                || currentMediaItem.getDuration() < ConstantMediaSize.TRANSITION_DURATION) {
-            return;
-        }
-        currentMediaItem.setTransitionFilter(transitionFilter);
-        if (isCurrentVideo()) {
-            queueEvent(new Runnable() {
-                @Override
-                public void run() {
-                    mVideoPlayer.setVideoMedia((VideoMediaItem) currentMediaItem);
-                    MediaItem preMediaItem = getPreMediaItem();
-                    mVideoPlayer.playPrepare(preMediaItem);
-                    mVideoPlayer.isPreviewTransition(true);
-                    mVideoPlayer.setCurrentVideoDuration(0);
-                }
-            });
-            if (mMediaPlayer.isPlaying()) {
-                mMediaPlayer.pause();
-            }
-            mMediaPlayer.seekTo(0);
-            mMediaPlayer.start(0);
-        } else {
-            mImagePlayer.isPreviewTransition(true);
-            mImagePlayer.resetStart();
-            startPlayImage();
-        }
-    }
-
-    public void playWholeTransition() {
-        mVideoPlayer.isPreviewTransition(false);
-        mImagePlayer.isPreviewTransition(false);
-        mImagePlayer.setTransitionShow(true);
-        mVideoPlayer.setTransitionShow(true);
-        setSeekTo(curIndex, 0);
-        resume();
+        mediaList.get(index).setTransitionFilter(transitionFilter);
+        //seekto到上一个片段
+        curIndex = index - 1;
+        currentMediaItem = mediaList.get(curIndex);
+        renderBus.previewTransition(curIndex);
+        isPlaying = true;
     }
 
     /**
      * 预览滤镜效果
      */
     public void previewAfilter() {
-        queueEvent(new Runnable() {
-            @Override
-            public void run() {
-                if (isCurrentVideo()) {
-                    mVideoPlayer.changeFilter(currentMediaItem.getAfilter());
-                } else {
-                    mImagePlayer.playPrepare();
-                }
-                requestRender();
-            }
-        });
+        renderBus.previewAfilter();
+        requestRenderNoprogress();
     }
 
     /**
-     * 获取整体的每秒帧图
-     */
-    public void getMediaDataPerSecondFrame(final MediaSeriesFrameCallBack callBack) {
-        if (totalTime < 1000) {
-            callBack.callback(0, BitmapUtil.scaleImage(BitmapFactory.decodeFile(playList.get(0).getFirstFramePath()),
-                    THUMTAIL_WIDTH, THUMTAIL_HEIGHT));
-            return;
-        }
-        final MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-        ThreadPoolMaxThread.getInstance().execute(new Runnable() {
-            @Override
-            public void run() {
-                Bitmap bitmap = null;
-                int remainMs = 0;
-                int index = 0;
-                int frameSize;
-                int photoDuration;
-                for (int i = 0; i < playList.size(); i++) {
-                    LogUtils.d(TAG, "getMediaDataPerSecondFrame----" + i);
-                    long start = System.currentTimeMillis();
-                    if (i >= playList.size()) {
-                        break;
-                    }
-                    // if (i == 0) {
-                    // callBack.callback(0, playList.get(0).getFirstFrame());
-                    // index++;
-                    // continue;
-                    // }
-                    if (playList.get(i).getMediaType() == MediaType.PHOTO) {
-                        photoDuration = (int) (playList.get(i).getTempDuration() + remainMs);
-                        frameSize = photoDuration / 1000;
-                        if (photoDuration % 1000 != 0) {
-                            remainMs = photoDuration % 1000;
-                        } else {
-                            remainMs = 0;
-                        }
-                        for (int j = 0; j < frameSize; j++) {
-                            Bitmap originBitmap = BitmapFactory.decodeFile(playList.get(i).getFirstFramePath());
-                            int width = originBitmap.getWidth();
-                            int height = originBitmap.getHeight();
-                            if (width != 0 && height != 0) {
-                                bitmap = BitmapUtil.rotateBitmap(
-                                        BitmapUtil.centerSquareScaleBitmap(originBitmap, THUMTAIL_WIDTH),
-                                        playList.get(i).getRotation());
-                            } else {
-                                bitmap = BitmapUtil.rotateBitmap(
-                                        BitmapUtil.scaleImage(originBitmap, THUMTAIL_WIDTH, THUMTAIL_HEIGHT),
-                                        playList.get(i).getRotation());
-                            }
-                            callBack.callback(index, bitmap);
-                            index++;
-                        }
-                    } else {
-                        frameSize = (int) (playList.get(i).getTempDuration() / 1000);
-                        if (playList.get(i).getTempDuration() % 1000 != 0) {
-                            remainMs += (int) (playList.get(i).getTempDuration() % 1000);
-                        }
-                        for (int j = 0; j < frameSize; j++) {
-                            if (((VideoMediaItem) playList.get(i)).getThumbnails() != null
-                                    && ((VideoMediaItem) playList.get(i)).getThumbnails().get(index) != null
-                                    && ObjectUtils.isEmpty(playList.get(i).getTrimPath())) {
-                                callBack.callback(index, ((VideoMediaItem) playList.get(i)).getThumbnails().get(j));
-                                bitmap = ((VideoMediaItem) playList.get(i)).getThumbnails().get(j);
-                                index++;
-                                continue;
-                            }
-                            String path = ObjectUtils.isEmpty(playList.get(i).getTrimPath()) ? playList.get(i).getPath()
-                                    : playList.get(i).getTrimPath();
-                            try {
-                                retriever.setDataSource(path);
-                                Bitmap videoOriginBitmap = retriever.getFrameAtTime(j * 1000000);
-                                if (videoOriginBitmap == null) {
-                                    index++;
-                                    continue;
-                                }
-                                int width = videoOriginBitmap.getWidth();
-                                int height = videoOriginBitmap.getHeight();
-                                if (width != 0 && height != 0) {
-                                    bitmap = BitmapUtil.rotateBitmap(
-                                            BitmapUtil.centerSquareScaleBitmap(videoOriginBitmap, THUMTAIL_WIDTH),
-                                            playList.get(i).getRotation());
-                                } else {
-                                    bitmap = BitmapUtil.rotateBitmap(
-                                            BitmapUtil.scaleImage(videoOriginBitmap, THUMTAIL_WIDTH, THUMTAIL_HEIGHT),
-                                            playList.get(i).getRotation());
-                                }
-                                callBack.callback(index, bitmap);
-                                index++;
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        LogUtils.i(TAG, "PerSecondFrame-comsume:" + (System.currentTimeMillis() - start));
-                    }
-                }
-                retriever.release();
-                if (remainMs / 1000 > 0) {
-                    for (int i = 0; i < remainMs / 1000; i++) {
-                        callBack.callback(index, bitmap);
-                        index++;
-                    }
-                }
-            }
-        });
-    }
-
-    // private int getIndexBySecond(int duration) {
-    //
-    // }
-
-    /**
-     * 获取播放源的时长和第一帧
+     * 判断是否是两个视频再进行切换，如果是两个视频进行切换的话，
      *
-     * @param callBack
-     */
-    public void getCoverFrameAndDuration(MediaSeriesFrameCallBack callBack) {
-        Bitmap bitmap = BitmapUtil.scaleImage(BitmapFactory.decodeFile(playList.get(0).getFirstFramePath()),
-                THUMTAIL_WIDTH, THUMTAIL_HEIGHT);
-        callBack.callback(getTotalTime(), BitmapUtil.rotateBitmap(bitmap, playList.get(0).getRotation()));
-    }
-
-    /**
-     * 单片段视频的秒帧图
-     *
-     * @param callBack
      * @return
      */
-    public void getVideoFrameSpecifySecond(final MediaSeriesFrameCallBack callBack) {
-        if (!(currentMediaItem instanceof VideoMediaItem)) {
-            LogUtils.e(TAG, "current media is not video,can't get video frame");
-            return;
+    private boolean isTwoVideoSwitch(int curIndex, int lastIndex) {
+        if (curIndex >= mediaList.size() || lastIndex >= mediaList.size()) {
+            return false;
         }
-        final int second = currentPosition / 1000;
-        final MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-        try {
-            retriever.setDataSource(currentMediaItem.getPath());
-        } catch (Exception e) {
-            retriever.release();
-            return;
+        if (mediaList.get(curIndex).isVideo() && mediaList.get(lastIndex).isVideo()) {
+            return true;
         }
-        ThreadPoolMaxThread.getInstance().execute(new Runnable() {
-            @Override
-            public void run() {
-                Bitmap bitmap;
-                // 每秒帧
-                if (((VideoMediaItem) currentMediaItem).getThumbnails() != null) {
-                    callBack.callback(second, ((VideoMediaItem) currentMediaItem).getThumbnails().get(second));
-                }
-                bitmap = retriever.getFrameAtTime(second * 1000000);
-                callBack.callback(second, bitmap);
-                retriever.release();
-            }
-        });
+        return false;
     }
 
+
     /**
-     * 获取视频裁剪时的固定10帧图片
-     * 方案：首为取一帧图
-     * 中间八张按照时间分布去取，小于10s取全部
-     *
-     * @param callBack
+     * 改变滤镜强度
      */
-    public void getVideoTrimFrame(final MediaSeriesFrameCallBack callBack) {
-        if (totalTime < 10000 && playList.size() > 0) {
-            getMediaDataPerSecondFrame(callBack);
+    public void setFilterStrength(int progress) {
+        if (ObjectUtils.isEmpty(currentMediaItem.getAfilter())) {
             return;
         }
-        final MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-        final long[] frames = new long[10];
-        if (totalTime <= 10000) {
-            for (int i = 0; i < totalTime / 1000; i++) {
-                frames[i] = i;
-            }
-        } else {
-            frames[9] = totalTime / 1000;
-            int timeTrim = (totalTime - 2000) / 8000;
-            for (int i = 1; i < 9; i++) {
-                frames[i] = i * timeTrim;
-            }
-        }
-        LogUtils.i("test", "frames:" + Arrays.toString(frames));
-        // 单个文件时候
-        if (playList.size() == 1) {
-            try {
-                retriever.setDataSource(currentMediaItem.getPath());
-            } catch (Exception e) {
-                retriever.release();
-                return;
-            }
-            ThreadPoolMaxThread.getInstance().execute(new Runnable() {
-                @Override
-                public void run() {
-                    Bitmap bitmap;
-                    for (int i = 0; i < frames.length; i++) {
-                        if (i > 0 && frames[i] == 0) {
-                            continue;
-                        }
-                        // bitmap = BitmapUtil.scaleImage(retriever.getFrameAtTime(frames[i] * 1000000), 150,
-                        // THUMTAIL_HEIGHT);
-                        bitmap = BitmapUtil.aspectScaleBitmap(retriever.getFrameAtTime(frames[i] * 1000000), 150, 200);
-                        if (bitmap != null) {
-//                            LogUtils.i("test", "i:" + i + ",bitmap-width:" + bitmap.getWidth() + ", height=="
-//                                    + bitmap.getHeight());
-                            callBack.callback(i, bitmap);
-                        }
-                    }
-                    retriever.release();
-                }
-            });
-            return;
-        }
-        // 多个媒体文件
-        ThreadPoolMaxThread.getInstance().execute(new Runnable() {
+        renderSingleTasks.add(RenderSingleType.FILTER);
+        currentMediaItem.getAfilter().setStrength((float) progress / 100f);
+        requestRender();
+    }
 
-            @Override
-            public void run() {
-                long duration = 0;
-                int currentDuration;
-                int index = 0;
-                Bitmap bitmap;
-                for (int i = 0; i < playList.size(); i++) {
-                    try {
-                        retriever.setDataSource(playList.get(i).getPath());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    currentDuration = (int) duration / 1000;
-                    duration += playList.get(i).getDuration();
-                    LogUtils.i("test", "----currentDuration:" + currentDuration + "," + duration);
-                    while (index < 10 && frames[index] <= duration / 1000) {
-                        if (index > 0 && frames[index] == 0) {
-                            break;
-                        }
-                        LogUtils.i("test", "current:" + (frames[index] - currentDuration) * 1000000);
-                        // bitmap = BitmapUtil.scaleImage(
-                        // retriever.getFrameAtTime((frames[index] - currentDuration) * 1000000), THUMTAIL_WIDTH,
-                        // THUMTAIL_HEIGHT);
-                        bitmap = BitmapUtil.aspectScaleBitmap(
-                                retriever.getFrameAtTime((frames[index] - currentDuration) * 1000000), 150, 200);
-                        if (bitmap != null) {
-                            callBack.callback(index, bitmap);
-                        }
-                        index++;
-                    }
-                }
-                retriever.release();
-            }
 
-        });
+    /**
+     * 移除转场预览状态
+     */
+    public void removeTransitionView() {
+        renderBus.removeTransition();
+
     }
 
     public void setDoodle(List<DoodleItem> list) {
-        mOpenglDrawer.setDoodle(list);
-    }
-
-    /**
-     * 根据索引位置去更新贴图
-     */
-    public void updateDoodle(final int index, final DoodleItem doodleItem) {
-
-        queueEvent(new Runnable() {
-            @Override
-            public void run() {
-                mOpenglDrawer.updateDoodle(index, doodleItem);
-            }
-        });
+        renderBus.setDoodle(list);
     }
 
     /**
@@ -1424,14 +929,20 @@ public class MediaPreviewView extends GLSurfaceView implements GLSurfaceView.Ren
             angle = (currentMediaItem.getMediaMatrix().getAngle() + 90) % 360;
         }
         currentMediaItem.getMediaMatrix().setAngle(angle);
-        // mImagePlayer.doRotaion(angle);
-        // // 更新转场和滤镜
-        // if (currentMediaItem.getMediaType() == MediaType.VIDEO) {
-        // updateTransitionAndAfilterVideo();
-        // } else {
-        // updateTransitionAndAfilterImage();
-        // }
-        // requestRender();
+        renderBus.doMediaRotate();
+        noTransitionDraw();
+    }
+
+    /**
+     * 每次做固定九十度的旋转操作
+     */
+    public void doMediaMirror() {
+        if (currentMediaItem.getMediaMatrix() == null) {
+            currentMediaItem.setMediaMatrix(new MediaMatrix());
+        }
+        currentMediaItem.getMediaMatrix().setMirror(!currentMediaItem.getMediaMatrix().isMirror());
+        renderBus.locationRender(currentMediaItem);
+        noTransitionDraw();
     }
 
     /**
@@ -1442,63 +953,9 @@ public class MediaPreviewView extends GLSurfaceView implements GLSurfaceView.Ren
      * @param y     跟旋转一样，因为纹理坐标和屏幕坐标是相反的，作用y为相反值
      */
     public void setScaleTranlation(float scale, int x, int y, int originX, int originY) {
-        // 需要重置matrix
-        if (currentMediaItem.getMediaMatrix() == null) {
-            currentMediaItem.setMediaMatrix(new MediaMatrix(scale, x, y, originX, originY));
-        } else {
-            currentMediaItem.getMediaMatrix().setScale(scale);
-            currentMediaItem.getMediaMatrix().setOffsetX(x);
-            currentMediaItem.getMediaMatrix().setOffsetY(y);
-            currentMediaItem.getMediaMatrix().setOriginX(originX);
-            currentMediaItem.getMediaMatrix().setOriginY(originY);
-        }
-        if (isCurrentVideo()) {
-            updateTransitionAndAfilterVideo();
-        } else {
-            updateTransitionAndAfilterImage();
-        }
-        requestRender();
+        renderBus.setScaleTranlation(scale, x, y, originX, originY);
     }
 
-    /**
-     * mediaItem初始化的时候，调用这个选项
-     */
-    // public void mediaMatrixUpdate() {
-    // if (currentMediaItem.getMediaMatrix() != null) {
-    // if (currentMediaItem.getMediaMatrix().getScale() != 0 || currentMediaItem.getMediaMatrix().getOffsetX() != 0
-    // || currentMediaItem.getMediaMatrix().getOffsetY() != 0) {
-    // mOpenglDrawer.setScaleTranlation(currentMediaItem.getMediaMatrix().getScale(),
-    // currentMediaItem.getMediaMatrix().getOffsetX(), currentMediaItem.getMediaMatrix().getOffsetY());
-    // return;
-    // }
-    // }
-    // mOpenglDrawer.setScaleTranlation(1, 0, 0);
-    // }
-
-    /**
-     * 单片段视频裁剪结束,更新裁剪后的数据
-     */
-    public void trimVideoPreview() {
-        curIndex = 0;
-        if (!ObjectUtils.isEmpty(currentMediaItem.getTrimPath())) {
-            mMediaPlayer.changePath(currentMediaItem.getTrimPath());
-        }
-        if (currentMediaItem.getVideoCutInterval() == null) {
-            currentMediaItem.setVideoCutInterval(new DurationInterval(0, (int) currentMediaItem.getTempDuration()));
-        }
-        int delay = 600;
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                queueEvent(new Runnable() {
-                    @Override
-                    public void run() {
-                        updateTransitionAndAfilterVideo();
-                    }
-                });
-            }
-        }, delay);
-    }
 
     /**
      * 获取当前glsurfaceview的截图
@@ -1542,75 +999,62 @@ public class MediaPreviewView extends GLSurfaceView implements GLSurfaceView.Ren
         } catch (GLException e) {
             return null;
         }
-        return Bitmap.createBitmap(bitmapSource, w, h, Bitmap.Config.ARGB_8888);
+        return Bitmap.createBitmap(bitmapSource, w, h, Bitmap.Config.ARGB_4444);
     }
 
+    private boolean isResumePlay;
+
     /**
-     * 处理经pause，重走onresume过程时，glsurfaceview变黑屏情况
+     * 从子页面回来
      */
-    public void onResumePlay() {
-        if (ObjectUtils.isEmpty(playList)) {
-            return;
-        }
-        isResuming = true;
+    public void onResultResume(boolean isPlay) {
         curIndex = 0;
-        currentMediaItem = playList.get(0);
-        mImagePlayer.setCurrentMediaItem(currentMediaItem);
-        audioPlayer.seekTo(0);
-        mMediaPlayer.setSurface(surface);
-        mMediaPlayer.setOnCompletionListener(videoCallback);
-        int delay = 300;
-        if (isCurrentVideo()) {
-            mMediaPlayer.playReset(currentMediaItem);
-            delay = 600;
+        isResumePlay = isPlay;
+        currentMediaItem = mediaList.get(0);
+        renderBus.seekToEnd();
+        renderBus.setSeekTo(curIndex, 0, true, this::onResultResumePlay);
+        if (isPlay && currentMediaItem.isImage()) {
+            resume();
         }
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                queueEvent(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (isCurrentVideo()) {
-                            if (currentMediaItem.getAfilter() != null) {
-                                mVideoPlayer.changeFilter(currentMediaItem.getAfilter());
-                            }
-                            updateTransitionAndAfilterVideo();
-                            mMediaPlayer.changeCurrentMediaplayer(0);
-                            mMediaPlayer.wholeSeekTo(currentMediaItem, 0);
-                        } else {
-                            seekTo(0);
-                            mImagePlayer.playPrepare();
-                        }
-                        resume();
-                        isResuming = false;
-                    }
-                });
-            }
-        }, delay);
+        try {
+            audioPlayer.seekTo(0);
+            recordPlayer.seekTo(0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
+
+    /**
+     * 添加渲染环境任务
+     *
+     * @return
+     */
+    Unit onResultResumePlay() {
+        if (isResumePlay) {
+            resume();
+        }
+        return Unit.INSTANCE;
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+    }
+
 
     public void seekAudio(int progress) {
         seekTo(progress);
         audioPlayer.seekTo(progress);
+        recordPlayer.seekTo(progress);
     }
 
+    /**
+     * 加了生命周期，竟然把闪屏问题修复了
+     */
+    @Override
     public void onResume() {
-        mMediaPlayer.setSurface(surface);
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                queueEvent(new Runnable() {
-                    @Override
-                    public void run() {
-                        mImagePlayer.playPrepare();
-                        if (currentMediaItem.getAfilter() != null) {
-                            mVideoPlayer.changeFilter(currentMediaItem.getAfilter());
-                        }
-                    }
-                });
-                requestRender();
-            }
-        }, 300);
+        super.onResume();
     }
 
     /**
@@ -1619,28 +1063,15 @@ public class MediaPreviewView extends GLSurfaceView implements GLSurfaceView.Ren
      * @param audio
      */
     public void setSingleAudio(AudioMediaItem audio) {
+        if (ObjectUtils.isEmpty(audio)) {
+            return;
+        }
+        if (ObjectUtils.isEmpty(audio.getDurationInterval()) || audio.getDurationInterval().getInterval() == 0) {
+            audio.setDurationInterval(new DurationInterval(0, totalTime));
+        }
         audioPlayer.setSingleAudio(audio);
     }
 
-    /**
-     * 更新单个音乐时，视频文件的音量
-     *
-     * @param audio
-     */
-    public void updateSingleAudio(AudioMediaItem audio) {
-        for (int i = 0; i < playList.size(); i++) {
-            if (playList.get(i).getMediaType() == MediaType.VIDEO) {
-                VideoMediaItem videoMediaItem = ((VideoMediaItem) playList.get(i));
-                videoMediaItem.getVolumeList().clear();
-                videoMediaItem.getVolumeList()
-                        .add(new AudioDuration(0, (int) videoMediaItem.getTempDuration(), 1 - audio.getVolume()));
-            }
-        }
-    }
-
-    public void deleteSingleAudio() {
-        audioPlayer.deleteSingleAudio();
-    }
 
     /**
      * 添加多个音频情况
@@ -1648,70 +1079,32 @@ public class MediaPreviewView extends GLSurfaceView implements GLSurfaceView.Ren
      *
      * @param list
      */
-    public void setMultiAudio(List<AudioMediaItem> list) {
-        audioPlayer.setMultiAudio(list);
-        int durationTemp = 0;
-        // 针对视频
-        for (int i = 0; i < playList.size(); i++) {
-            if (playList.get(i).getMediaType() == MediaType.VIDEO) {
-                checkOriginMusicCross(list, (VideoMediaItem) playList.get(i), durationTemp);
+    public void setMultiAudio(List<AudioMediaItem> list, List<AudioMediaItem> recordList) {
+        if (!ObjectUtils.isEmpty(list)) {
+            computeTotalTime();
+            for (AudioMediaItem audioMediaItem : list) {
+                if (ObjectUtils.isEmpty(audioMediaItem.getDurationInterval()) || audioMediaItem.getDurationInterval().getInterval() == 0) {
+                    audioMediaItem.setDurationInterval(new DurationInterval(0, totalTime));
+                }
             }
-            durationTemp += playList.get(i).getTempDuration();
         }
+        audioPlayer.setMultiAudio(list);
+        recordPlayer.setMultiAudio(recordList);
+
     }
 
     public void updateMultiMusic(List<AudioMediaItem> list) {
         audioPlayer.updateMultiAudio(list);
     }
 
-    /**
-     * 检查外音和原音的交叉情况
-     * 检查外音是否超出视频长度的两头的界限
-     *
-     * @param list
-     */
-    private void checkOriginMusicCross(List<AudioMediaItem> list, VideoMediaItem mediaItem, int currentStart) {
-        AudioMediaItem currentAudio;
-        int end = currentStart + (int) mediaItem.getTempDuration();
-        int audioStart, audioEnd;
-        mediaItem.getVolumeList().clear();
-        for (int i = 0; i < list.size(); i++) {
-            currentAudio = list.get(i);
-            audioStart = currentAudio.getDurationInterval().getStartDuration();
-            audioEnd = currentAudio.getDurationInterval().getEndDuration();
-            if (audioStart < currentStart && audioEnd > currentStart && audioEnd < end) {
-                mediaItem.addAudioDuration(new AudioDuration(currentStart, audioEnd, currentAudio.getVolume()));
-            } else if (audioStart > currentStart && audioEnd < end) {
-                mediaItem.addAudioDuration(new AudioDuration(audioStart, audioEnd, currentAudio.getVolume()));
-            } else if (audioStart > currentStart && audioEnd > end) {
-                mediaItem.addAudioDuration(new AudioDuration(audioStart, end, currentAudio.getVolume()));
-            } else if (audioStart < currentStart && audioEnd > end) {
-                mediaItem.addAudioDuration(new AudioDuration(currentStart, end, currentAudio.getVolume()));
-            }
-        }
+    public void updateRecord(List<AudioMediaItem> list) {
+        recordPlayer.updateMultiAudio(list);
     }
 
-    /**
-     * 控制原音和音乐的音量大小
-     *
-     * @param origin
-     * @param music
-     */
-    public void ChangeOrignAndMusicVolume(float origin, float music) {
-        mMediaPlayer.setVolume(origin);
-        audioPlayer.setVolume(music);
+    public void updateRecordList(List<AudioMediaItem> list) {
+        recordPlayer.updateMultiAudio(list);
     }
 
-    /**
-     * 设置视频和音频的音量
-     *
-     * @param videoVolume
-     * @param musicVolum
-     */
-    public void setVolume(float videoVolume, float musicVolum) {
-        mMediaPlayer.setVolume(videoVolume / 100.0f);
-        audioPlayer.setVolume(musicVolum / 100.0f);
-    }
 
     /**
      * 获取存储配置，后续可通过外部设置mediapreview的mediacofig
@@ -1719,43 +1112,254 @@ public class MediaPreviewView extends GLSurfaceView implements GLSurfaceView.Ren
      * @return
      */
     public MediaConfig getMediaConfig() {
-        MediaConfig.Builder builder = new MediaConfig.Builder().setRatioType(ratioType).setRgba(rgbaHexString)
-                .setDuration(getTotalTime()).setCurrentDuration(currentPosition).setFading(isMusicFading);
+        mediaConfig.setCurrentDuration(currentPosition);
+        mediaConfig.setDuration(getTotalTime());
+        mediaConfig.setAutoPlay(false);
         if (currentMediaItem != null) {
-            builder.setProjectId(currentMediaItem.getProjectId());
+            mediaConfig.setProjectId(currentMediaItem.getProjectId());
         }
-        return builder.build();
+        return mediaConfig;
     }
 
     public void preViewRotate(boolean flag) {
-        mOpenglDrawer.preViewRotate(flag);
+        renderBus.preViewRotate(flag);
     }
 
-    public void setOnChangeCurItemListener(OnChangeCurItemListener onChangeCurItemListener) {
-        mOnChangeCurItemListener = onChangeCurItemListener;
-    }
-
-    private OnChangeCurItemListener mOnChangeCurItemListener;
-
-    public interface OnChangeCurItemListener {
-        void onChangeCurItem(MediaItem curMediaItem);
-    }
 
     public void setAudioFadingPlay(boolean isFading) {
-        isMusicFading = isFading;
-        audioPlayer.setFading(isFading);
+        if (totalTime > ConstantMediaSize.FADE_TIME) {
+            audioPlayer.setFading(isFading);
+            mediaConfig.setFading(isFading);
+        }
+
     }
 
-    public void videoCopy(MediaItem item) {
-        mMediaPlayer.addMediaPlayer(item);
-    }
-
-    public void resetCurrentIndex() {
-        curIndex = -1;
-    }
 
     public void setAudioPlayCallback(AudioPlayer.AudioCallback audioCallback) {
         audioPlayer.setAudioPlayCallback(audioCallback);
     }
 
+    public boolean isThemeChanging() {
+        return isThemeChanging;
+    }
+
+    public void setThemeChanging(boolean themeChanging) {
+        isThemeChanging = themeChanging;
+    }
+
+    public interface ChangeThemeCallBack {
+        void finish();
+
+        void failed();
+    }
+
+    /**
+     * 主题切换
+     */
+    public void changeTheme(List<MediaItem> dataSource, List<AudioMediaItem> list, List<AudioMediaItem> recordlist, ChangeThemeCallBack callBack) {
+        changeTheme(dataSource, list, recordlist, callBack, true);
+    }
+
+    public void changeTheme(List<MediaItem> dataSource, List<AudioMediaItem> list, List<AudioMediaItem> recordlist, ChangeThemeCallBack callBack, boolean resume) {
+        curIndex = 0;
+        currentMediaItem = mediaList.get(0);
+        updateDataSource(dataSource);
+        renderBus.locationRender(currentMediaItem);
+        postDelayed(() -> queueEvent(() -> {
+            setMultiAudio(list, recordlist);
+            try {
+                renderBus.changeTheme(getMediaConfig());
+                audioPlayer.seekTo(0);
+                recordPlayer.seekTo(0);
+                if (resume) {
+                    resume();
+                }
+                LogUtils.i(TAG, "changeTheme->isThemeChanging->queueEvent:" + isThemeChanging);
+                callBack.finish();
+            } catch (Exception e) {
+                e.printStackTrace();
+                callBack.failed();
+            } finally {
+                isThemeChanging = false;
+            }
+        }), 200);
+    }
+
+
+    /**
+     * 合成终止，窗口变化了
+     */
+    public void resetWindow() {
+        ConstantMediaSize.canvasWidth = mWidth;
+        ConstantMediaSize.canvasHeight = mHeight;
+        ConstantMediaSize.showViewWidth = showWidth;
+        ConstantMediaSize.showViewHeight = showHeight;
+        ConstantMediaSize.offsetX = offsetX;
+        ConstantMediaSize.offsetY = offsetY;
+        LogUtils.i(TAG, "resetWindow:mWidth" + mWidth + ",mHeight:" + mHeight + ",showWidth:" + showWidth + ",showHeight:" + showHeight);
+        requestRender();
+    }
+
+//    /**
+//     * 根据mediaDrawer获取当前画面的缓存，用于视频和图片的转场
+//     *
+//     * @return
+//     */
+//    public GloableDrawer getmOpenglDrawer() {
+//        return mOpenglDrawer;
+//    }
+
+    /**
+     * 设置当前播放视频的音量
+     *
+     * @param volume
+     */
+    public void setVideoVolume(float volume) {
+        for (MediaItem mediaItem : mediaList) {
+            if (mediaItem instanceof VideoMediaItem) {
+                ((VideoMediaItem) mediaItem).setVolume(volume);
+            }
+        }
+        if (isCurrentVideo()) {
+            renderBus.setVideoVolume(((VideoMediaItem) currentMediaItem).getPlayVolume());
+        }
+    }
+
+    /**
+     * 获取当前视频播放音量
+     *
+     * @return
+     */
+    public float getVideoVolume() {
+        for (MediaItem mediaItem : mediaList) {
+            if (mediaItem instanceof VideoMediaItem) {
+                return ((VideoMediaItem) mediaItem).getVolume();
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * 设置当前播放音乐的音量
+     *
+     * @param volume
+     */
+    public void setMusicVolume(float volume) {
+        audioPlayer.setVolume(volume);
+    }
+
+    /**
+     * 设置录音的音量
+     *
+     * @param volume
+     */
+    public void setRecordVolume(float volume) {
+        recordPlayer.setVolume(volume);
+    }
+
+    public boolean isMusicContain() {
+        return audioPlayer.isMusicContain();
+    }
+
+    /**
+     * 获取当前外音的音量
+     *
+     * @return
+     */
+    public AudioMediaItem getCurrentAudio() {
+        return audioPlayer.getCurrentAudio();
+    }
+
+    /**
+     * 检查是否属于opengl转场，如果属于该转场则可以自定义mediaitem的转场方案
+     *
+     * @return
+     */
+    public boolean checkOpenglTransition() {
+        return renderBus.checkSupportTransition();
+    }
+
+
+    /**
+     * 设置当前视频播放速度
+     *
+     * @param speed
+     */
+    public void setVideoSpeed(float speed) {
+        renderBus.setvideoSpeed(speed);
+    }
+
+    /**
+     * 获取距离结束的时长
+     *
+     * @return
+     */
+    public long getEndOffset() {
+        return getCurPosition() - totalTime;
+    }
+
+
+    public MediaItem getCurrentMediaItem() {
+        return currentMediaItem;
+    }
+
+
+    /**
+     * 设置全局粒子系统
+     */
+    public void changeGlobalParticle(GlobalParticles globalParticles, ParticleDrawerManager manager, PAGNoBgParticle pagNoBgParticle) {
+        LogUtils.i("changeParticle", globalParticles.name());
+        mediaConfig.setGlobalParticles(globalParticles);
+        renderBus.changeGlobalParticle(manager, pagNoBgParticle);
+    }
+
+
+    /**
+     * 设置边框
+     */
+    public void changeInnerBorder(InnerBorder innerBorder) {
+        mediaConfig.setInnerBorder(innerBorder);
+        renderBus.changeInnerBorder(innerBorder);
+        requestRenderNoprogress();
+    }
+
+
+    public void pauseAudio() {
+        audioPlayer.pause();
+        recordPlayer.pause();
+    }
+
+    /**
+     * 不更新progress的渲染
+     */
+    public void requestRenderNoprogress() {
+        requestRender();
+        isNoProgressFrame = true;
+    }
+
+
+    /**
+     * 设置合成分辨率
+     */
+    public void setResolutionType(ResolutionType resolutionType) {
+        mediaConfig.setResolutionType(resolutionType);
+    }
+
+    /**
+     * 设置显示区域的大小
+     */
+    public void zoomViewPort(float zoomScale) {
+        mediaConfig.getBGInfo().setZoomScale(zoomScale);
+        if (renderSingleTasks.contains(RenderSingleType.ZOOM_SCALE)) {
+            LogUtils.v("MediaPreviewView", "contains-zoomScale:" + zoomScale);
+            return;
+        }
+        renderSingleTasks.add(RenderSingleType.ZOOM_SCALE);
+        queueEvent(() -> {
+            renderSingleTasks.remove(RenderSingleType.ZOOM_SCALE);
+            renderBus.setZoomScale(mediaConfig.getBGInfo());
+            requestRender();
+        });
+    }
 }
+

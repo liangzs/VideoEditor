@@ -2,11 +2,22 @@ package com.ijoysoft.mediasdk.module.opengl.transition;
 
 import android.opengl.GLES20;
 
+import androidx.annotation.IntDef;
+
+import com.ijoysoft.mediasdk.R;
 import com.ijoysoft.mediasdk.common.global.ConstantMediaSize;
+import com.ijoysoft.mediasdk.common.utils.LogUtils;
+import com.ijoysoft.mediasdk.common.utils.MatrixUtils;
+import com.ijoysoft.mediasdk.common.utils.ObjectUtils;
 import com.ijoysoft.mediasdk.module.entity.DurationInterval;
 import com.ijoysoft.mediasdk.module.opengl.filter.AFilter;
+import com.ijoysoft.mediasdk.module.opengl.gpufilter.utils.OpenGlUtils;
+
+import org.libpag.PAGFile;
 
 import java.io.Serializable;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
  * 转场应该作用于全显示范围，即showwidth、showHeight，所以定点坐标应该是满的，然后viewport应该赋值为showWidth,showHeight
@@ -17,9 +28,12 @@ public class TransitionFilter extends AFilter implements Serializable {
     private String mFragmentShader;
     private int previewTextureId;
     private int previewTexture;
-    private TransitionType transitionType;
-    private float[] cube;
+    protected TransitionType transitionType;
+    protected float progress;
+    protected int width, height;
 
+
+    public static final float TRANSITION_PROGRESS = 1.02f;
     public static final String NO_FILTER_VERTEX_SHADER = "" + "attribute vec4 vPosition;\n" + "attribute vec2 vCoord;\n"
             + "uniform mat4 vMatrix; \n" + "varying vec2 textureCoordinate;\n" + " \n" + "void main()\n" + "{\n"
             + "    gl_Position =  vMatrix*vPosition;\n" + "    textureCoordinate = vCoord.xy;\n" + "}";
@@ -28,10 +42,23 @@ public class TransitionFilter extends AFilter implements Serializable {
             + " varying vec2 textureCoordinate;\n" + " uniform sampler2D vTexture;\n" + "void main()\n" + "{\n"
             + "     gl_FragColor = texture2D( vTexture, textureCoordinate );\n" + "}";
 
+    public static final String FRAGMENT_HEAD = " precision mediump float;\n" +
+            "    varying vec2 textureCoordinate;\n" +
+            "    uniform float progress;\n" +
+            "    uniform sampler2D vTexture;\n" +
+            "    uniform sampler2D vTexture1;\n";
+
     public TransitionFilter(TransitionType transitionType, String mVertexShader, String mFragmentShader) {
         this.transitionType = transitionType;
         this.mVertexShader = mVertexShader;
         this.mFragmentShader = mFragmentShader;
+        durationInterval = new DurationInterval(0, ConstantMediaSize.TRANSITION_DURATION);
+    }
+
+    public TransitionFilter(TransitionType transitionType) {
+        this.transitionType = transitionType;
+        this.mVertexShader = NO_FILTER_VERTEX_SHADER;
+        this.mFragmentShader = NO_FILTER_FRAGMENT_SHADER;
         durationInterval = new DurationInterval(0, ConstantMediaSize.TRANSITION_DURATION);
     }
 
@@ -45,16 +72,18 @@ public class TransitionFilter extends AFilter implements Serializable {
     @Override
     protected void onCreate() {
         createProgramByAssetsFile(mVertexShader, mFragmentShader);
-        float[] coord = new float[] { 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, };
+        float[] coord = new float[]{0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f,};
         mTexBuffer.clear();
         mTexBuffer.put(coord);
         mTexBuffer.position(0);
         previewTexture = GLES20.glGetUniformLocation(mProgram, "vTexture1");
+        float[] flipOm = MatrixUtils.getOriginalMatrix();
+        MatrixUtils.flip(flipOm, false, true);//矩阵上下翻转
+        setMatrix(flipOm);
     }
 
     @Override
     protected void onDrawArraysPre() {
-        // GLES20.glViewport(offsetX + (ConstantMediaSize.showViewWidth - (int) imageWidthNew), offsetY +
         // (ConstantMediaSize.showViewHeight - (int) imageHeightNew), (int) imageWidthNew, (int) imageHeightNew);
         super.onDrawArraysPre();
         // GLES20.glUniformMatrix4fv(mHMatrix, 1, false, mMVPMatrix, 0);
@@ -74,12 +103,14 @@ public class TransitionFilter extends AFilter implements Serializable {
 
     @Override
     public void onSizeChanged(int width, int height) {
+        this.width = width;
+        this.height = height;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        GLES20.glDeleteTextures(1, new int[] { previewTextureId }, 0);
+        GLES20.glDeleteTextures(1, new int[]{previewTextureId}, 0);
         previewTextureId = -1;
     }
 
@@ -90,6 +121,11 @@ public class TransitionFilter extends AFilter implements Serializable {
     public void seekTo(int duration) {
 
     }
+
+    public void updateProgress(float p) {
+        this.progress = p > 1 ? 1 : p;
+    }
+
 
     public TransitionType getTransitionType() {
         return transitionType;
@@ -108,7 +144,7 @@ public class TransitionFilter extends AFilter implements Serializable {
      */
     public void layoutCenter() {
         mVerBuffer.clear();
-        mVerBuffer.put(cube).position(0);
+//        mVerBuffer.put(cube).position(0);
     }
 
     public void layoutFill() {
@@ -119,5 +155,40 @@ public class TransitionFilter extends AFilter implements Serializable {
     public void setProgress(float progress) {
 
     }
+
+    public void changeRatio() {
+
+    }
+
+    /**
+     * 检查
+     *
+     * @return
+     */
+    public boolean existTransition() {
+        if (transitionType == TransitionType.NONE) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 重置一些属性值
+     */
+    public void resetProperty() {
+
+    }
+
+
+    @IntDef({
+            PreviewStatus.NONE, PreviewStatus.NORMAL, PreviewStatus.PREVIEW
+    })
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface PreviewStatus {
+        int NONE = 0;
+        int NORMAL = 1;
+        int PREVIEW = 2;
+    }
+
 
 }

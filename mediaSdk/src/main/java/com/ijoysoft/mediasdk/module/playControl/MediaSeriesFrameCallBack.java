@@ -8,4 +8,9 @@ public interface MediaSeriesFrameCallBack {
      * @param bitmap 帧图
      */
     void callback(int second, Bitmap bitmap);
+
+    /**
+     * 获取完成
+     */
+    default void onFinish(){};
 }

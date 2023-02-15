@@ -5,15 +5,13 @@
 #include "ffmpeg_thread.h"
 #include <signal.h>
 #include <setjmp.h>
-
-
-
+#include <unistd.h>//sleep
 
 static JavaVM *jvm = NULL;//java虚拟机
 static jclass m_clazz = NULL;//当前类(面向java)
 static JNIEnv *m_env = NULL;
 static char timeStr[10] = "time=00:";
-const char* excuteStr;
+const char *excuteStr;
 jboolean showProgress;
 
 
@@ -25,8 +23,7 @@ volatile sig_atomic_t error_cnt = 0;
 #define RUNTIME_EXCEPTION "java/lang/Exception"
 
 void
-JNU_ThrowByName(JNIEnv *env, const char *name, const char *msg)
-{
+JNU_ThrowByName(JNIEnv *env, const char *name, const char *msg) {
     jclass cls = (*env)->FindClass(env, name);
     /* if cls is NULL, an exception has already been thrown */
     if (cls != NULL) {
@@ -52,12 +49,14 @@ void throw_exception(JNIEnv *env) {
 }
 
 
-
 void exception_handler(int signal, siginfo_t *info, void *reserved) {
     error_cnt += 1;
     XLOGE("catch Exception ffmpeg.....");
+    siglongjmp(JUMP_ANCHOR, 1);
+//    sleep(2);
+//    JNU_ThrowByName(m_env, "com/ijoysoft/mediasdk/module/ffmpeg/JNIException", excuteStr);
+//    JNU_ThrowByName(m_env, "com/ijoysoft/mediasdk/module/ffmpeg/JNIException", excuteStr);
 
-//    siglongjmp(JUMP_ANCHOR, 1);
 //    ffmpeg_cleanup(0);
 //    ffmpeg_thread_exit(0);
 //    JNIEnv *env;
@@ -109,14 +108,32 @@ char *jstringToChar(JNIEnv *env, jstring jstr) {
 }
 
 
-
-
 JNIEXPORT jint
 
 JNICALL
 Java_com_ijoysoft_mediasdk_module_ffmpeg_FFmpegCmd_handle
-        (JNIEnv *env, jobject obj, jobjectArray commands,jstring commandStr) {
+        (JNIEnv *env, jobject obj, jobjectArray commands, jstring commandStr) {
+    if (sigsetjmp(JUMP_ANCHOR, 1) != 0) {
+        return -1;
+    }
 
+    // 注册要捕捉的系统信号量
+    struct sigaction sigact;
+    struct sigaction old_action;
+    sigaction(SIGABRT, NULL, &old_action);
+    if (old_action.sa_handler != SIG_IGN) {
+        sigset_t block_mask;
+        sigemptyset(&block_mask);
+        sigaddset(&block_mask, SIGABRT); // handler处理捕捉到的信号量时，需要阻塞的信号
+        sigaddset(&block_mask, SIGSEGV); // handler处理捕捉到的信号量时，需要阻塞的信号
+
+        sigemptyset(&sigact.sa_mask);
+        sigact.sa_flags = 0;
+        sigact.sa_mask = block_mask;
+        sigact.sa_handler = exception_handler;
+        sigaction(SIGABRT, &sigact, NULL); // 注册要捕捉的信号
+        sigaction(SIGSEGV, &sigact, NULL); // 注册要捕捉的信号
+    }
     showProgress = JNI_FALSE;
     (*env)->GetJavaVM(env, &jvm);
     m_clazz = (*env)->NewGlobalRef(env, obj);
@@ -134,7 +151,7 @@ Java_com_ijoysoft_mediasdk_module_ffmpeg_FFmpegCmd_handle
         (*env)->ReleaseStringUTFChars(env, jstr, temp);
     }
 //    excuteStr= jstringToChar(env,commandStr);
-    excuteStr = (*env)->GetStringUTFChars(env,commandStr,0);
+    excuteStr = (*env)->GetStringUTFChars(env, commandStr, 0);
     //执行ffmpeg命令
     result = run(argc, argv);
     //新建线程 执行ffmpeg 命令
@@ -153,7 +170,8 @@ Java_com_ijoysoft_mediasdk_module_ffmpeg_FFmpegCmd_handle
 JNIEXPORT jint
 JNICALL
 Java_com_ijoysoft_mediasdk_module_ffmpeg_FFmpegCmd_handleByProgress(JNIEnv *env, jobject instance,
-                                                                    jobjectArray commands,jstring commandStr) {
+                                                                    jobjectArray commands,
+                                                                    jstring commandStr) {
     // 注册需要捕获的异常信号
     /*
      1    HUP Hangup                        33     33 Signal 33
@@ -191,27 +209,27 @@ Java_com_ijoysoft_mediasdk_module_ffmpeg_FFmpegCmd_handleByProgress(JNIEnv *env,
     */
 
     // 代码跳转锚点
-//    if (sigsetjmp(JUMP_ANCHOR, 1) != 0) {
-//        return -1;
-//    }
-//
-//    // 注册要捕捉的系统信号量
-//    struct sigaction sigact;
-//    struct sigaction old_action;
-//    sigaction(SIGABRT, NULL, &old_action);
-//    if (old_action.sa_handler != SIG_IGN) {
-//        sigset_t block_mask;
-//        sigemptyset(&block_mask);
-//        sigaddset(&block_mask, SIGABRT); // handler处理捕捉到的信号量时，需要阻塞的信号
-//        sigaddset(&block_mask, SIGSEGV); // handler处理捕捉到的信号量时，需要阻塞的信号
-//
-//        sigemptyset(&sigact.sa_mask);
-//        sigact.sa_flags = 0;
-//        sigact.sa_mask = block_mask;
-//        sigact.sa_handler = exception_handler;
-//        sigaction(SIGABRT, &sigact, NULL); // 注册要捕捉的信号
-//        sigaction(SIGSEGV, &sigact, NULL); // 注册要捕捉的信号
-//    }
+    if (sigsetjmp(JUMP_ANCHOR, 1) != 0) {
+        return -1;
+    }
+
+    // 注册要捕捉的系统信号量
+    struct sigaction sigact;
+    struct sigaction old_action;
+    sigaction(SIGABRT, NULL, &old_action);
+    if (old_action.sa_handler != SIG_IGN) {
+        sigset_t block_mask;
+        sigemptyset(&block_mask);
+        sigaddset(&block_mask, SIGABRT); // handler处理捕捉到的信号量时，需要阻塞的信号
+        sigaddset(&block_mask, SIGSEGV); // handler处理捕捉到的信号量时，需要阻塞的信号
+
+        sigemptyset(&sigact.sa_mask);
+        sigact.sa_flags = 0;
+        sigact.sa_mask = block_mask;
+        sigact.sa_handler = exception_handler;
+        sigaction(SIGABRT, &sigact, NULL); // 注册要捕捉的信号
+        sigaction(SIGSEGV, &sigact, NULL); // 注册要捕捉的信号
+    }
     showProgress = JNI_TRUE;
     // TODO
     (*env)->GetJavaVM(env, &jvm);
@@ -230,7 +248,7 @@ Java_com_ijoysoft_mediasdk_module_ffmpeg_FFmpegCmd_handleByProgress(JNIEnv *env,
         strcpy(argv[i], temp);
         (*env)->ReleaseStringUTFChars(env, jstr, temp);
     }
-    excuteStr = (*env)->GetStringUTFChars(env,commandStr,0);
+    excuteStr = (*env)->GetStringUTFChars(env, commandStr, 0);
     result = run(argc, argv);
     //新建线程 执行ffmpeg 命令
     //释放内存
@@ -313,22 +331,34 @@ void callJavaMethod(char *ret) {
  * 回调执行Java方法
  */
 void ffmErrorCallback() {
-//    jclass class1 = (*m_env)->FindClass(m_env, "com/ijoysoft/mediasdk/module/ffmpeg/FFmpegCmd");
-//    if (class1 == NULL) {
-//        XLOGE("---------------clazz isNULL---------------");
-//        return;
-//    }
+    jclass class1 = (*m_env)->FindClass(m_env, "com/ijoysoft/mediasdk/module/ffmpeg/FFmpegCmd");
+    XLOGE("---------------ffmErrorCallback---------------");
+    if (class1 == NULL) {
+        XLOGE("---------------clazz isNULL---------------");
+        return;
+    }
 //Ljava/lang/String;
-//    jmethodID methodID = (*m_env)->GetStaticMethodID(m_env, class1, "error", "()V");
-//    if (methodID == NULL) {
-//        XLOGE("---------------methodID isNULL---------------");
+//    调用该java方法，不过有的手机会出现问题，所以测试可以打开，上线过滤掉
+    //JNI调用非静态方法
+    //获取构造函数
+//    jmethodID mk_id = (*m_env)->GetMethodID(m_env, class1, "<init>", "()V");//获取不带参数的构造函数
+//    if(mk_id==NULL){
 //        return;
 //    }
-    //调用该java方法，不过有的手机会出现问题，所以测试可以打开，上线过滤掉
-//    (*m_env)->CallStaticVoidMethod(m_env, class1, methodID,excuteStr);
 //    throw_exception(m_env);
-    JNU_ThrowByName(m_env,"com/ijoysoft/mediasdk/module/ffmpeg/JNIException",excuteStr);
-    JNU_ThrowByName(m_env,"com/ijoysoft/mediasdk/module/ffmpeg/JNIException","repeat");
+//    jobject obj = (*m_env)->NewObject(m_env, class1, methodID);
+//    (*m_env)->CallVoidMethod(m_env, obj, mk_id);
+    jmethodID methodID = (*m_env)->GetStaticMethodID(m_env, class1, "error", "()V");
+    if (methodID == NULL) {
+        XLOGE("---------------methodID isNULL---------------");
+        return;
+    }
+    (*m_env)->CallStaticVoidMethod(m_env, class1, methodID);
+    XLOGE("---------------ff---------------");
+//    sleep(2);
+//    JNU_ThrowByName(m_env, "com/ijoysoft/mediasdk/module/ffmpeg/JNIException", excuteStr);
+//    JNU_ThrowByName(m_env, "com/ijoysoft/mediasdk/module/ffmpeg/JNIException", excuteStr);
+    //调用构造函数创建对象
 }
 
 

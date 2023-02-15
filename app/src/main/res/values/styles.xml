@@ -67,4 +67,31 @@
         <item name="android:textSize">14sp</item>
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
+
+    <style name="AppToolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <!-- 设置Menu窗口不覆盖Toolbar视图 -->
+        <item name="overlapAnchor">false</item>
+        <item name="popupTheme">@style/AppToolbarPopup</item>
+        <item name="titleTextAppearance">@style/AppToolbarTitle</item>
+        <item name="actionOverflowMenuStyle">@style/sortMusicMenu</item>
+    </style>
+
+    <style name="AppToolbarPopup" parent="ThemeOverlay.AppCompat.Light" />
+
+
+    <style name="AppToolbarTitle" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="singleLine">false</item>
+    </style>
+
+    <style name="sortMusicMenu" parent="Widget.AppCompat.PopupMenu.Overflow">
+        <item name="android:textColor">@color/black_80_color</item>
+        <!--overflow menu背景颜色 -->
+        <item name="android:popupBackground">#2b2b2b</item>
+        <item name="android:dropDownVerticalOffset">4dp</item>
+        <item name="android:dropDownHorizontalOffset">0dp</item>
+    </style>
+
 </resources>

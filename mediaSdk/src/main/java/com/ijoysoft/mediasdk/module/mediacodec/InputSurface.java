@@ -22,8 +22,9 @@ import android.opengl.EGLDisplay;
 import android.opengl.EGLExt;
 import android.opengl.EGLSurface;
 import android.os.Build;
-import androidx.annotation.RequiresApi;
 import android.view.Surface;
+
+import androidx.annotation.RequiresApi;
 
 import com.ijoysoft.mediasdk.common.utils.LogUtils;
 
@@ -146,6 +147,9 @@ public class InputSurface {
      * Calls eglSwapBuffers.  Use this to "publish" the current frame.
      */
     public boolean swapBuffers() {
+        if (mEGLSurface == null) {
+            return false;
+        }
         return EGL14.eglSwapBuffers(mEGLDisplay, mEGLSurface);
     }
 
@@ -161,7 +165,12 @@ public class InputSurface {
      */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     public void setPresentationTime(long nsecs) {
-        EGLExt.eglPresentationTimeANDROID(mEGLDisplay, mEGLSurface, nsecs);
+        try {
+            EGLExt.eglPresentationTimeANDROID(mEGLDisplay, mEGLSurface, nsecs);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     /**

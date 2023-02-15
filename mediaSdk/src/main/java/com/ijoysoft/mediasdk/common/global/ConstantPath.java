@@ -1,26 +1,26 @@
 package com.ijoysoft.mediasdk.common.global;
 
-import android.os.Environment;
-
 import com.ijoysoft.mediasdk.common.utils.FileUtils;
 import com.ijoysoft.mediasdk.common.utils.TimeUtil;
 import com.ijoysoft.mediasdk.module.entity.AudioMediaItem;
 
 import java.io.File;
+import java.util.UUID;
 
 public class ConstantPath {
-    public static String ROOTPATH = Environment.getExternalStorageDirectory().getPath();
+    /*****************************************应用私有路径***********************************************************/
+    public static String ROOTPATH = MediaSdk.getInstance().getContext().getExternalFilesDir(null).getAbsolutePath() + File.separator;
     // 项目路径
     public static String APPPATH =
-            ROOTPATH + File.separator + "ijoysoft" + File.separator + "videoEditor" + File.separator;
+            ROOTPATH + "ijoysoft" + File.separator;
     // 视频文件合成的清单列表
-    public static String MUERGEFILELIST =
-            ROOTPATH + File.separator + "ijoysoft" + File.separator + "videoEditor" + File.separator + "filelist.txt";
+    public static String MUERGEFILELIST = APPPATH + "filelist.txt";
+    // trim裁剪路径
+    public static final String VIDEO_TRIM = APPPATH + "trim" + File.separator;
 
+    public static final String[] reg = new String[]{"\\", ":", "*", "（", "）", "?", "<", ">", "|", " ", "、", "；", "，",
+            "。", "‘", "'", "/", "(", ")", "&", ";", "{", "}", "$", "'"};
 
-    private static final String[]   reg = new String[] { "\\", ":", "*", "（","）","?", "<", ">",
-            "|", " ", "、", "；", "，", "。", "‘", "'","/","(",")","&",";","{","}","$","'"};
-    /**/
 
     /**
      * 对外部音乐进行再切割或合并
@@ -28,27 +28,23 @@ public class ConstantPath {
      *
      * @return
      */
-    public static String createAudioMurgePath(AudioMediaItem mediaItem) {
-
-        String murgePath = APPPATH + mediaItem.getProjectId() + File.separator + "murge";
-
+    public static String createAudioMurgePath(String projectId) {
+        String murgePath = APPPATH + projectId + File.separator + "murge" + File.separator;
         FileUtils.createPath(murgePath);
-        String title = mediaItem.getTitle();
-        for (String s : reg) {
-            title = title.replace(s, "");
-        }
-        return murgePath + File.separator + title + "_murge_preview_" + TimeUtil.getDayFormatTime() + ".mp3";
+        return murgePath + createUuid() + "_cut_again_preview.mp3";
     }
 
-    public static String createAudioMurgePathOffset(AudioMediaItem mediaItem) {
-        String murgePath = APPPATH + mediaItem.getProjectId() + File.separator + "murge";
+    public static String createAudioMurgePathOffset(String projectId) {
+        String murgePath = APPPATH + projectId + File.separator + "murge" + File.separator;
         FileUtils.createPath(murgePath);
-        String title = mediaItem.getTitle();
-        for (String s : reg) {
-            title = title.replace(s, "");
-        }
-        return murgePath + File.separator + title + "_murge_preview_offset_" + TimeUtil.getDayFormatTime() + ".mp3";
+        return murgePath + createUuid() + "_cut_again_offset.mp3";
     }
+
+
+    public static String createUuid() {
+        return UUID.randomUUID().toString().replace("-", "");
+    }
+
 
     /**
      * 获取合成片段路径，清除片段文件
@@ -68,9 +64,10 @@ public class ConstantPath {
      *
      * @return
      */
-    public static String createAudioVolumePath(String originPath) {
-        String temPath = originPath.substring(0, originPath.indexOf(".mp3"));
-        return temPath + "_step1_volume.mp3";
+    public static String createAudioVolumePath(String projectId) {
+        String murgePath = APPPATH + projectId + File.separator + "murge" + File.separator;
+        FileUtils.createPath(murgePath);
+        return murgePath + createUuid() + "_step1_vol.mp3";
     }
 
     /**
@@ -79,12 +76,13 @@ public class ConstantPath {
      * @return
      */
     public static String createExtractVideo2Audio(String projectId, String title) {
+        title = title == null ? "" : title;
         String projetPath = APPPATH + projectId;
         FileUtils.createPath(projetPath);
         for (String s : reg) {
             title = title.replace(s, "");
         }
-        return projetPath + File.separator + title + "_extract_audio_" + TimeUtil.getDayFormatTime() + ".mp3";
+        return projetPath + File.separator + title + "_extract_audio_" + createUuid() + ".mp3";
     }
 
     /**
@@ -118,6 +116,43 @@ public class ConstantPath {
         String projetPath = APPPATH + projectId;
         FileUtils.createPath(projetPath);
         return projetPath + File.separator + "videoeditor_output_" + TimeUtil.getDayFormatTime() + ".mp4";
+    }
+
+    public static String getVideoTrimPath() {
+        FileUtils.createPath(VIDEO_TRIM);
+        return VIDEO_TRIM;
+    }
+
+    /**
+     * 音频文件超多，进行concat的时候超标
+     *
+     * @return
+     */
+    public static String createMultiAudios() {
+        FileUtils.createPath(VIDEO_TRIM);
+        return VIDEO_TRIM + "audio_concat_" + TimeUtil.getNamillion() + ".mp3";
+    }
+
+    /**
+     * 音频文件超多，进行concat的时候超标
+     *
+     * @return
+     */
+    public static String createMultiInsert() {
+        FileUtils.createPath(VIDEO_TRIM);
+        return VIDEO_TRIM + "audio_insert_" + TimeUtil.getDayFormatTime() + ".mp3";
+    }
+
+    /**
+     * 改变速度文件
+     *
+     * @param projectId
+     * @return
+     */
+    public static String createVideoSpeedPath(String projectId) {
+        String projetPath = APPPATH + projectId + File.separator;
+        FileUtils.createPath(projetPath);
+        return projetPath + "speed_" + TimeUtil.getDayFormatTime() + ".mp3";
     }
 
 }

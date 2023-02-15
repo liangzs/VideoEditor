@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.ijoysoft.mediasdk.common.utils.LogUtils;
 import com.qiusuo.videoeditor.common.bean.MediaEntity;
 import com.qiusuo.videoeditor.common.bean.MediaItemPicker;
+import com.qiusuo.videoeditor.common.constant.RequestCode;
 import com.qiusuo.videoeditor.ui.widgegt.selection.HeaderViewHolder;
 import com.qiusuo.videoeditor.ui.widgegt.selection.SimpleSectionedAdapter;
 
@@ -98,7 +99,7 @@ public class MediaRecyclerAdapter extends SimpleSectionedAdapter<MediaAdapterPro
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position, @NonNull List<Object> payloads) {
-        if (payloads.contains(ContactUtils.SELECT)) {
+        if (payloads.contains(RequestCode.SELECT)) {
             if (holder instanceof MediaAdapterProxy.MyViewHolder) {
                 proxy.updateSelected((MediaAdapterProxy.MyViewHolder) holder);
             } else {
@@ -108,7 +109,7 @@ public class MediaRecyclerAdapter extends SimpleSectionedAdapter<MediaAdapterPro
                 return;
             }
         }
-        if (payloads.contains(ContactUtils.SECTIONS)) {
+        if (payloads.contains(RequestCode.SECTIONS)) {
             if (holder instanceof HeaderViewHolder) {
                 super.onBindViewHolder(holder, position);
             }

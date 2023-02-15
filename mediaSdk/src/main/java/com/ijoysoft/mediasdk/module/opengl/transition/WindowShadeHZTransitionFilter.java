@@ -1,11 +1,10 @@
 package com.ijoysoft.mediasdk.module.opengl.transition;
 
+import android.opengl.GLES20;
+
 import com.ijoysoft.mediasdk.R;
 import com.ijoysoft.mediasdk.common.utils.LogUtils;
 import com.ijoysoft.mediasdk.module.opengl.gpufilter.utils.OpenGlUtils;
-
-import android.opengl.GLES20;
-import android.util.Log;
 
 /**
  * 如果着色器有两个纹理的话，那么在绑定纹理的时候，从0开始，然后+1
@@ -15,10 +14,9 @@ public class WindowShadeHZTransitionFilter extends TransitionFilter {
 
     private int countLocation;
     private int smoothnessLocation;
-    private static final float COUNT = 15.0f;
+    private static final float COUNT = 10.0f;
     private static final float SMOOTHNESS = 10.0f;
     private int mPrograssLocation;
-    private float progress;
 
     public WindowShadeHZTransitionFilter(TransitionType transitionType) {
         super(transitionType, NO_FILTER_VERTEX_SHADER, OpenGlUtils.readShaderFromRawResource(R.raw.transition_window_shade_hz));
@@ -40,7 +38,8 @@ public class WindowShadeHZTransitionFilter extends TransitionFilter {
         super.onDrawArraysPre();
         GLES20.glUniform1f(mPrograssLocation, progress);
         progress += 0.04;
-        LogUtils.i(TAG, "onDrawArraysPre<-" + progress);
+        //频繁打印的日志放至-verbose级别中
+//        LogUtils.v(TAG, "onDrawArraysPre<-" + progress);
         GLES20.glUniform1f(countLocation, COUNT);
         GLES20.glUniform1f(smoothnessLocation, SMOOTHNESS);
     }

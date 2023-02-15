@@ -12,14 +12,19 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.ijoysoft.mediasdk.R;
 import com.ijoysoft.mediasdk.common.utils.LogUtils;
 import com.ijoysoft.mediasdk.common.utils.ObjectUtils;
 import com.ijoysoft.mediasdk.module.entity.DurationInterval;
 import com.ijoysoft.mediasdk.module.entity.MediaItem;
 import com.ijoysoft.mediasdk.module.entity.MediaType;
+import com.qiusuo.videoeditor.R;
 import com.qiusuo.videoeditor.common.bean.MediaEntity;
 import com.qiusuo.videoeditor.common.bean.MediaItemPicker;
+import com.qiusuo.videoeditor.common.data.MediaDataRepository;
+import com.qiusuo.videoeditor.module.select.SelectClipActivity;
+import com.qiusuo.videoeditor.ui.widgegt.SquareImg;
+import com.qiusuo.videoeditor.util.FileUtil;
+import com.qiusuo.videoeditor.util.TimeUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -271,7 +276,7 @@ public class MediaAdapterProxy {
             @Override
             public void onClick(View v) {
                 if (!FileUtil.exists(mediaEntity.path) && !mediaEntity.path.startsWith("http")) {
-                    T.showShort(mContext, mContext.getString(R.string.file_not_exist));
+//                    T.showShort(mContext, mContext.getString(R.string.file_not_exist));
                     return;
                 }
                 if (mOnItemClickListener != null) {
@@ -285,7 +290,7 @@ public class MediaAdapterProxy {
             @Override
             public void onClick(View v) {
                 if (!FileUtil.exists(mediaEntity.path) && !mediaEntity.path.startsWith("http")) {
-                    T.showShort(mContext, mContext.getString(R.string.file_not_exist));
+//                    T.showShort(mContext, mContext.getString(R.string.file_not_exist));
                     return;
                 }
                 if (mOnItemClickListener != null) {
@@ -315,30 +320,15 @@ public class MediaAdapterProxy {
             default:
         }
         //设置选择下标
-        if (mContext instanceof SelectPhotoActivity ||
-                mContext instanceof VideoTrimActivity &&
-                        (
-                                ((VideoTrimActivity) mContext).getSelectMode() == VideoTrimActivity.SELECT_MODE_TO_AUDIO
-                                        || ((VideoTrimActivity) mContext).getSelectMode() == VideoTrimActivity.SELECT_MODE_COMPRESS)) {
-            holder.getSelectButton().setVisibility(View.GONE);
-            holder.mSelectButtonSpace.setVisibility(View.GONE);
+        if (index == null) {
+            holder.getSelectButton().setBackgroundResource(R.drawable.vector_media_select);
+            holder.getSelectButton().setText("");
             holder.mSquareImg.clearColorFilter();
         } else {
-            if (index == null) {
-                holder.getSelectButton().setBackgroundResource(R.drawable.vector_drawable_item_fragment_media_select);
-                holder.getSelectButton().setText("");
-                holder.mSquareImg.clearColorFilter();
-            } else {
-                holder.getSelectButton().setBackgroundResource(R.drawable.vector_drawable_item_fragment_media_selected);
+            holder.getSelectButton().setBackgroundResource(R.drawable.vector_media_selected);
 //                    holder.getSelectButton().setText(Integer.toString(index + 1));
-                int color;
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                    color = mContext.getColor(R.color.selected_media_item_activity_theme_alpha);
-                } else {
-                    color = mContext.getResources().getColor(R.color.selected_media_item_activity_theme_alpha);
-                }
-                holder.mSquareImg.setColorFilter(color);
-            }
+            int  color = mContext.getResources().getColor(R.color.selected_media_item_alpha);
+            holder.mSquareImg.setColorFilter(color);
         }
         if (isAddClip) {
             boolean contains = false;
@@ -369,17 +359,17 @@ public class MediaAdapterProxy {
             Integer index = null;
             index = ((MediaItemPicker) mContext).getMediaItemSelectedIndex(holder.mediaEntity);
             if (index == null) {
-                holder.getSelectButton().setBackgroundResource(R.drawable.vector_drawable_item_fragment_media_select);
+                holder.getSelectButton().setBackgroundResource(R.drawable.vector_media_select);
                 holder.getSelectButton().setText("");
                 holder.mSquareImg.clearColorFilter();
             } else {
-                holder.getSelectButton().setBackgroundResource(R.drawable.vector_drawable_item_fragment_media_selected);
+                holder.getSelectButton().setBackgroundResource(R.drawable.vector_media_selected);
 //                    holder.getSelectButton().setText(Integer.toString(index + 1));
                 int color;
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                    color = mContext.getColor(R.color.selected_media_item_activity_theme_alpha);
+                    color = mContext.getColor(R.color.selected_media_item_alpha);
                 } else {
-                    color = mContext.getResources().getColor(R.color.selected_media_item_activity_theme_alpha);
+                    color = mContext.getResources().getColor(R.color.selected_media_item_alpha);
                 }
                 holder.mSquareImg.setColorFilter(color);
             }

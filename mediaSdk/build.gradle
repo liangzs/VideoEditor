@@ -1,15 +1,19 @@
 apply plugin: 'com.android.library'
 //apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-parcelize'
+
 android {
-    compileSdkVersion configs.compileSdkVersion
+    compileSdkVersion rootProject.ext.compileSdkVersion
 
 
     defaultConfig {
-        minSdkVersion configs.minSdkVersion
-        targetSdkVersion configs.targetSdkVersion
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
             cmake {
                 cppFlags "-frtti -fexceptions"
@@ -17,7 +21,7 @@ android {
             }
         }
         ndk {
-            abiFilters "armeabi-v7a",'arm64-v8a'
+            abiFilters "armeabi-v7a", 'arm64-v8a'
         }
 
     }
@@ -26,6 +30,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            consumerProguardFiles 'proguard-rules.pro'
         }
         debug {
             jniDebuggable true
@@ -34,27 +39,58 @@ android {
     externalNativeBuild {
         cmake {
             path "CMakeLists.txt"
-            version "3.10.2"
         }
     }
     sourceSets {
         main {
             jniLibs.srcDirs = ['libs']
+            //是否取消动态编译
 //            jni.srcDirs = []
+
+            java {
+                srcDir "src/main/java"
+                srcDir "../mediaSdkRes/main/java"
+            }
+            res {
+                srcDir "src/main/res"
+                srcDir "../mediaSdkRes/src/main/res"
+            }
+            assets {
+                srcDir "src/main/assets"
+                srcDir "../mediaSdkRes/src/main/assets"
+            }
         }
+
     }
-//    compileOptions {
-//        sourceCompatibility JavaVersion.VERSION_11
-//        targetCompatibility JavaVersion.VERSION_11
-//    }
+
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    ndkVersion '21.0.6113669'
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'junit:junit:4.12'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    api 'com.iqiyi.xcrash:xcrash-android-lib:2.4.8'
-//    api 'com.squareup.leakcanary:leakcanary-android:1.5.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
+    api 'com.google.code.gson:gson:2.8.5'
+    api 'com.github.bumptech.glide:glide:4.14.2'
+    api 'jp.wasabeef:glide-transformations:4.3.0'
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.18.1'
+    api "androidx.core:core-ktx:$kotlin_base_version"
+    api "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlin_coroutines"
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlin_coroutines"
+    api "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.0-alpha05"
+    api("androidx.lifecycle:lifecycle-runtime-ktx:2.4.1")
+    api 'com.tencent.tav:libpag:4.0.5.10'
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-test:$kotlin_base_version"
+}
+repositories {
+    mavenCentral()
 }

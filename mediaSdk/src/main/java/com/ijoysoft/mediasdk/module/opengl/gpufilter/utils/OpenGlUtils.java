@@ -5,18 +5,18 @@ import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.opengl.GLES10;
+import android.graphics.drawable.Drawable;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
-import android.util.Log;
 
 import com.ijoysoft.mediasdk.common.global.MediaSdk;
 import com.ijoysoft.mediasdk.common.utils.LogUtils;
-import com.ijoysoft.mediasdk.module.opengl.gpufilter.basefilter.GPUImageFilter;
+import com.ijoysoft.mediasdk.common.utils.ObjectUtils;
 import com.ijoysoft.mediasdk.module.opengl.gpufilter.basefilter.GPUImageFilter;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -25,6 +25,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.nio.charset.StandardCharsets;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -34,15 +35,19 @@ public class OpenGlUtils {
     public static final int NOT_INIT = -1;
     public static final int ON_DRAWN = 1;
 
-    public static int loadTexture(final Bitmap img, final int usedTexId) {
+    public static int loadTexture(Bitmap img) {
+        return loadTexture(img, NO_TEXTURE);
+    }
+
+    public static int loadTexture(Bitmap img, int usedTexId) {
         return loadTexture(img, usedTexId, false);
     }
 
-    public static int loadTexture(final Bitmap img, final int usedTexId, boolean recyled) {
-        if (img == null)
+    public static int loadTexture(Bitmap img, int usedTexId, boolean reTry) {
+        if (img == null || img.isRecycled())
             return NO_TEXTURE;
         int textures[] = new int[1];
-        if (usedTexId == NO_TEXTURE) {
+        if (usedTexId == NO_TEXTURE || usedTexId == 0) {
             GLES20.glGenTextures(1, textures, 0);
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures[0]);
             GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D,
@@ -53,15 +58,16 @@ public class OpenGlUtils {
                     GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
             GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D,
                     GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
-
-            GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, img, 0);
+//            GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_REPLACE); //theme转移过来
+            GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, img, 0);
+            if ((textures[0] == -1 || textures[0] == 0) && !reTry) {
+                return loadTexture(img, usedTexId, true);
+            }
         } else {
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, usedTexId);
             GLUtils.texSubImage2D(GLES20.GL_TEXTURE_2D, 0, 0, 0, img);
             textures[0] = usedTexId;
         }
-        if (recyled)
-            img.recycle();
         return textures[0];
     }
 
@@ -118,6 +124,61 @@ public class OpenGlUtils {
     }
 
     /**
+     * @param context
+     * @param obj     String or int
+     * @return
+     */
+    public static int loadTexture(final Context context, Object obj) {
+        final int[] textureHandle = new int[1];
+        GLES20.glGenTextures(1, textureHandle, 0);
+        if (textureHandle[0] != 0) {
+            // Read in the resource
+            Bitmap bitmap = null;
+            try {
+                InputStream is;
+                if (obj instanceof String) {
+                    //path
+                    String path = (String) obj;
+                    if (path.startsWith("filter/")) {
+                        is = context.getResources().getAssets().open(obj.toString());
+                    } else {
+                        is = new FileInputStream(path);
+                    }
+                } else {
+                    //R.raw.xxx
+                    is = context.getResources().openRawResource((int) obj);
+                }
+                bitmap = BitmapFactory.decodeStream(is);
+                is.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (bitmap == null || bitmap.isRecycled()) {
+                return NO_TEXTURE;
+            }
+            // Bind to the texture in OpenGL
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[0]);
+            // Set filtering
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
+            // Load the bitmap into the bound texture.
+            GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
+            // Recycle the bitmap, since its data has been loaded into OpenGL.
+            bitmap.recycle();
+        }
+        if (textureHandle[0] == 0) {
+            throw new RuntimeException("Error loading texture.");
+        }
+        return textureHandle[0];
+    }
+
+    public static int loadTexture(final String name) {
+        return loadTexture(MediaSdk.getInstance().getContext(), name);
+    }
+
+    /**
      * 从asset文件中读取image
      *
      * @param context
@@ -132,12 +193,14 @@ public class OpenGlUtils {
         if (textureHandle[0] != 0) {
             // Read in the resource
             final Bitmap bitmap = getImageFromAssetsFile(context, name);
+            if (bitmap == null) {
+                return -1;
+            }
             // Bind to the texture in OpenGL
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[0]);
-
             // Set filtering
             //设置缩小过滤为使用纹理中坐标最接近的一个像素的颜色作为需要绘制的像素颜色
-            GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
+            GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
             // GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
             //设置放大过滤为使用纹理中坐标最接近的若干个颜色，通过加权平均算法得到需要绘制的像素颜色
             GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
@@ -160,15 +223,62 @@ public class OpenGlUtils {
         return textureHandle[0];
     }
 
+    public static int loadTexture(Context context, int resourceId) {
+        final int[] textureObjectIds = new int[1];
+        GLES20.glGenTextures(1, textureObjectIds, 0);
+
+        if (textureObjectIds[0] == 0) {
+            return 0;
+        }
+
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inScaled = false;
+
+        // Read in the resource
+        final Bitmap bitmap = BitmapFactory.decodeResource(
+                context.getResources(), resourceId);
+
+        if (bitmap == null || bitmap.isRecycled()) {
+            LogUtils.w(TAG, "Resource ID " + resourceId
+                    + " could not be decoded.");
+
+            GLES20.glDeleteTextures(1, textureObjectIds, 0);
+
+            return 0;
+        }
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureObjectIds[0]);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
+                GLES20.GL_TEXTURE_MIN_FILTER,
+                GLES20.GL_LINEAR_MIPMAP_LINEAR);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
+                GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
+                GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
+                GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
+        // Load the bitmap into the bound texture.
+        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
+
+        GLES20.glGenerateMipmap(GLES20.GL_TEXTURE_2D);
+
+        // Recycle the bitmap, since its data has been loaded into
+        // OpenGL.
+        bitmap.recycle();
+
+        // Unbind from the texture.
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
+
+        return textureObjectIds[0];
+    }
+
 
     /**
      * 从sd卡中读取纹理
      *
-     * @param context
      * @param path
      * @return
      */
-    public static int loadTextureBySD(final Context context, final String path) {
+    public static int loadTextureBySD(final String path) {
         final int[] textureHandle = new int[1];
 
         GLES20.glGenTextures(1, textureHandle, 0);
@@ -179,6 +289,9 @@ public class OpenGlUtils {
             //是否进行压缩，设false则是要原始数据
             options.inScaled = false;
             final Bitmap bitmap = BitmapFactory.decodeFile(path, options);
+            if (ObjectUtils.isEmpty(bitmap)) {
+                return -1;
+            }
             // Bind to the texture in OpenGL
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[0]);
             // Set filtering
@@ -200,7 +313,7 @@ public class OpenGlUtils {
         return textureHandle[0];
     }
 
-    private static Bitmap getImageFromAssetsFile(Context context, String fileName) {
+    public static Bitmap getImageFromAssetsFile(Context context, String fileName) {
         Bitmap image = null;
         AssetManager am = context.getResources().getAssets();
         try {
@@ -211,6 +324,26 @@ public class OpenGlUtils {
             e.printStackTrace();
         }
         return image;
+    }
+
+    public static Drawable assets2Drawable(Context context, String fileName) {
+        InputStream open = null;
+        Drawable drawable = null;
+        try {
+            open = context.getAssets().open(fileName);
+            drawable = Drawable.createFromStream(open, null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (open != null) {
+                    open.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return drawable;
     }
 
     public static Bitmap getImageFromPath(String path) {
@@ -280,13 +413,9 @@ public class OpenGlUtils {
     }
 
     public static String readShaderFromRawResource(final int resourceId) {
-        final InputStream inputStream = MediaSdk.getInstance().getContext().getResources().openRawResource(
-                resourceId);
-        final InputStreamReader inputStreamReader = new InputStreamReader(
-                inputStream);
-        final BufferedReader bufferedReader = new BufferedReader(
-                inputStreamReader);
-
+        final InputStream inputStream = MediaSdk.getInstance().getContext().getResources().openRawResource(resourceId);
+        final InputStreamReader inputStreamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+        final BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
         String nextLine;
         final StringBuilder body = new StringBuilder();
 
@@ -328,7 +457,7 @@ public class OpenGlUtils {
         GLES20.glViewport(0, 0, width, height);
         filter.onInputSizeChanged(width, height);
         filter.onDisplaySizeChanged(displayWidth, displayHeight);
-        int textureId = OpenGlUtils.loadTexture(bitmap, OpenGlUtils.NO_TEXTURE, true);
+        int textureId = OpenGlUtils.loadTexture(bitmap, OpenGlUtils.NO_TEXTURE);
         if (rotate) {
             FloatBuffer gLCubeBuffer = ByteBuffer.allocateDirect(TextureRotationUtil.CUBE.length * 4)
                     .order(ByteOrder.nativeOrder())
@@ -399,5 +528,27 @@ public class OpenGlUtils {
             return null;
         }
         return result.toString().replaceAll("\\r\\n", "\n");
+    }
+
+    /**
+     * 单纯创建一个纹理
+     *
+     * @return
+     */
+    public static int createEmptyTexture(int width, int height) {
+        int id[] = {0};
+        GLES20.glGenTextures(1, id, 0);
+        if (id[0] == 0) {
+            return 0;
+        }
+        int textureId = id[0];
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, GL10.GL_REPEAT);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GL10.GL_REPEAT);
+        GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, width, height, 0, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, null);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
+        return textureId;
     }
 }

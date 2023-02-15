@@ -1,9 +1,11 @@
 package com.ijoysoft.mediasdk.module.entity;
 
 import android.graphics.Bitmap;
+import android.util.ArrayMap;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.ijoysoft.mediasdk.common.global.ConstantMediaSize;
+import com.ijoysoft.mediasdk.common.utils.ObjectUtils;
+
 import java.util.Map;
 
 public class VideoMediaItem extends MediaItem {
@@ -13,18 +15,32 @@ public class VideoMediaItem extends MediaItem {
     private String extracAudioPath;
     // 保存修改音量后的路径
     private String volumePath;
-    private List<AudioDuration> volumeList;
+    /**
+     * 现改变策略，一个视频内的音量只为一段，
+     * 原视频音量跨了很多间断，需要赋值很多音量
+     */
+    //0-200
+    private float volume;
     private Map<Integer, Bitmap> thumbnails;
     private String videoTrimAudioPath;
+    private String extractTaskId;//音频抽取任务id
+    //视频变速的路径
+    private String speedPath;
+    private String reversePath;
 
     public VideoMediaItem() {
+        super();
         mediaType = MediaType.VIDEO;
-        volumeList = new ArrayList<>();
-
+        volume = 100f;
+        thumbnails = new ArrayMap<>();
     }
 
-    public void addAudioDuration(AudioDuration audioDuration) {
-        volumeList.add(audioDuration);
+    public float getPlayVolume() {
+        return volume / ConstantMediaSize.MAX_VOLUME;
+    }
+
+    public void setVolume(float volume) {
+        this.volume = volume;
     }
 
     public long getSize() {
@@ -43,27 +59,6 @@ public class VideoMediaItem extends MediaItem {
         this.bitRate = bitRate;
     }
 
-    public ArrayList<AudioDuration> getVolumeList() {
-        return (ArrayList<AudioDuration>) volumeList;
-    }
-
-    public void setVolumeList(List<AudioDuration> volumeList) {
-        this.volumeList = volumeList;
-    }
-
-    public int getWidthNoRotation() {
-        if (getRotation() == 90 || getRotation() == -90 || getRotation() == 270 || getRotation() == -270) {
-            return getHeight();
-        }
-        return getWidth();
-    }
-
-    public int getHeightNoRotation() {
-        if (getRotation() == 90 || getRotation() == -90 || getRotation() == 270 || getRotation() == -270) {
-            return getWidth();
-        }
-        return getHeight();
-    }
 
     public String getExtracAudioPath() {
         return extracAudioPath;
@@ -76,6 +71,11 @@ public class VideoMediaItem extends MediaItem {
     public String getVolumePath() {
         return volumePath;
     }
+
+    public float getVolume() {
+        return volume;
+    }
+
 
     public void setVolumePath(String volumePath) {
         this.volumePath = volumePath;
@@ -97,10 +97,46 @@ public class VideoMediaItem extends MediaItem {
         this.videoTrimAudioPath = videoTrimAudioPath;
     }
 
-   /* @Override
-    public String toString() {
-        return "VideoMediaItem{" + "size=" + size + ", bitRate=" + bitRate + ", extracAudioPath='" + extracAudioPath
-                + '\'' + ", volumePath='" + volumePath + '\'' + ", volumeList=" + volumeList + ", thumbnails="
-                + thumbnails + ", videoTrimAudioPath='" + videoTrimAudioPath + '\'' + '}';
-    }*/
+    public String getExtractTaskId() {
+        return extractTaskId;
+    }
+
+    public void setExtractTaskId(String extractTaskId) {
+        this.extractTaskId = extractTaskId;
+    }
+
+    public String getSpeedPath() {
+        return speedPath;
+    }
+
+    public void setSpeedPath(String speedPath) {
+        this.speedPath = speedPath;
+    }
+
+
+    public String getReversePath() {
+        return reversePath;
+    }
+
+    public void setReversePath(String reversePath) {
+        this.reversePath = reversePath;
+    }
+
+    /**
+     * 获取最终的路径
+     *
+     * @return
+     */
+    public String getFinalPath() {
+        String path = ObjectUtils.isEmpty(getTrimPath()) ? getPath() : getTrimPath();
+        return ObjectUtils.isEmpty(getReversePath()) ? path : getReversePath();
+    }
+
+    public String getFinalPath(boolean origin) {
+        if (!origin) {
+            return getFinalPath();
+        }
+        return getPath();
+    }
+
 }

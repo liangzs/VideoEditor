@@ -22,9 +22,9 @@ import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
 import android.media.MediaMuxer;
 import android.os.Build;
-import androidx.annotation.RequiresApi;
-import android.util.Log;
 import android.view.Surface;
+
+import androidx.annotation.RequiresApi;
 
 import com.ijoysoft.mediasdk.common.utils.LogUtils;
 

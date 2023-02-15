@@ -21,7 +21,6 @@ import android.graphics.SurfaceTexture;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
-import android.util.Log;
 
 import com.ijoysoft.mediasdk.common.global.MediaSdk;
 import com.ijoysoft.mediasdk.common.utils.EasyGlUtils;

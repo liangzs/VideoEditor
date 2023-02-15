@@ -12,7 +12,6 @@ import com.ijoysoft.mediasdk.module.opengl.gpufilter.utils.OpenGlUtils;
  */
 public class WholeZoomTransitionFilter extends TransitionFilter {
     private int mPrograssLocation;
-    private float progress;
 
     public WholeZoomTransitionFilter(TransitionType transitionType) {
         super(transitionType, NO_FILTER_VERTEX_SHADER, OpenGlUtils.readShaderFromRawResource(R.raw.transition_zoom));
@@ -36,6 +35,9 @@ public class WholeZoomTransitionFilter extends TransitionFilter {
     @Override
     protected void onDrawArraysPre() {
         super.onDrawArraysPre();
+        if (progress > TRANSITION_PROGRESS) {
+            return;
+        }
         GLES20.glUniform1f(mPrograssLocation, progress);
         progress += 0.03;
         LogUtils.i(TAG, "onDrawArraysPre->" + progress);

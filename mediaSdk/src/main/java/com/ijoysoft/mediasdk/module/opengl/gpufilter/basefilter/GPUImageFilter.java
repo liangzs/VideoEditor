@@ -18,10 +18,10 @@ package com.ijoysoft.mediasdk.module.opengl.gpufilter.basefilter;
 
 import android.graphics.PointF;
 import android.opengl.GLES20;
-import androidx.annotation.CallSuper;
 
 import androidx.annotation.CallSuper;
 
+import com.ijoysoft.mediasdk.common.utils.MatrixUtils;
 import com.ijoysoft.mediasdk.module.opengl.gpufilter.helper.MagicFilterType;
 import com.ijoysoft.mediasdk.module.opengl.gpufilter.utils.OpenGlUtils;
 import com.ijoysoft.mediasdk.module.opengl.gpufilter.utils.Rotation;
@@ -36,12 +36,12 @@ public class GPUImageFilter implements Cloneable {
     public static final String NO_FILTER_VERTEX_SHADER = "" +
             "attribute vec4 position;\n" +
             "attribute vec4 inputTextureCoordinate;\n" +
-            " \n" +
+            "uniform mat4 vMatrix;\n" +
             "varying vec2 textureCoordinate;\n" +
             " \n" +
             "void main()\n" +
             "{\n" +
-            "    gl_Position = position;\n" +
+            "    gl_Position = vMatrix*position;\n" +
             "    textureCoordinate = inputTextureCoordinate.xy;\n" +
             "}";
     public static final String NO_FILTER_FRAGMENT_SHADER = "" +
@@ -69,6 +69,11 @@ public class GPUImageFilter implements Cloneable {
     protected FloatBuffer mGLTextureBuffer;         //纹理坐标buffer
     protected int mOutputWidth, mOutputHeight;
     private MagicFilterType mFilterType;
+    protected int mHMatrix;
+    private float[] matrix = MatrixUtils.getOriginalMatrix();
+    //范围是0~1
+    private float strength = 1f;
+    private int strengthLocation;
 
     public GPUImageFilter() {
         this(MagicFilterType.NONE, NO_FILTER_VERTEX_SHADER, NO_FILTER_FRAGMENT_SHADER);
@@ -93,6 +98,7 @@ public class GPUImageFilter implements Cloneable {
 
     public void init() {
         onInit();
+//        Log.i("test","mIsInitialized-init");
         mIsInitialized = true;
         onInitialized();
     }
@@ -103,7 +109,9 @@ public class GPUImageFilter implements Cloneable {
         mGLUniformTexture = GLES20.glGetUniformLocation(mGLProgId, "inputImageTexture");
         mGLAttribTextureCoordinate = GLES20.glGetAttribLocation(mGLProgId,
                 "inputTextureCoordinate");
+        mHMatrix = GLES20.glGetUniformLocation(mGLProgId, "vMatrix");
         mIsInitialized = true;
+        strengthLocation = GLES20.glGetUniformLocation(mGLProgId, "strength");
     }
 
     protected void onInitialized() {
@@ -111,10 +119,12 @@ public class GPUImageFilter implements Cloneable {
     }
 
     public final void destroy() {
+//        Log.i("test","mIsInitialized-destroy");
         mIsInitialized = false;
         GLES20.glDeleteProgram(mGLProgId);
         onDestroy();
     }
+
     @CallSuper
     protected void onDestroy() {
     }
@@ -127,11 +137,12 @@ public class GPUImageFilter implements Cloneable {
     public int onDrawFrame(final int textureId, final FloatBuffer cubeBuffer,
                            final FloatBuffer textureBuffer) {
         GLES20.glUseProgram(mGLProgId);
+        GLES20.glUniformMatrix4fv(mHMatrix, 1, false, matrix, 0);
+        setFloat(strengthLocation, strength);
         runPendingOnDrawTasks();
         if (!mIsInitialized) {
             return OpenGlUtils.NOT_INIT;
         }
-
         cubeBuffer.position(0);
         GLES20.glVertexAttribPointer(mGLAttribPosition, 2, GLES20.GL_FLOAT, false, 0, cubeBuffer);
         GLES20.glEnableVertexAttribArray(mGLAttribPosition);
@@ -155,10 +166,11 @@ public class GPUImageFilter implements Cloneable {
 
     public int onDrawFrame(final int textureId) {
         GLES20.glUseProgram(mGLProgId);
+        GLES20.glUniformMatrix4fv(mHMatrix, 1, false, matrix, 0);
+        setFloat(strengthLocation, strength);
         runPendingOnDrawTasks();
         if (!mIsInitialized)
             return OpenGlUtils.NOT_INIT;
-
         mGLCubeBuffer.position(0);
         GLES20.glVertexAttribPointer(mGLAttribPosition, 2, GLES20.GL_FLOAT, false, 0, mGLCubeBuffer);
         GLES20.glEnableVertexAttribArray(mGLAttribPosition);
@@ -191,6 +203,11 @@ public class GPUImageFilter implements Cloneable {
         while (!mRunOnDraw.isEmpty()) {
             mRunOnDraw.removeFirst().run();
         }
+    }
+
+    public void setVertex(float[] vertex) {
+        mGLCubeBuffer.clear();
+        mGLCubeBuffer.put(vertex).position(0);
     }
 
     public boolean isInitialized() {
@@ -322,10 +339,59 @@ public class GPUImageFilter implements Cloneable {
     public MagicFilterType getmFilterType() {
         return mFilterType;
     }
-    
+
     @Override
     protected Object clone() throws CloneNotSupportedException {
         GPUImageFilter filter = (GPUImageFilter) super.clone();
         return filter;
+    }
+
+    public final void setMatrix(float[] matrix) {
+        this.matrix = matrix;
+    }
+
+    public float[] getMatrix() {
+        return matrix;
+    }
+
+    /**
+     * 旋转操作
+     *
+     * @param rotation
+     */
+    public void setRotation(int rotation) {
+        rotation = rotation < 0 ? rotation + 360 : rotation;
+        float[] coord = TextureRotationUtil.TEXTURE_NO_ROTATION;
+        switch (rotation) {
+            case 0:
+                coord = new float[]{0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f};
+                break;
+            case 90:// 根据内容的旋转，然后再图纸作画，再反转角度重现得到坐标便可！
+                coord = new float[]{1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f};
+                break;
+            case 180:
+                coord = new float[]{1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f};
+                break;
+            case 270:
+                coord = new float[]{0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f};
+                break;
+
+        }
+        mGLTextureBuffer.clear();
+        mGLTextureBuffer.put(coord);
+        mGLTextureBuffer.position(0);
+    }
+
+    /**
+     * 设置滤镜强度
+     *
+     * @param strength
+     */
+    public void setStrength(float strength) {
+        this.strength = strength;
+    }
+
+    public float getStrength() {
+        return strength;
     }
 }

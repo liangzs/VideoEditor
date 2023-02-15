@@ -31,4 +31,22 @@ task clean(type: Delete) {
 }
 
 
+ext {
+    // SDK And Tools
+    minSdkVersion = 21
+    targetSdkVersion = 31
+    compileSdkVersion = 31
+
+    //Dependencies
+    supportLibraryVersion = '30.0.0'
+    googlePlayServiceVersion = '17.2.1'
+    umengSdkVersion = 'latest.integration'
+    glideVersion = '3.7.0'
+
+    //kotlin
+    kotlin_version = '1.6.10'
+    kotlin_base_version = '1.6.0'
+    kotlin_coroutines = '1.6.0'
+}
+
 

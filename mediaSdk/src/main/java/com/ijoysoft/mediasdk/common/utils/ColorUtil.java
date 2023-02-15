@@ -18,7 +18,7 @@ public class ColorUtil {
      */
     public static String int2Hex(int colorInt) {
         String hexCode = "";
-        hexCode = String.format(Locale.ENGLISH,"#%06X", Integer.valueOf(16777215 & colorInt));
+        hexCode = String.format(Locale.ENGLISH, "#%06X", Integer.valueOf(16777215 & colorInt));
         return hexCode;
     }
 
@@ -41,16 +41,18 @@ public class ColorUtil {
      */
     public static int[] int2Rgb(int colorInt) {
         int[] rgb = new int[]{0, 0, 0, 0};
-
-        int red = Color.red(colorInt);
-        int green = Color.green(colorInt);
-        int blue = Color.blue(colorInt);
-        int alpha = Color.alpha(colorInt);
-        rgb[0] = red;
-        rgb[1] = green;
-        rgb[2] = blue;
-        rgb[3] = alpha;
-
+        try {
+            int red = Color.red(colorInt);
+            int green = Color.green(colorInt);
+            int blue = Color.blue(colorInt);
+            int alpha = Color.alpha(colorInt);
+            rgb[0] = red;
+            rgb[1] = green;
+            rgb[2] = blue;
+            rgb[3] = alpha;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return rgb;
     }
 
@@ -83,7 +85,16 @@ public class ColorUtil {
      */
     public static int hex2Int(String colorHex) {
         int colorInt = 0;
-        colorInt = Color.parseColor(colorHex);
+        if (!colorHex.contains("#")) {
+            colorHex = "#" + colorHex;
+        }
+        try {
+            colorInt = Color.parseColor(colorHex);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return Color.parseColor("#000000");
+        }
+
         return colorInt;
     }
 
@@ -93,6 +104,9 @@ public class ColorUtil {
      * return Color的rgba数组 —— [63,226,197,1]
      */
     public static int[] hex2Rgb(String colorHex) {
+        if (ObjectUtils.isEmpty(colorHex)) {
+            return null;
+        }
         int colorInt = hex2Int(colorHex);
         return int2Rgb(colorInt);
     }

@@ -4800,9 +4800,9 @@ static void log_callback_null(void *ptr, int level, const char *fmt, va_list vl)
     //sanitize((uint8_t *)line);
 
     if (level <= AV_LOG_WARNING) {
-        XLOGE("%s", line);
+        XLOGE("error info : %s", line);
     } else {
-        XLOGD("%s", line);
+//        XLOGD("%s", line);
        callJavaMethod(line);
     }
 }

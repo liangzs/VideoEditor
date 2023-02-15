@@ -15,8 +15,23 @@ public class MoveTransitionFilter extends TransitionFilter {
     private int mDirecctionLocation;
     private MoveFilter moveFilter;
     private float progress;
-    public MoveTransitionFilter(TransitionType transitionType, MoveFilter moveFilter) {
+
+    public MoveTransitionFilter(TransitionType transitionType) {
         super(transitionType, NO_FILTER_VERTEX_SHADER, OpenGlUtils.readShaderFromRawResource(R.raw.transition_move));
+        switch (transitionType) {
+            case MOVE_TOP:
+                moveFilter = MoveFilter.TOP;
+                break;
+            case MOVE_LEFT:
+                moveFilter = MoveFilter.LEFT;
+                break;
+            case MOVE_RIGHT:
+                moveFilter = MoveFilter.RIGHT;
+                break;
+            case MOVE_BOTTOM:
+                moveFilter = MoveFilter.BOTTOM;
+                break;
+        }
         this.moveFilter = moveFilter;
 
     }
@@ -38,7 +53,8 @@ public class MoveTransitionFilter extends TransitionFilter {
         if (progress <= 1.2) {
             GLES20.glUniform1f(mPrograssLocation, progress);
         }
-        LogUtils.i(TAG, "onDrawArraysPre:" + progress);
+        //将频繁输出的日志设置为-verbose级别
+        LogUtils.v(TAG, "onDrawArraysPre:" + progress);
         progress += 0.04;
     }
 

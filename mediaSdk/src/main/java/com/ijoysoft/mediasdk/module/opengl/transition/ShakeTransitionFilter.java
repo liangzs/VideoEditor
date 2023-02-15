@@ -12,7 +12,6 @@ import com.ijoysoft.mediasdk.module.opengl.gpufilter.utils.OpenGlUtils;
  */
 public class ShakeTransitionFilter extends TransitionFilter {
     private int mPrograssLocation;
-    private float progress;
 
     public ShakeTransitionFilter(TransitionType transitionType) {
         super(transitionType, NO_FILTER_VERTEX_SHADER, OpenGlUtils.readShaderFromRawResource(R.raw.transition_shake));
@@ -31,8 +30,7 @@ public class ShakeTransitionFilter extends TransitionFilter {
     protected void onDrawArraysPre() {
         super.onDrawArraysPre();
         GLES20.glUniform1f(mPrograssLocation, progress);
-        progress += 0.02;
-        LogUtils.i(TAG, "onDrawArraysPre->" + progress);
+        progress += 0.03;
     }
 
     @Override

@@ -2,8 +2,6 @@ package com.ijoysoft.mediasdk.module.opengl.filter;
 
 import android.opengl.GLES20;
 
-import com.ijoysoft.mediasdk.common.global.ConstantMediaSize;
-
 public class PureColorFilter extends AFilter {
     private float[] rgba = new float[]{1.0f, 1.0f, 1.0f, 1.0f};
     private int mColorLocation;

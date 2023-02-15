@@ -16,14 +16,14 @@
 
 package com.ijoysoft.mediasdk.module.mediacodec;
 
-import java.lang.ref.WeakReference;
-
-import com.ijoysoft.mediasdk.common.utils.LogUtils;
-
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+
+import com.ijoysoft.mediasdk.common.utils.LogUtils;
+
+import java.lang.ref.WeakReference;
 
 /**
  * Encode a movie from frames rendered from an external texture image.

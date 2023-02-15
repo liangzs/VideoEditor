@@ -12,7 +12,6 @@ import com.ijoysoft.mediasdk.module.opengl.gpufilter.utils.OpenGlUtils;
  */
 public class OvalZoomTransitionFilter extends TransitionFilter {
     private int mPrograssLocation;
-    private float progress;
 
     public OvalZoomTransitionFilter(TransitionType transitionType) {
         super(transitionType, NO_FILTER_VERTEX_SHADER, OpenGlUtils.readShaderFromRawResource(R.raw.transition_oval_zoom));

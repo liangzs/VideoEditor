@@ -9,8 +9,9 @@ import android.media.MediaMuxer;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import androidx.annotation.RequiresApi;
 import android.util.Log;
+
+import androidx.annotation.RequiresApi;
 
 import com.ijoysoft.mediasdk.common.utils.FileUtils;
 import com.ijoysoft.mediasdk.common.utils.LogUtils;

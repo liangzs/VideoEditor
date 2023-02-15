@@ -19,10 +19,10 @@ package com.ijoysoft.mediasdk.module.opengl.gpufilter.utils;
 public class TextureRotationUtil {
 
     public static final float TEXTURE_NO_ROTATION[] = {
-            0.0f, 1.0f,
-            1.0f, 1.0f,
             0.0f, 0.0f,
+            0.0f, 1.0f,
             1.0f, 0.0f,
+            1.0f, 1.0f,
     };
 
     public static final float TEXTURE_ROTATED_90[] = {
@@ -43,18 +43,20 @@ public class TextureRotationUtil {
             1.0f, 0.0f,
             1.0f, 1.0f,
     };
-    
+
     public static final float CUBE[] = {
-        -1.0f, -1.0f,
-        1.0f, -1.0f,
-        -1.0f, 1.0f,
-        1.0f, 1.0f,
-	};
-    
-    private TextureRotationUtil() {}
+            -1.0f, 1.0f,
+            -1.0f, -1.0f,
+            1.0f, 1.0f,
+            1.0f, -1.0f,
+    };
+
+
+    private TextureRotationUtil() {
+    }
 
     public static float[] getRotation(final Rotation rotation, final boolean flipHorizontal,
-                                                         final boolean flipVertical) {
+                                      final boolean flipVertical) {
         float[] rotatedTex;
         switch (rotation) {
             case ROTATION_90:

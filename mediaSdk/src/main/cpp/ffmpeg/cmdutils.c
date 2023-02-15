@@ -156,7 +156,7 @@ void exit_program(int ret)
     ffmErrorCallback();
     av_log(NULL, AV_LOG_INFO, "exit_program code: %d\n", ret);
 //    pthread_exit("all thread");
-    return;
+//    return;
 
 //    longjmp(jmp_exit, ret);
 //     exit(ret);

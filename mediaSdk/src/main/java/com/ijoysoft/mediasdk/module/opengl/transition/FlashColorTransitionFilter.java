@@ -1,11 +1,9 @@
 package com.ijoysoft.mediasdk.module.opengl.transition;
 
-import com.ijoysoft.mediasdk.R;
-import com.ijoysoft.mediasdk.common.utils.LogUtils;
-import com.ijoysoft.mediasdk.module.opengl.gpufilter.utils.OpenGlUtils;
-
 import android.opengl.GLES20;
-import android.util.Log;
+
+import com.ijoysoft.mediasdk.R;
+import com.ijoysoft.mediasdk.module.opengl.gpufilter.utils.OpenGlUtils;
 
 /**
  * 如果着色器有两个纹理的话，那么在绑定纹理的时候，从0开始，然后+1
@@ -13,7 +11,6 @@ import android.util.Log;
  */
 public class FlashColorTransitionFilter extends TransitionFilter {
     private int mPrograssLocation;
-    private float progress;
     private int colorLocation;
     private float[] rgb = new float[]{1.0f, 1.0f, 1.0f};
 
@@ -41,7 +38,6 @@ public class FlashColorTransitionFilter extends TransitionFilter {
         GLES20.glUniform1f(mPrograssLocation, progress);
         GLES20.glUniform3fv(colorLocation, 1, rgb, 0);
         progress += 0.02;
-        LogUtils.i(TAG, "onDrawArraysPre->" + progress);
     }
 
     @Override
@@ -52,9 +48,9 @@ public class FlashColorTransitionFilter extends TransitionFilter {
         } else {
             progress = d / 2;
         }
-        LogUtils.i(TAG, "seekTo:" + progress + ",origin:" + duration);
         GLES20.glUniform1f(mPrograssLocation, progress);
     }
+
 
     @Override
     public void onDestroy() {

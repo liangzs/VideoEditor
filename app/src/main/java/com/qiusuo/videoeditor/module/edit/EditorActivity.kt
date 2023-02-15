@@ -33,6 +33,6 @@ class EditorActivity : BaseActivity<ActivityEditorBinding>(ActivityEditorBinding
 //        if (color != 0) {
 //            mediaConfig.rgba = "#" + Integer.toHexString(color)
 //        }
-        mediaPreviewView.setDataSource(mediaList, mDoodleItems, true, MediaConfig.Builder().build(), true, true)
+        mediaPreviewView.setDataSource(mediaList, mDoodleItems, MediaConfig.Builder().build())
     }
 }

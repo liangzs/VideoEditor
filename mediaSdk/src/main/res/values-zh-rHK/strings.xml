@@ -1,0 +1,35 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!--transition-array-->
+    <string name="transitions_mix">混合</string>
+    <string name="transitions_classic">经典</string>
+    <string name="transitions_slide">滑动</string>
+    <string name="transitions_grid">网格</string>
+    <string name="transitions_graph">图形</string>
+    <string name="transitions_rock">摇动</string>
+    <string name="transitions_interest">趣味</string>
+    <string name="transitions_mg">动画</string>
+    <string name="transitions_particle">粒子</string>
+    <string name="transitions_glitch">故障</string>
+
+
+    <string name="hot" tools:ignore="MissingTranslation">熱門</string>
+    <string name="birthday" tools:ignore="MissingTranslation">生日</string>
+    <string name="valentine" tools:ignore="MissingTranslation">情人</string>
+    <string name="wedding" tools:ignore="MissingTranslation">婚禮</string>
+    <string name="baby" tools:ignore="MissingTranslation">寶貝</string>
+    <string name="greeting" tools:ignore="MissingTranslation">感恩</string>
+    <string name="holiday" tools:ignore="MissingTranslation">節日</string>
+    <string name="celebration" tools:ignore="MissingTranslation">慶典</string>
+    <string name="love" tools:ignore="MissingTranslation">愛情</string>
+    <string name="traveling" tools:ignore="MissingTranslation">旅行</string>
+    <string name="common" translatable="false">常規</string>
+    <string name="christmas" translatable="false">聖誕節</string>
+    <string name="new_year" translatable="false">新年</string>
+    <string name="food" translatable="false">食物</string>
+    <string name="daily" translatable="false">日常</string>
+    <string name="sport" translatable="false">運動</string>
+    <string name="my" translatable="false">我嘅</string>
+
+    <string name="clip_lost" tools:ignore="MissingTranslation">原始視頻/圖片片段丟失，請檢查您的系統相冊</string>
+</resources>

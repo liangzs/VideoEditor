@@ -132,4 +132,32 @@ public enum MatrixUtils {
         };
     }
 
+    public static float[] getOriginalVertexMatrix() {
+        return new float[]{
+                -1.0f, 1.0f,
+                -1.0f, -1.0f,
+                1.0f, 1.0f,
+                1.0f, -1.0f,
+        };
+
+    }
+
+    public static String matrixToString(float[] m, int mOffset) {
+        StringBuilder sb = new StringBuilder();
+        String space = ", ";
+        char newLine = '\n';
+        for (int i = 0; i < 4; i++) {
+            sb.append(m[mOffset + i]);
+            sb.append(space);
+            sb.append(m[mOffset + i + 4]);
+            sb.append(space);
+            sb.append(m[mOffset + i + 8]);
+            sb.append(space);
+            sb.append(m[mOffset + i + 12]);
+            sb.append(newLine);
+        }
+        return sb.toString();
+
+    }
+
 }

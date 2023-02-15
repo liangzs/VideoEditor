@@ -97,5 +97,9 @@
     <string name="ps_select_audio_min_second">选择音频小于%1$d秒</string>
     <string name="ps_select_no_support">不支持的选择类型</string>
 
+    <!--select-->
     <string name="imported">Imported</string>
+    <string name="add_clip_tip">Please select at least one clip</string>
+    <string name="drag_tip">Long press and drag to reorder</string>
+    <string name="next">Next</string>
 </resources>

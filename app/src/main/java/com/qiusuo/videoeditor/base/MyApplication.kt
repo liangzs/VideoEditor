@@ -19,8 +19,6 @@ class MyApplication : Application() {
         super.onCreate()
         initInMainProcess {
             instance = this
-//            XKeyValue.init(this)
-//            GlobalActivityManager.init(this)
             // Application生命周期监听
             ProcessLifecycleOwner.get().lifecycle.addObserver(object : LifecycleObserver {
                 @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
