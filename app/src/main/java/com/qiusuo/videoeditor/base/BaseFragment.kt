@@ -16,16 +16,18 @@ abstract class BaseFragment<T : ViewBinding>(var inflater: (inflater: LayoutInfl
 
     protected lateinit var viewBinding: T
     val dispose = CompositeDisposable()
-    lateinit var activity: Activity;
+    lateinit var activity: BaseActivity<*>;
 
 
+    abstract fun initView();
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        activity = requireActivity();
+        activity = getActivity() as BaseActivity<*>
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewBinding = this.inflater(inflater, container, false);
+        initView();
         return viewBinding.root;
     }
 
@@ -41,5 +43,6 @@ abstract class BaseFragment<T : ViewBinding>(var inflater: (inflater: LayoutInfl
     override fun getPageName(): String {
         return ""
     }
+
 
 }

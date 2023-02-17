@@ -42,6 +42,10 @@ fun Context.getActivity(): FragmentActivity? {
     }
 }
 
+fun Activity.loading(tip:String){
+
+}
+
 val Float.dp: Float
     get() = TypedValue.applyDimension(
         TypedValue.COMPLEX_UNIT_DIP,

@@ -1,8 +1,6 @@
 package com.qiusuo.videoeditor.module.select.fragment
 
 import android.content.Intent
-import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -11,33 +9,25 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.ijoysoft.mediasdk.common.utils.LogUtils
 import com.ijoysoft.mediasdk.common.utils.ObjectUtils
-import com.ijoysoft.videoeditor.Event.AddClipAndLocateEvent
-import com.ijoysoft.videoeditor.Event.AppBus
-import com.ijoysoft.videoeditor.Event.PhotoSelectAll
-import com.ijoysoft.videoeditor.Event.PreviewEvent
-import com.ijoysoft.videoeditor.activity.SelectClipActivity
 import com.ijoysoft.videoeditor.adapter.GridMediaAdapter
-import com.ijoysoft.videoeditor.adapter.MediaAdapterProxy
-import com.ijoysoft.videoeditor.adapter.MediaRecyclerAdapter
-import com.ijoysoft.videoeditor.base.ViewBindingFragment
-import com.ijoysoft.videoeditor.databinding.FragmentVideoLayoutBinding
-import com.ijoysoft.videoeditor.entity.MediaDataRepository
-import com.ijoysoft.videoeditor.entity.MediaEntity
-import com.ijoysoft.videoeditor.model.viewmodel.LoadMediaViewModel
-import com.ijoysoft.videoeditor.utils.AndroidUtil
-import com.ijoysoft.videoeditor.utils.ContactUtils
-import com.ijoysoft.videoeditor.utils.SharedPreferencesUtil
-import com.ijoysoft.videoeditor.view.GridLayoutManagerNoAnimate
-import com.ijoysoft.videoeditor.view.selection.HeaderViewHolder
-import com.ijoysoft.videoeditor.view.selection.SectionedSpanSizeLookup
+import com.qiusuo.videoeditor.base.BaseFragment
+import com.qiusuo.videoeditor.common.bean.MediaEntity
+import com.qiusuo.videoeditor.common.constant.RequestCode
+import com.qiusuo.videoeditor.databinding.FragmentVideoLayoutBinding
+import com.qiusuo.videoeditor.module.select.LoadMediaViewModel
+import com.qiusuo.videoeditor.module.select.SelectClipActivity
+import com.qiusuo.videoeditor.module.select.adapter.MediaAdapterProxy
+import com.qiusuo.videoeditor.module.select.adapter.MediaRecyclerAdapter
+import com.qiusuo.videoeditor.ui.decoration.GridLayoutManagerNoAnimate
+import com.qiusuo.videoeditor.ui.widgegt.selection.HeaderViewHolder
+import com.qiusuo.videoeditor.ui.widgegt.selection.SectionedSpanSizeLookup
+import com.qiusuo.videoeditor.util.AndroidUtil
+import com.qiusuo.videoeditor.util.SpUtil
 
 /**
  * Created by DELL on 2019/4/29.
  */
-class VideoFragment : ViewBindingFragment<FragmentVideoLayoutBinding>(), SelectFragment {
-    override fun createRootBinding(inflater: LayoutInflater): FragmentVideoLayoutBinding {
-        return FragmentVideoLayoutBinding.inflate(inflater)
-    }
+class VideoFragment : BaseFragment<FragmentVideoLayoutBinding>(FragmentVideoLayoutBinding::inflate), SelectFragment {
 
     private var dateGridLayoutManager: GridLayoutManager? = null
     private var normalGridLayoutManager: GridLayoutManager? = null
@@ -48,8 +38,8 @@ class VideoFragment : ViewBindingFragment<FragmentVideoLayoutBinding>(), SelectF
     private var proxy: MediaAdapterProxy? = null
     lateinit var viewModel: LoadMediaViewModel;
 
-    private fun initView() {
-        viewModel = ViewModelProvider(mActivity).get(LoadMediaViewModel::class.java)
+    override fun initView() {
+        viewModel = ViewModelProvider(activity).get(LoadMediaViewModel::class.java)
         dateGridLayoutManager = GridLayoutManagerNoAnimate(context, 4)
         currentLayoutManager = dateGridLayoutManager
         normalGridLayoutManager = GridLayoutManagerNoAnimate(context, 4)
@@ -61,13 +51,13 @@ class VideoFragment : ViewBindingFragment<FragmentVideoLayoutBinding>(), SelectF
         mMediaRecyclerAdapter = MediaRecyclerAdapter(proxy)
         adapter = mMediaRecyclerAdapter
         gridAdapter = GridMediaAdapter(proxy!!)
-        if (SharedPreferencesUtil.getInt(ContactUtils.MEDIA_SHOW_TYPE, 1) == 1) {
+        if (SpUtil.getInt(SpUtil.MEDIA_SHOW_TYPE, 1) == 1) {
             adapter = gridAdapter
             currentLayoutManager = normalGridLayoutManager
         }
         val lookup = SectionedSpanSizeLookup(mMediaRecyclerAdapter, dateGridLayoutManager)
         dateGridLayoutManager!!.setSpanSizeLookup(lookup)
-        binding!!.mediaRecycler.layoutManager = currentLayoutManager
+        viewBinding!!.mediaRecycler.layoutManager = currentLayoutManager
         proxy!!.onItemClickListener = object : MediaAdapterProxy.onItemClickListener {
             override fun onItemSelected(view: View, mediaItem: MediaEntity) {
                 if (AndroidUtil.chekcFastClickShort()) {
@@ -80,68 +70,65 @@ class VideoFragment : ViewBindingFragment<FragmentVideoLayoutBinding>(), SelectF
                 intent.putExtra("locate", childCoordinate)
                 intent.action = SelectClipActivity.ACTION_SELECT
                 LocalBroadcastManager.getInstance(activity!!).sendBroadcast(intent)
-                AppBus.get().post(AddClipAndLocateEvent(mediaItem, childCoordinate))
+                //AppBus.get().post(AddClipAndLocateEvent(mediaItem, childCoordinate))
             }
 
             override fun onItemClick(view: View, mediaItem: MediaEntity, position: Int) {
                 val childCoordinate = IntArray(2)
                 view.getLocationInWindow(childCoordinate)
                 //在这里就添加，因为发送之后序列化修改无法将裁剪的值设置回来
-                MediaDataRepository.getInstance().tempMediaEntity = mediaItem
-                MediaDataRepository.getInstance().tempMediaEntity.loadRotation()
-                AppBus.get().post(PreviewEvent(mediaItem, childCoordinate, position))
+                //MediaDataRepository.getInstance().tempMediaEntity = mediaItem
+                //MediaDataRepository.getInstance().tempMediaEntity.loadRotation()
+                //AppBus.get().post(PreviewEvent(mediaItem, childCoordinate, position))
             }
 
             override fun selectAll(selectDate: String, toSelect: Boolean) {
-                AppBus.get().post(PhotoSelectAll(selectDate, toSelect))
+                //AppBus.get().post(PhotoSelectAll(selectDate, toSelect))
             }
         }
-        (binding.mediaRecycler.itemAnimator as SimpleItemAnimator?)!!.supportsChangeAnimations = false
-        binding.mediaRecycler.adapter = adapter
+        (viewBinding.mediaRecycler.itemAnimator as SimpleItemAnimator?)!!.supportsChangeAnimations = false
+        viewBinding.mediaRecycler.adapter = adapter
         mMediaRecyclerAdapter!!.showSelectAll(showSelect)
         (viewModel as LoadMediaViewModel).videoLiveData.observe(this) {
-            if (binding.mediaRecycler.scrollState == RecyclerView.SCROLL_STATE_IDLE || !binding.mediaRecycler.isComputingLayout) {
+            if (viewBinding.mediaRecycler.scrollState == RecyclerView.SCROLL_STATE_IDLE || !viewBinding.mediaRecycler.isComputingLayout) {
                 try {
                     val refresh = proxy!!.setData(it.first, it.second, it.third)
                     if (refresh) {
                         adapter!!.notifyDataSetChanged()
                         if (!ObjectUtils.isEmpty(it.first)) {
-                            binding!!.noDataTip.visibility = View.GONE
+                            viewBinding!!.noDataTip.visibility = View.GONE
                         } else {
-                            binding!!.noDataTip.visibility = View.VISIBLE
+                            viewBinding!!.noDataTip.visibility = View.VISIBLE
                         }
                     }
-                    mActivity.endLoading()
+                    activity.endLoading()
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
             }
         }
         //recycleview的滑动底部监听
-        binding.mediaRecycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        viewBinding.mediaRecycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val isBottom = recyclerView.computeVerticalScrollExtent() + recyclerView.computeVerticalScrollOffset() >= recyclerView.computeVerticalScrollRange()
-                if (isBottom && !mActivity.loadShowing() && !(viewModel as LoadMediaViewModel).isPageMax()
+                if (isBottom && !activity.loadShowing() && !(viewModel as LoadMediaViewModel).isPageMax()
                     && (viewModel as LoadMediaViewModel).folderType == LoadMediaViewModel.ALL && dy > 0
                 ) {
                     (viewModel as LoadMediaViewModel).loadMoreMedia(LoadMediaViewModel.VIDEO)
-                    mActivity.showLoading("")
+                    activity.showLoading("")
                 }
             }
         })
     }
 
-    override fun onBindView(root: View?, inflater: LayoutInflater?, savedInstanceState: Bundle?) {
-        initView()
-    }
 
     override fun updateData() {
         if (adapter == null) {
             return
         }
-        if (binding!!.mediaRecycler.scrollState == RecyclerView.SCROLL_STATE_IDLE ||
-            !binding!!.mediaRecycler.isComputingLayout
+        if (viewBinding!!.mediaRecycler.scrollState == RecyclerView.SCROLL_STATE_IDLE ||
+            !viewBinding!!.mediaRecycler.isComputingLayout
         ) {
             val dates = viewModel.getCurrentDateTitle(LoadMediaViewModel.VIDEO)
             val refresh = proxy!!.setData(
@@ -151,11 +138,11 @@ class VideoFragment : ViewBindingFragment<FragmentVideoLayoutBinding>(), SelectF
             requireActivity().runOnUiThread {
                 adapter!!.notifyDataSetChanged()
                 if (!ObjectUtils.isEmpty(dates)) {
-                    binding!!.noDataTip.visibility = View.GONE
+                    viewBinding!!.noDataTip.visibility = View.GONE
                 } else {
-                    binding!!.noDataTip.visibility = View.VISIBLE
+                    viewBinding!!.noDataTip.visibility = View.VISIBLE
                 }
-                mActivity.endLoading()
+                activity.endLoading()
             }
         }
     }
@@ -168,8 +155,8 @@ class VideoFragment : ViewBindingFragment<FragmentVideoLayoutBinding>(), SelectF
     }
 
     fun setMediaRecyclerFrozen(frozen: Boolean) {
-        if (binding != null) {
-            binding!!.mediaRecycler.isLayoutFrozen = frozen
+        if (viewBinding != null) {
+            viewBinding!!.mediaRecycler.isLayoutFrozen = frozen
         }
     }
 
@@ -184,7 +171,7 @@ class VideoFragment : ViewBindingFragment<FragmentVideoLayoutBinding>(), SelectF
         }
         for (i in 0 until currentLayoutManager!!.childCount) {
             val view = currentLayoutManager!!.getChildAt(i)
-            val holder: Any = binding!!.mediaRecycler.getChildViewHolder(view!!)
+            val holder: Any = viewBinding!!.mediaRecycler.getChildViewHolder(view!!)
             if (holder is MediaAdapterProxy.MyViewHolder) {
                 val myHolder = holder
                 if (myHolder.id == mediaId) {
@@ -208,12 +195,12 @@ class VideoFragment : ViewBindingFragment<FragmentVideoLayoutBinding>(), SelectF
         }
         for (i in 0 until currentLayoutManager!!.childCount) {
             val view = currentLayoutManager!!.getChildAt(i)
-            val holder: Any = binding!!.mediaRecycler.getChildViewHolder(view!!)
+            val holder: Any = viewBinding!!.mediaRecycler.getChildViewHolder(view!!)
             if (holder is MediaAdapterProxy.MyViewHolder) {
                 val myHolder = holder
                 if (myHolder.mediaEntity.getPath() == path) {
                     val adapterPosition = myHolder.adapterPosition
-                    requireActivity().runOnUiThread { adapter!!.notifyItemChanged(adapterPosition, ContactUtils.SELECT) }
+                    requireActivity().runOnUiThread { adapter!!.notifyItemChanged(adapterPosition, RequestCode.SELECT) }
                     return
                 }
             } else {
@@ -244,8 +231,8 @@ class VideoFragment : ViewBindingFragment<FragmentVideoLayoutBinding>(), SelectF
             adapter = gridAdapter
             currentLayoutManager = normalGridLayoutManager
         }
-        binding!!.mediaRecycler.adapter = adapter
-        binding!!.mediaRecycler.layoutManager = currentLayoutManager
+        viewBinding!!.mediaRecycler.adapter = adapter
+        viewBinding!!.mediaRecycler.layoutManager = currentLayoutManager
     }
 
     private var showSelect = false
@@ -259,7 +246,7 @@ class VideoFragment : ViewBindingFragment<FragmentVideoLayoutBinding>(), SelectF
 
     override fun updateSelect() {
         if (adapter != null) {
-            adapter!!.notifyItemRangeChanged(0, adapter!!.itemCount, ContactUtils.SELECT)
+            adapter!!.notifyItemRangeChanged(0, adapter!!.itemCount, RequestCode.SELECT)
         }
     }
 
@@ -294,14 +281,14 @@ class VideoFragment : ViewBindingFragment<FragmentVideoLayoutBinding>(), SelectF
      * 更新全选按钮
      */
     override fun updateSections() {
-        mMediaRecyclerAdapter!!.notifyItemRangeChanged(0, mMediaRecyclerAdapter!!.itemCount, ContactUtils.SECTIONS)
+        mMediaRecyclerAdapter!!.notifyItemRangeChanged(0, mMediaRecyclerAdapter!!.itemCount, RequestCode.SECTIONS)
     }
 
     override fun recountSections() {
         if (proxy != null) {
             proxy!!.selectCount.clear()
             LogUtils.v("selectCount Video", "clear")
-            mMediaRecyclerAdapter!!.notifyItemRangeChanged(0, mMediaRecyclerAdapter!!.itemCount, ContactUtils.SECTIONS)
+            mMediaRecyclerAdapter!!.notifyItemRangeChanged(0, mMediaRecyclerAdapter!!.itemCount, RequestCode.SECTIONS)
         }
     }
 }

@@ -33,7 +33,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         initView();
     }
 
-    private fun initView() {
+    override fun initView() {
         var gridlayout = GridLayoutManager(context, SPAN_COUNT);
         gridlayout.orientation = GridLayoutManager.HORIZONTAL;
         gridlayout.isAutoMeasureEnabled = true

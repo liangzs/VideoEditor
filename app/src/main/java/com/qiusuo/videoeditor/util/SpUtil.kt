@@ -11,8 +11,39 @@ import kotlinx.coroutines.withContext
 /**
  * 存储
  */
-object SPUtil {
+object SpUtil {
     private const val NAME = "VideoEdit"
+
+    /*----------------tag----------------------*/
+    const val BITMAP_DOODLE_BASE_Y = "bitmap_doodle_base_y"
+
+    const val MEDIAITEM_FIRST_FRAME = "first_frame"
+
+    const val TO_REFREH_WORK = "to_refresh_work"
+    const val MURGE_PATH = "murge_path"
+    const val CUT_PATH = "cut_path"
+    const val ISCUT = "is_cut"
+    const val ISSPLITE = "is_splite"
+    const val SPLTE_LEFT_PATH = "splite_left_path"
+    const val SPLTE_RIGHT_PATH = "splite_right_path"
+    const val MUSIC_SORT = "music_sort"
+    const val MUSIC_RE_SORT = "music_re_sort"
+    const val DOODLE_COLOR = "doodle_color"
+    const val DOODLE_MOSAIC = "doodle_mosaic"
+    const val DOODLE_MATERIALS = "doodle_materials"
+    const val DOODLE_COLOR_LOCATION = "doodle_color_location"
+    const val MEDIA_SORT = "media_sort"
+    const val MEDIA_SHOW_TYPE = "media_show_type"
+
+    //设置图片时长，运用到全部
+    const val IMAGE_DURATION_APPLY_ALL = "image_duration_apply_all"
+
+    /*bus.post*/
+    const val DRAFT_SELECT_MODE = "draft_select_mode"
+    const val WORK_SELECT_MODE = "work_select_mode"
+    const val ADD_CLIP = "add_clip"
+    const val DRAFT_EDIT_TO_CLIP = "draft_edit_to_clip"
+    const val ANDROID_R_TRANSITION = "android_r_transition"
     private fun getSharedPreferences(): SharedPreferences {
         return MyApplication.instance.getSharedPreferences(NAME, Context.MODE_PRIVATE)
     }

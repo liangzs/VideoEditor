@@ -1,13 +1,20 @@
 package com.qiusuo.videoeditor.base
 
+import android.content.DialogInterface
+import android.os.Build
 import android.os.Bundle
+import android.os.Looper
 import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
+import com.qiusuo.videoeditor.ui.widgegt.LoadingDialog
 import com.qiusuo.videoeditor.util.StatusBarUtil
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import kotlinx.coroutines.launch
 
 /**·
  * 基类
@@ -21,6 +28,7 @@ abstract class BaseActivity<T : ViewBinding>(var inflater: (inflater: LayoutInfl
     //发射器
     var dispose = CompositeDisposable();
 
+    var loading: LoadingDialog? = null
 
     @CallSuper
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,5 +59,80 @@ abstract class BaseActivity<T : ViewBinding>(var inflater: (inflater: LayoutInfl
     }
 
     abstract open fun initData();
+
+
+    /**
+     * 显示加载提示
+     *
+     * @param tips
+     */
+    open fun showLoading(tips: String?) {
+        if (this.isFinishing || this.isDestroyed) {
+            return
+        }
+        if (null == loading) {
+            loading = LoadingDialog(this)
+        }
+        lifecycleScope.launch {
+            loading?.apply {
+                setTips(tips)
+                getWindow()?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                show()
+            }
+        }
+    }
+
+    /**
+     * 显示加载提示
+     */
+    open fun showLoading(cancel: Boolean, tips: String?) {
+        if (this.isFinishing || this.isDestroyed) {
+            return
+        }
+        if (null == loading) {
+            loading = LoadingDialog(this)
+        }
+        lifecycleScope.launch {
+            loading?.apply {
+                setTips(tips)
+                show()
+            }
+        }
+    }
+
+    open fun showLoading(tips: String?, mask: Boolean) {
+        if (this.isFinishing || this.isDestroyed) {
+            return
+        }
+        if (null == loading) {
+            loading = LoadingDialog(this)
+        }
+        lifecycleScope.launch {
+            loading?.apply {
+                setTips(tips)
+                show()
+            }
+        }
+        if (mask) {
+            loading?.setMask(true)
+        }
+        loading?.setOnDismissListener { loading?.setMask(false) }
+    }
+
+    open fun loadShowing(): Boolean {
+        return loading?.isShowing() ?: false
+    }
+
+    /**
+     * 隐藏loading
+     */
+    open fun endLoading() {
+        loading?.let {
+            if (it.isShowing() && !isFinishing) {
+                it.dismiss()
+            }
+        }
+
+    }
 
 }

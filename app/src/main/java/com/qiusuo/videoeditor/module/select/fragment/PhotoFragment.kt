@@ -14,12 +14,17 @@ import com.ijoysoft.mediasdk.common.utils.ObjectUtils
 import com.ijoysoft.videoeditor.adapter.GridMediaAdapter
 import com.qiusuo.videoeditor.base.BaseFragment
 import com.qiusuo.videoeditor.common.bean.MediaEntity
+import com.qiusuo.videoeditor.common.constant.RequestCode
+import com.qiusuo.videoeditor.common.data.MediaDataRepository
 import com.qiusuo.videoeditor.databinding.FragmentMediaLayoutBinding
 import com.qiusuo.videoeditor.module.select.LoadMediaViewModel
 import com.qiusuo.videoeditor.module.select.SelectClipActivity
 import com.qiusuo.videoeditor.module.select.adapter.MediaAdapterProxy
 import com.qiusuo.videoeditor.module.select.adapter.MediaRecyclerAdapter
 import com.qiusuo.videoeditor.ui.decoration.GridLayoutManagerNoAnimate
+import com.qiusuo.videoeditor.ui.widgegt.selection.HeaderViewHolder
+import com.qiusuo.videoeditor.ui.widgegt.selection.SectionedSpanSizeLookup
+import com.qiusuo.videoeditor.util.SpUtil
 
 class PhotoFragment : BaseFragment<FragmentMediaLayoutBinding>(FragmentMediaLayoutBinding::inflate),
     SelectFragment {
@@ -39,7 +44,7 @@ class PhotoFragment : BaseFragment<FragmentMediaLayoutBinding>(FragmentMediaLayo
     private var proxy: MediaAdapterProxy? = null
 
 
-    override fun onBindView(root: View?, inflater: LayoutInflater?, savedInstanceState: Bundle?) {
+    override fun initView() {
         SelectClipActivity.vmOwner?.let {
             viewModel = ViewModelProvider(it).get(LoadMediaViewModel::class.java);
         }
@@ -60,13 +65,13 @@ class PhotoFragment : BaseFragment<FragmentMediaLayoutBinding>(FragmentMediaLayo
         gridAdapter = GridMediaAdapter(proxy!!)
         mMediaRecyclerAdapter = MediaRecyclerAdapter(proxy)
         adapter = mMediaRecyclerAdapter
-        if (SharedPreferencesUtil.getInt(ContactUtils.MEDIA_SHOW_TYPE, 1) == 1) {
+        if (SpUtil.getInt(SpUtil.MEDIA_SHOW_TYPE, 1) == 1) {
             adapter = gridAdapter
             currentLayoutManager = normalGridLayoutManager
         }
         val lookup = SectionedSpanSizeLookup(mMediaRecyclerAdapter, dateGridLayoutManager)
         dateGridLayoutManager?.setSpanSizeLookup(lookup)
-        binding.mediaRecycler.layoutManager = currentLayoutManager
+        viewBinding.mediaRecycler.layoutManager = currentLayoutManager
         proxy!!.onItemClickListener = object : MediaAdapterProxy.onItemClickListener {
             override fun onItemSelected(view: View, mediaItem: MediaEntity) {
                 val childCoordinate = IntArray(2)
@@ -75,7 +80,7 @@ class PhotoFragment : BaseFragment<FragmentMediaLayoutBinding>(FragmentMediaLayo
                 intent.putExtra("mediaitem", mediaItem)
                 intent.putExtra("locate", childCoordinate)
                 intent.action = SelectClipActivity.ACTION_SELECT
-                MediaDataRepository.getInstance().tempMediaEntity = mediaItem
+                //MediaDataRepository.getInstance().tempMediaEntity = mediaItem
                 LocalBroadcastManager.getInstance(activity!!).sendBroadcast(intent)
             }
 
@@ -87,23 +92,23 @@ class PhotoFragment : BaseFragment<FragmentMediaLayoutBinding>(FragmentMediaLayo
             override fun selectAll(selectDate: String, toSelect: Boolean) {
             }
         }
-        (binding.mediaRecycler.itemAnimator as SimpleItemAnimator?)!!.supportsChangeAnimations =
+        (viewBinding.mediaRecycler.itemAnimator as SimpleItemAnimator?)!!.supportsChangeAnimations =
             false
-        binding.mediaRecycler.adapter = adapter
+        viewBinding.mediaRecycler.adapter = adapter
         mMediaRecyclerAdapter!!.showSelectAll(showSelect)
 
         (viewModel as LoadMediaViewModel).photoLiveData.observe(this, {
-            if (binding.mediaRecycler.scrollState == RecyclerView.SCROLL_STATE_IDLE || !binding.mediaRecycler.isComputingLayout) {
+            if (viewBinding.mediaRecycler.scrollState == RecyclerView.SCROLL_STATE_IDLE || !viewBinding.mediaRecycler.isComputingLayout) {
                 try {
                     val refresh = proxy!!.setData(it.first, it.second, it.third)
                     requireActivity().runOnUiThread {
                         if (refresh) adapter?.notifyDataSetChanged()
                         if (!ObjectUtils.isEmpty(it.first)) {
-                            binding.noDataTip.visibility = View.GONE
+                            viewBinding.noDataTip.visibility = View.GONE
                         } else {
-                            binding.noDataTip.visibility = View.VISIBLE
+                            viewBinding.noDataTip.visibility = View.VISIBLE
                         }
-                        mActivity.endLoading()
+                        activity.endLoading()
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -111,16 +116,16 @@ class PhotoFragment : BaseFragment<FragmentMediaLayoutBinding>(FragmentMediaLayo
             }
         })
         //recycleview的滑动底部监听
-        binding.mediaRecycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        viewBinding.mediaRecycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val isBottom =
                     recyclerView.computeVerticalScrollExtent() + recyclerView.computeVerticalScrollOffset() >= recyclerView.computeVerticalScrollRange()
-                if (isBottom && !mActivity.loadShowing() && !(viewModel as LoadMediaViewModel).isPageMax()
+                if (isBottom && !activity.loadShowing() && !(viewModel as LoadMediaViewModel).isPageMax()
                     && (viewModel as LoadMediaViewModel).folderType == LoadMediaViewModel.ALL && dy > 0
                 ) {
                     (viewModel as LoadMediaViewModel).loadMoreMedia(LoadMediaViewModel.PHOTO)
-                    mActivity.showLoading("")
+                    activity.showLoading("")
                 }
             }
         })
@@ -130,8 +135,8 @@ class PhotoFragment : BaseFragment<FragmentMediaLayoutBinding>(FragmentMediaLayo
         if (mMediaRecyclerAdapter == null) {
             return
         }
-        if (binding!!.mediaRecycler.scrollState == RecyclerView.SCROLL_STATE_IDLE ||
-            !binding!!.mediaRecycler.isComputingLayout
+        if (viewBinding!!.mediaRecycler.scrollState == RecyclerView.SCROLL_STATE_IDLE ||
+            !viewBinding!!.mediaRecycler.isComputingLayout
         ) {
             val dates =
                 (viewModel as LoadMediaViewModel).getCurrentDateTitle(LoadMediaViewModel.PHOTO)
@@ -142,11 +147,11 @@ class PhotoFragment : BaseFragment<FragmentMediaLayoutBinding>(FragmentMediaLayo
             )
             adapter!!.notifyDataSetChanged()
             if (!ObjectUtils.isEmpty(dates)) {
-                binding!!.noDataTip.visibility = View.GONE
+                viewBinding!!.noDataTip.visibility = View.GONE
             } else {
-                binding!!.noDataTip.visibility = View.VISIBLE
+                viewBinding!!.noDataTip.visibility = View.VISIBLE
             }
-            mActivity.endLoading()
+            activity.endLoading()
         }
     }
 
@@ -162,8 +167,8 @@ class PhotoFragment : BaseFragment<FragmentMediaLayoutBinding>(FragmentMediaLayo
     }
 
     fun setMediaRecyclerFrozen(frozen: Boolean) {
-        if (binding != null) {
-            binding!!.mediaRecycler.isLayoutFrozen = frozen
+        if (viewBinding != null) {
+            viewBinding!!.mediaRecycler.isLayoutFrozen = frozen
         }
     }
 
@@ -178,7 +183,7 @@ class PhotoFragment : BaseFragment<FragmentMediaLayoutBinding>(FragmentMediaLayo
         }
         for (i in 0 until currentLayoutManager!!.childCount) {
             val view = currentLayoutManager!!.getChildAt(i)
-            val holder: Any = binding!!.mediaRecycler.getChildViewHolder(view!!)
+            val holder: Any = viewBinding!!.mediaRecycler.getChildViewHolder(view!!)
             if (holder is MediaAdapterProxy.MyViewHolder) {
                 val myHolder = holder
                 if (myHolder.id == mediaId) {
@@ -203,7 +208,7 @@ class PhotoFragment : BaseFragment<FragmentMediaLayoutBinding>(FragmentMediaLayo
         }
         for (i in 0 until currentLayoutManager!!.childCount) {
             val view = currentLayoutManager!!.getChildAt(i)
-            val holder: Any = binding!!.mediaRecycler.getChildViewHolder(view!!)
+            val holder: Any = viewBinding!!.mediaRecycler.getChildViewHolder(view!!)
             if (holder is MediaAdapterProxy.MyViewHolder) {
                 val myHolder = holder
                 if (myHolder.mediaEntity.getPath() == path) {
@@ -211,7 +216,7 @@ class PhotoFragment : BaseFragment<FragmentMediaLayoutBinding>(FragmentMediaLayo
                     requireActivity().runOnUiThread {
                         adapter!!.notifyItemChanged(
                             adapterPosition,
-                            ContactUtils.SELECT
+                            RequestCode.SELECT
                         )
                     }
                     return
@@ -240,8 +245,8 @@ class PhotoFragment : BaseFragment<FragmentMediaLayoutBinding>(FragmentMediaLayo
             adapter = gridAdapter
             currentLayoutManager = normalGridLayoutManager
         }
-        binding!!.mediaRecycler.adapter = adapter
-        binding!!.mediaRecycler.layoutManager = currentLayoutManager
+        viewBinding!!.mediaRecycler.adapter = adapter
+        viewBinding!!.mediaRecycler.layoutManager = currentLayoutManager
     }
 
     private var showSelect = false
@@ -255,7 +260,7 @@ class PhotoFragment : BaseFragment<FragmentMediaLayoutBinding>(FragmentMediaLayo
 
     override fun updateSelect() {
         if (adapter != null) {
-            adapter!!.notifyItemRangeChanged(0, adapter!!.itemCount, ContactUtils.SELECT)
+            adapter!!.notifyItemRangeChanged(0, adapter!!.itemCount, RequestCode.SELECT)
         }
     }
 
@@ -293,7 +298,7 @@ class PhotoFragment : BaseFragment<FragmentMediaLayoutBinding>(FragmentMediaLayo
         mMediaRecyclerAdapter!!.notifyItemRangeChanged(
             0,
             mMediaRecyclerAdapter!!.itemCount,
-            ContactUtils.SECTIONS
+            RequestCode.SECTIONS
         )
     }
 
@@ -304,7 +309,7 @@ class PhotoFragment : BaseFragment<FragmentMediaLayoutBinding>(FragmentMediaLayo
             mMediaRecyclerAdapter!!.notifyItemRangeChanged(
                 0,
                 mMediaRecyclerAdapter!!.itemCount,
-                ContactUtils.SECTIONS
+                RequestCode.SECTIONS
             )
         }
     }

@@ -102,4 +102,8 @@
     <string name="add_clip_tip">Please select at least one clip</string>
     <string name="drag_tip">Long press and drag to reorder</string>
     <string name="next">Next</string>
+    <string name="click_preview">Click to view</string>
+    <string name="all">All</string>
+    <string name="photo">Photo</string>
+    <string name="video">Video</string>
 </resources>
