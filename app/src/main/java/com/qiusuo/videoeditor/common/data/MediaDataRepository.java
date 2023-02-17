@@ -59,15 +59,22 @@ import com.ijoysoft.mediasdk.module.opengl.transition.TransitionType;
 import com.ijoysoft.mediasdk.module.playControl.GifDecoder;
 import com.ijoysoft.mediasdk.module.playControl.GlideGifDecoder;
 import com.ijoysoft.mediasdk.view.BackgroundType;
+import com.ijoysoft.videoeditor.theme.manager.TransitionRepository;
+import com.qiusuo.videoeditor.base.MyApplication;
+import com.qiusuo.videoeditor.common.bean.CutMusicItem;
 import com.qiusuo.videoeditor.common.bean.MediaEntity;
 import com.qiusuo.videoeditor.common.bean.MusicEntity;
+import com.qiusuo.videoeditor.common.bean.Project;
 import com.qiusuo.videoeditor.common.bean.SlideshowEntity;
 import com.qiusuo.videoeditor.common.bean.SpBgInfo;
 import com.qiusuo.videoeditor.common.bean.ThemeGroupEntity;
 import com.qiusuo.videoeditor.common.bean.ThemeResGroupEntity;
 import com.qiusuo.videoeditor.common.constant.DownloadPath;
+import com.qiusuo.videoeditor.util.AndroidUtil;
+import com.qiusuo.videoeditor.util.BytesBitmap;
 import com.qiusuo.videoeditor.util.FileUtil;
 import com.qiusuo.videoeditor.util.IOUtil;
+import com.qiusuo.videoeditor.util.SpUtil;
 import com.qiusuo.videoeditor.util.ZipUtils;
 
 import org.libpag.PAGFile;
@@ -97,7 +104,7 @@ public class MediaDataRepository {
     private static final String TAG = "MediaDataRepository";
     //    private ArrayList<MediaEntity> dataOrigin;
     private List<MediaItem> dataOperate;
-//    private Project currentProject;
+    private Project currentProject;
     private Bitmap mScreenShotBitmap;
     /**
      * 贴纸
@@ -133,7 +140,6 @@ public class MediaDataRepository {
     private ConcurrentHashMap<String, List<GifDecoder.GifFrame>> dynamicMimaps;
     /**
      * gif加载的同步锁
-     *
      */
     private Object dynamicMipmapsLoadLock = new Object();
 
@@ -180,22 +186,20 @@ public class MediaDataRepository {
 
 
     public void clearData() {
-        ExecutorFactory.single().execute(() -> {
-            recyleBitmaps();
-            if (doodleList != null) {
-                doodleList.clear();
-            }
-            if (audioList != null) {
-                audioList.clear();
-            }
-            if (recordList != null) {
-                recordList.clear();
-            }
-            if (themePags != null) {
-                themePags.clear();
-                themePags = null;
-            }
-        });
+        recyleBitmaps();
+        if (doodleList != null) {
+            doodleList.clear();
+        }
+        if (audioList != null) {
+            audioList.clear();
+        }
+        if (recordList != null) {
+            recordList.clear();
+        }
+        if (themePags != null) {
+            themePags.clear();
+            themePags = null;
+        }
         mScreenShotBitmap = null;
         mThemeGroupEntity = null;
         mThemeResGroupEntity = null;
@@ -204,7 +208,7 @@ public class MediaDataRepository {
         themeAudio = null;
         ConstantMediaSize.themeType = ThemeEnum.NONE;
         hasEdit = false;
-//        currentProject = null;
+        currentProject = null;
         ConstantMediaSize.particles = GlobalParticles.NONE;
         innerBorder = InnerBorder.Companion.getNONE();
         mSpBgInfo = SpBgInfo.defaultBgInfo();
@@ -317,7 +321,7 @@ public class MediaDataRepository {
 
             ThreadPoolManager.getThreadPool().execute(() -> {
                 try {
-                    ZipUtils.UnZipFolder(DownloadHelper.getDownloadPath(slideEntity.getZipPath()), slideEntity.getPath());
+//                    ZipUtils.UnZipFolder(DownloadHelper.getDownloadPath(slideEntity.getZipPath()), slideEntity.getPath());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -332,7 +336,7 @@ public class MediaDataRepository {
             themeAudio.setProjectId(getProjectID());
             // 改变文件名并赋值
             themeAudio.setPath(slideEntity.getMusicLocalPath());
-            MusicEntity musicEntity = MediaManager.queryOnlineMusic(slideEntity.getMusicLocalPath());
+            MusicEntity musicEntity = MediaManager.INSTANCE.queryOnlineMusic(slideEntity.getMusicLocalPath());
             themeAudio.setTitle(slideEntity.getName());
             if (musicEntity != null) {
                 themeAudio.setTitle(musicEntity.getName());
@@ -366,11 +370,11 @@ public class MediaDataRepository {
         if (slideEntity.getThemeEnum().getParticleType() != null) {
             ConstantMediaSize.particles = slideEntity.getThemeEnum().getParticleType();
         }
-        if (currentProject != null) {
-            currentProject.setThemeEnum(slideEntity.getThemeEnum());
-            currentProject.setThemeMusicPath(themeAudio.getPath());
-            currentProject.setThemeZipPath(ConstantMediaSize.themePath);
-        }
+//        if (currentProject != null) {
+//            currentProject.setThemeEnum(slideEntity.getThemeEnum());
+//            currentProject.setThemeMusicPath(themeAudio.getPath());
+//            currentProject.setThemeZipPath(ConstantMediaSize.themePath);
+//        }
         if (themeType == ThemeEnum.NONE) {
             themeAudio = null;
         }
@@ -399,7 +403,7 @@ public class MediaDataRepository {
         if (themeEnum != ThemeEnum.NONE && audioList.isEmpty()) {
             themeAudio = new AudioMediaItem();
             themeAudio.setPath(themeMusicPath);
-            MusicEntity musicEntity = MediaManager.getInstance().queryOnlineMusic(themeMusicPath);
+            MusicEntity musicEntity = MediaManager.INSTANCE.queryOnlineMusic(themeMusicPath);
             themeAudio.setTitle(themeEnum.getName());
             if (musicEntity != null) {
                 themeAudio.setTitle(musicEntity.getName());
@@ -715,7 +719,7 @@ public class MediaDataRepository {
         }
         dustItem.setProjectId(getProjectID());
         dustItem.setPath(originItem.path);
-        if (SharedPreferencesUtil.getBoolean(ContactUtils.IMAGE_DURATION_APPLY_ALL, false)) {
+        if (SpUtil.INSTANCE.getBoolean(SpUtil.IMAGE_DURATION_APPLY_ALL, false)) {
             dustItem.setDuration(ConstantMediaSize.IMAGE_DURATION);
             dustItem.setTempDuration(ConstantMediaSize.IMAGE_DURATION);
         } else {
@@ -855,17 +859,6 @@ public class MediaDataRepository {
         if (mediaItem.isImage()) {
             mediaItem.setAfterRotation(preTreatment.afterPreRotation());
         }
-
-        //如果主题为none并且无转场值为none，则进行随机转场赋值
-//        if (!checkIsTheme() && mediaItem.getTransitionFilter() == null && currentProject.getTranGroup() != TransitionRepository.TransiGroup.GROUP_NONE) {
-//            mediaItem.setTransitionFilter(TransitionRepository.INSTANCE.randomTransitionFilter(currentProject.getTranGroup(), index));
-//            if (mediaItem.getTempDuration() < ConstantMediaSize.TRANSITION_DURATION) {
-//                mediaItem.setDuration(ConstantMediaSize.TRANSITION_DURATION);
-//            }
-//        }
-//        if (mediaItem.getTransitionFilter() == null) {
-//            mediaItem.setTransitionFilter(TransitionFactory.initFilters(TransitionType.NONE));
-//        }
     }
 
     /**
@@ -942,7 +935,7 @@ public class MediaDataRepository {
      */
     public void setDefaultMusic() {
         if (!checkIsTheme() && ObjectUtils.isEmpty(audioList)) {
-            MusicEntity musicEntity = LocalDataHelper.createDefaultMusic();
+            MusicEntity musicEntity = MediaManager.INSTANCE.createDefaultMusic();
             AudioMediaItem audioMediaItem = new AudioMediaItem();
             audioMediaItem.setProjectId(getProjectID());
             audioMediaItem.setPath(musicEntity.getPath());
@@ -1145,7 +1138,6 @@ public class MediaDataRepository {
      * @param index
      */
     public MediaItem remove(int index) {
-        Dlog.d("remove-position", "dataOperateSize===" + dataOperate.size());
         if (index >= dataOperate.size() || index == -1) {
             return null;
         }
@@ -1181,7 +1173,6 @@ public class MediaDataRepository {
      * @param index
      */
     public MediaItem removeDataOperateSublist(List<MediaItem> subList, int index) {
-        Dlog.d("remove-position", "dataOperateSize===" + subList.size());
         if (index >= subList.size() || index == -1) {
             return null;
         }
@@ -1330,7 +1321,6 @@ public class MediaDataRepository {
             }
             retriever.setDataSource(operate.getTrimPath());
             long tempDuration = (Long.parseLong(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)));
-            Dlog.i(TAG, "updateOriginTrimVideo-duration:" + tempDuration);
             operate.setDuration(tempDuration);
             //时间计算
             operate.setTempDuration(tempDuration);
@@ -1354,7 +1344,6 @@ public class MediaDataRepository {
             }
             retriever.setDataSource(((VideoMediaItem) operate).getReversePath());
             long tempDuration = (Long.parseLong(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)));
-            Dlog.i(TAG, "updateOriginTrimVideo-duration:" + tempDuration);
             operate.setTempDuration(tempDuration);
             operate.setDuration(tempDuration);
             String value = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH);
@@ -1383,447 +1372,8 @@ public class MediaDataRepository {
      * 优势比如上用文件形式xml存储json数据结构
      */
     public synchronized void save2Local() {
-        if (ObjectUtils.isEmpty(dataOperate)) {
-            return;
-        }
-        long start = System.currentTimeMillis();
-        Dlog.i(TAG, "save2Local->shutDown:" + (System.currentTimeMillis() - start));
-        long temp;
-        // 数据存储列表
-        final List<DurationIntervalData> durationIntervalDataList = new ArrayList<>();
-        final List<MediaMatrixData> mediaMatrixDataList = new ArrayList<>();
-        final List<MediaItemData> mediaItemDataList = new ArrayList<>();
-        final List<DoodleItemData> doodleItemDataList = new ArrayList<>();
-        final List<AudioMediaItemData> audioMediaItemDataList = new ArrayList<>();
-        // media存储
-        final ArrayList<MediaItem> operateDataCopy = getDataOperateCopy();
-        // 存储封面图片
-        String coverPath = currentProject.getCoverPath();
-        if (draftMediaItem == null || !draftMediaItem.getPath().equals(operateDataCopy.get(0).getPath()) || ObjectUtils.isEmpty(coverPath) || !FileUtils.checkFileExist(coverPath)) {
-            if (draftMediaItem != null && draftMediaItem.isImage() && !ObjectUtils.isEmpty(currentProject.getCoverPath()) && currentProject.getCoverPath().contains("draft_cover_")) {
-                LogUtils.v("MediaDataRepository", ":" + currentProject.getCoverPath() + ",draftMediaItem.isImage():" + draftMediaItem.isImage());
-                FileUtil.deleteFile(currentProject.getCoverPath());
-            }
-            if (operateDataCopy.get(0).isImage()) {
-                coverPath = PathUtil.createCoverImage(getProjectID());
-                try {
-                    FileUtils.saveBitmap(operateDataCopy.get(0).getBitmap(), coverPath); // 取备份数据
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } else {
-                coverPath = operateDataCopy.get(0).getPath();
-            }
-        }
-        saveMedia2Local(operateDataCopy, mediaItemDataList, mediaMatrixDataList, durationIntervalDataList);
-        Dlog.i(TAG, "saveMedia2Local-time:" + (System.currentTimeMillis() - start));
-        temp = System.currentTimeMillis();
-        // 涂鸦转化
-        saveDoodle2Local(doodleItemDataList, durationIntervalDataList);
-        Dlog.d("doodle-save", "doodleItemDataList-save=====" + doodleItemDataList.size());
-        Dlog.i(TAG, "saveDoodle2Local-time:" + (System.currentTimeMillis() - temp));
-        // 音频转化
-        saveAudioLocal(audioMediaItemDataList, durationIntervalDataList);
-        Dlog.i(TAG, "saveAudioLocal-time:" + (System.currentTimeMillis() - temp));
-        if (mediaItemDataList.isEmpty()) {
-            return;
-        }
-        DaoSession daoSession = MyApplication.getInstance().getDaoSession();
-        try {
-            // 清除数据库
-            if (currentProject != null) {
-                SqliteDataFetchHelper.removeProject(currentProject);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        // 事务处理数据库，保证数据的完整性
-        String finalCoverPath = coverPath;
-        daoSession.runInTx(new Runnable() {
-            @Override
-            public void run() {
-                if (currentProject == null) {
-                    return;
-                }
-                currentProject.setGlobalParticles(ConstantMediaSize.particles == null ? GlobalParticles.NONE : ConstantMediaSize.particles);
-                currentProject.setInnerBorder(ConstantMediaSize.innerBorder == null ? InnerBorder.Companion.getNONE() : innerBorder);
-                currentProject.setCoverPath(finalCoverPath);
-                currentProject.setUpdateTime(new Date());
-                currentProject.setDoodleList(doodleItemDataList);
-                currentProject.setAudioList(audioMediaItemDataList);
-                ProjectDao projectDao = daoSession.getProjectDao();
-                projectDao.insert(currentProject);
-                // 保存mediaitemList
-                MediaItemDataDao mediaItemDataDao = daoSession.getMediaItemDataDao();
-                for (MediaItemData mediaItemData : mediaItemDataList) {
-                    mediaItemDataDao.insert(mediaItemData);
-                }
-                MediaMatrixDataDao mediaMatrixDataDao = daoSession.getMediaMatrixDataDao();
-                for (MediaMatrixData mediaMatrixData : mediaMatrixDataList) {
-                    mediaMatrixDataDao.insert(mediaMatrixData);
-                }
-                // 保存doodle数据
-                Dlog.d("doodle-save", "doodleItemDataList-insert=====" + doodleItemDataList.size());
-                DoodleItemDataDao doodleItemDataDao = daoSession.getDoodleItemDataDao();
-                for (DoodleItemData doodleItemData : doodleItemDataList) {
-                    doodleItemDataDao.insert(doodleItemData);
-                }
-                Dlog.d("doodle-save", "doodleItemDataList-result=====" + doodleItemDataDao._queryProject_DoodleList(getProjectID()));
-
-                // 保存audio数据
-                AudioMediaItemDataDao audioMediaItemDataDao = daoSession.getAudioMediaItemDataDao();
-                for (AudioMediaItemData audioMediaItemData : audioMediaItemDataList) {
-                    audioMediaItemDataDao.insert(audioMediaItemData);
-                }
-                // 最后保存所有的DurationInterval数据
-                DurationIntervalDataDao durationIntervalDataDao = daoSession.getDurationIntervalDataDao();
-                for (DurationIntervalData durationIntervalData : durationIntervalDataList) {
-                    durationIntervalDataDao.insert(durationIntervalData);
-                }
-            }
-        });
-        Dlog.i(TAG, "save2Local-time:" + (System.currentTimeMillis() - start));
-        // TODO: 2019/7/25 注释掉后再运行，数据正确，清数据之前应该阻塞主线程, 60S内执行完？
     }
 
-
-    /**
-     * 本地化存储mediaitem，先删除再插入
-     * 这里本地文件保存成功之后，给主页发送一个存储存储成功通知
-     */
-    private void saveMedia2Local(final ArrayList<MediaItem> dataOperateCopy, List<MediaItemData> mediaItemDataList, List<MediaMatrixData> mediaMatrixDataList, List<DurationIntervalData> durationIntervalDataList) {
-        // 媒体类转化
-        MediaItemData mediaItemData;
-        MediaItem mediaItem;
-        long durationSum = 0;
-        for (int i = 0; i < dataOperateCopy.size(); i++) {
-            mediaItem = dataOperateCopy.get(i);
-            mediaItemData = new MediaItemData();
-            try {
-                BeanUtil.copyPropertiesExclude(mediaItem, mediaItemData, new String[]{"mediamatrix", "videocutinterval", "croprect"});// 一定要小写
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            durationSum += mediaItem.getFinalDuration();
-//            if (mediaItem.isVideo()) {
-//                mediaItemData.setDuration(mediaItem.getVideoOriginDuration());
-//                mediaItemData.setTempDuration(mediaItem.getVideoOriginDuration());
-//            }
-            // 保存media列表的头尾帧,用retriever取视频帧，要500ms，File形式读取bitmap要65ms，所以最终采用bitmap存储
-            // 图片帧的方案，假设10个视频，那么头尾帧也要一两秒，所以还是放到线程的io中进行处理
-            // 后续这个帧存储，考虑两media相互换位置、直接改变localFrame的命名便可，无需重新写入bitmap文件
-            // 此时清除数据，导致后面任务在处理时，数据没了，出现数组越界崩溃
-            if (mediaItem.getTransitionFilter() != null) {
-                mediaItemData.setTransitionType(mediaItem.getTransitionFilter().getTransitionType());
-            }
-            if (mediaItem.getAfilter() != null) {
-                mediaItemData.setFilterType(mediaItem.getAfilter().getmFilterType());
-            }
-            saveCropInfo(dataOperateCopy);
-            // mediaMatrix保存
-            mediaItemDataList.add(mediaItemData);
-            if (mediaItem.getMediaMatrix() != null) {
-                MediaMatrixData mediaMatrixData = new MediaMatrixData(mediaItemData.getMediaId(), getProjectID(), mediaItem.getMediaMatrix().getAngle(), mediaItem.getMediaMatrix().getScale(), mediaItem.getMediaMatrix().getOffsetX(), mediaItem.getMediaMatrix().getOffsetY(), mediaItem.getMediaMatrix().isMirror());
-                mediaMatrixDataList.add(mediaMatrixData);
-            }
-            // VideoCutInterval
-            if (mediaItem.getVideoCutInterval() != null) {
-                DurationIntervalData durationIntervalData = new DurationIntervalData(getProjectID(), mediaItemData.getMediaId(), mediaItem.getVideoCutInterval().getStartDuration(), mediaItem.getVideoCutInterval().getEndDuration(), mediaItem.getVideoCutInterval().getInterval());
-                durationIntervalDataList.add(durationIntervalData);
-            }
-            AppBus.get().post(new SaveLocalEvent());// 通知maiactivitity更新
-        }
-        if (currentProject != null) {
-            currentProject.setDuration(durationSum);
-        }
-    }
-
-    /**
-     * 清除数据库数据和临时文件
-     */
-
-    public void deleteProject(Project project) {
-        SqliteDataFetchHelper.removeProject(project);
-        FileUtil.deleteFile(new File(ConstantPath.getCurrentProjectPath(project.getProjectId())));
-        List<BitmapStickerItemInfo> doodles = SharedPreferencesUtil.getDataList(ContactUtils.SAVE_LOCAL_BITMAP_DOODLE + project.getProjectId(), BitmapStickerItemInfo.class);
-        if (!ObjectUtils.isEmpty(doodles)) {
-            for (BitmapStickerItemInfo info : doodles) {
-                FileUtil.deleteFile(info.getPath());
-            }
-        }
-        SharedPreferencesUtil.setDataList(ContactUtils.SAVE_LOCAL_BITMAP_DOODLE + project.getProjectId(), null);
-        SharedPreferencesUtil.setDataList(ContactUtils.SAVE_LOCAL_TEXT_DOODLE + project.getProjectId(), null);
-        SharedPreferencesUtil.setDataList(ContactUtils.SAVE_LOCAL_BITMAP_DOODLE + project.getProjectId(), null);
-        SharedPreferencesUtil.setDataList(ContactUtils.SAVE_LOCAL_CROP_RECT + project.getProjectId(), null);
-        SharedPreferencesUtil.setObject(ContactUtils.EDIT_BACKGROUND + project.getProjectId(), null);
-    }
-
-    /**
-     * 本地化存储doodle 先删除再插入
-     */
-    private void saveDoodle2Local(List<DoodleItemData> doodleItemDataList, List<DurationIntervalData> durationIntervalDataList) {
-        DoodleItemData doodleItemData;
-        DoodleItem doodleItem;
-        for (int i = 0; i < doodleList.size(); i++) {
-            doodleItem = doodleList.get(i);
-            doodleItemData = new DoodleItemData();
-            try {
-                // 记得字段一定要用小写！
-                BeanUtil.copyPropertiesExclude(doodleItem, doodleItemData, new String[]{"durationinterval"});
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            // 保存duration
-            DurationIntervalData durationIntervalData = new DurationIntervalData(getProjectID(), doodleItemData.getDoodleId(), doodleItem.getDurationInterval().getStartDuration(), doodleItem.getDurationInterval().getEndDuration(), doodleItem.getDurationInterval().getInterval());
-            durationIntervalDataList.add(durationIntervalData);
-            doodleItemData.setDurationInterval(durationIntervalData);
-            doodleItemDataList.add(doodleItemData);
-
-        }
-    }
-
-    /**
-     * 本地化audio 先删除再插入
-     */
-    private void saveAudioLocal(List<AudioMediaItemData> audioDurationDataList, List<DurationIntervalData> durationIntervalDataList) {
-        AudioMediaItemData audioMediaItemData;
-        AudioMediaItem audioMediaItem;
-        List<AudioMediaItem> list = new ArrayList<>();
-        list.addAll(audioList);
-        list.addAll(recordList);
-        for (int i = 0; i < list.size(); i++) {
-            audioMediaItem = list.get(i);
-            if (audioMediaItem == defaultAudio) {
-                continue;
-            }
-            if (audioMediaItem.getDurationInterval() == null) {
-                continue;
-            }
-            audioMediaItemData = new AudioMediaItemData();
-            try {
-                BeanUtil.copyPropertiesExclude(audioMediaItem, audioMediaItemData, new String[]{"durationinterval"});
-                audioMediaItemData.setCutEnd(audioMediaItem.getCutEnd());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            // 这个sql框架，子类保存不能联动保存的
-            DurationIntervalData durationIntervalData = new DurationIntervalData(getProjectID(), audioMediaItemData.getAudioId(), audioMediaItem.getDurationInterval().getStartDuration(), audioMediaItem.getDurationInterval().getEndDuration(), audioMediaItem.getDurationInterval().getInterval());
-            durationIntervalDataList.add(durationIntervalData);
-            audioMediaItemData.setDurationInterval(durationIntervalData);
-            audioDurationDataList.add(audioMediaItemData);
-        }
-    }
-
-
-    /**
-     * 加载第几个草稿
-     *
-     * @param index         第几个
-     * @param loadDBSuccess
-     */
-
-    public void local2Current(int index, LoadDBSuccess loadDBSuccess) {
-        ExecutorFactory.single().execute(new Runnable() {
-            @Override
-            public void run() {
-                currentProject = SqliteDataFetchHelper.getProjects().get(index);
-                isLocal = true;
-                isLocalMultiEdit = true;
-                //背景
-                mSpBgInfo = (SpBgInfo) SharedPreferencesUtil.getObject(ContactUtils.EDIT_BACKGROUND + getProjectID(), SpBgInfo.class);
-                if (mSpBgInfo == null) {
-                    mSpBgInfo = new SpBgInfo();
-                    mSpBgInfo.setBackgrondType(BackgroundType.SELF);
-                    mSpBgInfo.setBlurLevel(20);
-                    if (SharedPreferencesUtil.getInt(ContactUtils.EDIT_BACKGROUND_COLOR_VALUE + getProjectID(), 0) != 0) {
-                        mSpBgInfo.setBackgrondType(BackgroundType.COLOR);
-                        mSpBgInfo.setColorValue(SharedPreferencesUtil.getInt(ContactUtils.EDIT_BACKGROUND_COLOR_VALUE + getProjectID(), 0));
-                    }
-                }
-                preTrementInfo();
-                local2Current(loadDBSuccess);
-            }
-        });
-
-    }
-
-    public void local2Current(Project project, LoadDBSuccess loadDBSuccess) {
-        ExecutorFactory.single().execute(new Runnable() {
-            @Override
-            public void run() {
-                currentProject = project;
-                if (currentProject == null) {
-                    currentProject = SqliteDataFetchHelper.getProjects().get(0);
-                }
-                isLocal = true;
-                isLocalMultiEdit = true;
-                //背景
-                mSpBgInfo = (SpBgInfo) SharedPreferencesUtil.getObject(ContactUtils.EDIT_BACKGROUND + getProjectID(), SpBgInfo.class);
-                if (mSpBgInfo == null) {
-                    mSpBgInfo = new SpBgInfo();
-                    mSpBgInfo.setBackgrondType(BackgroundType.SELF);
-                    mSpBgInfo.setBlurLevel(20);
-                    if (SharedPreferencesUtil.getInt(ContactUtils.EDIT_BACKGROUND_COLOR_VALUE + getProjectID(), 0) != 0) {
-                        mSpBgInfo.setBackgrondType(BackgroundType.COLOR);
-                        mSpBgInfo.setColorValue(SharedPreferencesUtil.getInt(ContactUtils.EDIT_BACKGROUND_COLOR_VALUE + getProjectID(), 0));
-                    }
-                }
-                preTrementInfo();
-                local2Current(loadDBSuccess);
-            }
-        });
-
-    }
-
-    /**
-     * 转化本地数据为当前逻辑数据
-     */
-    @SuppressLint("WrongConstant")
-    public synchronized void local2Current(LoadDBSuccess loadDBSuccess) {
-        if (currentProject == null) {
-            LogUtils.v("MediaDataRepository", "local2Current:currentProject==null");
-            loadDBSuccess.fail();
-            return;
-        }
-        // mediaItem转化
-        currentProject.resetDataSource();
-        currentProject.__setDaoSession(MyApplication.getInstance().getDaoSession());
-        SpBgInfo mSpBgInfo = (SpBgInfo) SharedPreferencesUtil.getObject(ContactUtils.EDIT_BACKGROUND + getProjectID(), SpBgInfo.class);
-        if (mSpBgInfo != null) {
-            zoomScale = mSpBgInfo.getZoomScale();
-            LogUtils.d("zoomScale", "laod: " + MediaDataRepository.getInstance().getZoomScale());
-        } else {
-            zoomScale = 1f;
-        }
-        MediaItemDataDao mediaItemDataDao = MyApplication.getInstance().getDaoSession().getMediaItemDataDao();
-        List<MediaItemData> mediaItemDataList = mediaItemDataDao.queryBuilder().where(MediaItemDataDao.Properties.ProjectId.eq(currentProject.getProjectId())).list();
-        MediaItem mediaOperate;
-        if (currentProject.getThemeEnum() == null) {
-            currentProject.setThemeEnum(ThemeEnum.NONE);
-        }
-        ConstantMediaSize.themeType = currentProject.themeEnum;
-        ConstantMediaSize.themeConstantype = currentProject.themeEnum.getType();
-        ConstantMediaSize.themePath = currentProject.getThemeZipPath();
-        ConstantMediaSize.innerBorder = currentProject.innerBorder == null ? InnerBorder.Companion.getNONE() : currentProject.innerBorder;
-        ConstantMediaSize.particles = currentProject.globalParticles == null ? GlobalParticles.NONE : currentProject.globalParticles;
-        //当前主题
-        setCurrentSlideEntity(currentProject.themeEnum, currentProject.getThemeMusicPath());
-        ratioType = RatioType.getRatioType(SharedPreferencesUtil.getInt(ContactUtils.EDIT_RATIO_SELECT + currentProject.getProjectId(), themeType == ThemeEnum.NONE ? RatioType.NONE.getKey() : ConstantMediaSize.THEME_DEFAULT_RATIO_VALUE));
-        preTreatment = ThemeHelper.createPreTreatment(currentProject.getThemeEnum());
-        dataOperate.clear();
-        boolean loss = false;
-        for (int i = 0; i < mediaItemDataList.size(); i++) {
-            MediaItemData mediaItemData = mediaItemDataList.get(i);
-            if (mediaItemData.getMediaType() == MediaType.VIDEO) {
-                mediaOperate = new VideoMediaItem();
-
-            } else {
-                mediaOperate = new PhotoMediaItem();
-            }
-            try {
-                BeanUtil.copyPropertiesExclude(mediaItemData, mediaOperate, new String[]{"transitiontype", "filtertype", "mediamatrix", "videocutinterval", "croprect"});
-
-                // 数据库升级字段兼容
-                if (mediaItemData.getTempDuration() == 0) {
-                    mediaOperate.setTempDuration(mediaItemData.getDuration());
-                }
-                // operation转化
-                mediaOperate.setTransitionFilter(TransitionFactory.initFilters(mediaItemData.getTransitionType()));
-                mediaOperate.setAfilter(FilterHelper.initFilters(mediaItemData.getFilterType(), GpuFilterFactory.getDownPathLocal(mediaItemData.getFilterType())));
-                // mediamatrix
-                if (mediaItemData.getMediaMatrix() != null) {
-                    MediaMatrix matrixOperate = new MediaMatrix();
-                    BeanUtil.copyProperties(mediaItemData.getMediaMatrix(), matrixOperate);
-                    mediaOperate.setMediaMatrix(matrixOperate);
-                }
-                // durationInterval
-                if (mediaItemData.getVideoCutInterval() != null) {
-                    DurationInterval interval = new DurationInterval();
-                    BeanUtil.copyProperties(mediaItemData.getVideoCutInterval(), interval);
-                    mediaOperate.setVideoCutInterval(interval);
-                }
-                if (!FileUtils.checkFileExist(mediaOperate.getPath())) {
-                    loss = true;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            preTreatmentMediaItem(i, mediaOperate, false, false, null);
-            dataOperate.add(mediaOperate);
-        }
-        if (!ObjectUtils.isEmpty(dataOperate)) {
-            draftMediaItem = dataOperate.get(0);
-        }
-        //加载裁剪区域数据
-        loadCropInfo(dataOperate);
-        // doodle
-        doodleList.clear();
-        currentProject.resetDoodleList();
-        currentProject.__setDaoSession(MyApplication.getInstance().getDaoSession());
-        List<DoodleItemData> doodleItemDataList = currentProject.getDoodleList();
-        Dlog.d("doodle-save", "doodleItemDataList---tocurrent==" + doodleItemDataList.size());
-        for (DoodleItemData doodleItemData : doodleItemDataList) {
-            DoodleItem doodleItem = new DoodleItem();
-            try {
-                BeanUtil.copyPropertiesExclude(doodleItemData, doodleItem, new String[]{"durationinterval"});
-                // durationInterval
-                DurationInterval interval = new DurationInterval();
-                BeanUtil.copyProperties(doodleItemData.getDurationInterval(), interval);
-                doodleItem.setDurationInterval(interval);
-                doodleList.add(doodleItem);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        // audio
-        currentProject.resetAudioList();
-        audioList.clear();
-        recordList.clear();
-        currentProject.__setDaoSession(MyApplication.getInstance().getDaoSession());
-        List<AudioMediaItemData> audioMediaItemDataList = currentProject.getAudioList();
-        LogUtils.v("MediaDataRepository", "loadDBSuccess:" + "audioMediaItemDataList.size:" + audioMediaItemDataList.size());
-        for (AudioMediaItemData audioMediaItemData : audioMediaItemDataList) {
-            AudioMediaItem audioMediaItem = new AudioMediaItem();
-            audioMediaItem.setProjectId(getProjectID());
-            try {
-                BeanUtil.copyPropertiesExclude(audioMediaItemData, audioMediaItem, new String[]{"durationinterval"});
-                // durationInterval
-                DurationInterval interval = new DurationInterval();
-                BeanUtil.copyProperties(audioMediaItemData.getDurationInterval(), interval);
-                audioMediaItem.setDurationInterval(interval);
-                if (audioMediaItemData.getCutEnd() == 0 && audioMediaItemData.getCuatEnd() != 0) {
-                    audioMediaItem.setCutEnd(audioMediaItemData.getCutEnd());
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            if (ObjectUtils.isEmpty(audioMediaItem.getOriginPath())) {
-                audioMediaItem.setOriginPath(audioMediaItem.getPath());
-            }
-            if (ObjectUtils.isEmpty(audioMediaItem.getOriginDuration())) {
-                audioMediaItem.setOriginDuration(audioMediaItem.getDuration());
-            }
-            if (audioMediaItem.getCutEnd() == 0) {
-                audioMediaItem.setCutEnd(audioMediaItem.getDuration());
-            }
-            if (audioMediaItem.getVolume() == 1f) {
-                audioMediaItem.setVolume(100);
-            } else if (audioMediaItem.getVolume() > 0 && audioMediaItem.getVolume() < 1f) {
-                audioMediaItem.setVolume(100f * audioMediaItem.getVolume());
-            }
-            if (audioMediaItem.getRecord()) {
-                recordList.add(audioMediaItem);
-            } else {
-                audioList.add(audioMediaItem);
-            }
-
-        }
-        if (loadDBSuccess != null) {
-            loadDBSuccess.onSuccess(loss);
-        }
-    }
 
     public void onDestroyCurrentThread() {
         if (dataOperate != null) {
@@ -1838,7 +1388,6 @@ public class MediaDataRepository {
         if (recordList != null) {
             recordList.clear();
         }
-        currentProject = null;
         mScreenShotBitmap = null;
         isLocal = false;
         isLocalMultiEdit = false;
@@ -1866,9 +1415,7 @@ public class MediaDataRepository {
     }
 
     public void onDestory() {
-        ExecutorFactory.single().execute(() -> {
-            onDestroyCurrentThread();
-        });
+        onDestroyCurrentThread();
     }
 
 
@@ -1876,8 +1423,8 @@ public class MediaDataRepository {
      * 清除数据
      */
     public void clearDraft() {
-        FileUtil.deleteFile(PathUtil.getVideoTrimPath());
-        PathUtil.getVideoTrimPath();
+//        FileUtil.deleteFile(PathUtil.getVideoTrimPath());
+//        PathUtil.getVideoTrimPath();
 //        deleteProject(currentProject);
     }
 
@@ -1909,7 +1456,7 @@ public class MediaDataRepository {
         doodleList = new ArrayList<>();
         audioList = new ArrayList<>();
         recordList = new ArrayList<>();
-        ratioType = RatioType.getRatioType(SharedPreferencesUtil.getInt(ContactUtils.EDIT_RATIO_SELECT, RatioType.NONE.getKey()));
+        ratioType = RatioType.getRatioType(SpUtil.INSTANCE.getInt(SpUtil.EDIT_RATIO_SELECT, RatioType.NONE.getKey()));
     }
 
 
@@ -1943,22 +1490,22 @@ public class MediaDataRepository {
      */
     public void establishProject() {
         isLocal = false;
-        if (currentProject == null) {
-            currentProject = new Project();
-            currentProject.randomProjectId();
-            currentProject.setCreateTime(new Date());
-            if (themeAudio != null) {
-                currentProject.setThemeEnum(ConstantMediaSize.themeType);
-                currentProject.setThemeZipPath(ConstantMediaSize.themePath);
-                currentProject.setThemeMusicPath(themeAudio.getPath());
-            }
-            if (checkIsTheme()) {
-                currentProject.setTranGroup(TransitionRepository.TransiGroup.GROUP_NONE);
-            } else {
-                currentProject.setTranGroup(TransitionRepository.INSTANCE.randomTranGroup());
-            }
-            ExecutorFactory.io().execute(() -> currentProject.setProjectName(PathUtil.murgeOutputPathRename()));
-        }
+//        if (currentProject == null) {
+//            currentProject = new Project();
+//            currentProject.randomProjectId();
+//            currentProject.setCreateTime(new Date());
+//            if (themeAudio != null) {
+//                currentProject.setThemeEnum(ConstantMediaSize.themeType);
+//                currentProject.setThemeZipPath(ConstantMediaSize.themePath);
+//                currentProject.setThemeMusicPath(themeAudio.getPath());
+//            }
+//            if (checkIsTheme()) {
+//                currentProject.setTranGroup(TransitionRepository.TransiGroup.GROUP_NONE);
+//            } else {
+//                currentProject.setTranGroup(TransitionRepository.INSTANCE.randomTranGroup());
+//            }
+//            ExecutorFactory.io().execute(() -> currentProject.setProjectName(PathUtil.murgeOutputPathRename()));
+//        }
     }
 
     public Bitmap getmScreenShotBitmap() {
@@ -2200,14 +1747,12 @@ public class MediaDataRepository {
                 scale = (float) dataOperate.get(i).getHeight() / (float) dataOperate.get(i).getWidth();
             }
             if (scale > 1.33) {
-                Dlog.i(TAG, "scale:" + scale + "dataOperate.get(i).getWidth():" + dataOperate.get(i).getWidth() + "," + dataOperate.get(i).getHeight() + "," + dataOperate.get(i).getRotation());
                 return RatioType._16_9;
             }
             if (scale > temp) {
                 temp = scale;
             }
         }
-        Dlog.i(TAG, "scale:" + temp);
         if (temp > 1 && temp <= 1.33) {
             return RatioType._4_3;
         } else if (temp == 1) {
@@ -2232,7 +1777,6 @@ public class MediaDataRepository {
         if (scale > temp) {
             temp = scale;
         }
-        Dlog.i(TAG, "scale:" + temp);
         if (temp > 1 && temp <= 1.33) {
             return RatioType._4_3;
         } else if (temp == 1) {
@@ -2257,7 +1801,6 @@ public class MediaDataRepository {
         if (scale > temp) {
             temp = scale;
         }
-        Dlog.i(TAG, "scale:" + temp);
         if (temp > 1 && temp <= 1.33) {
             return RatioType._4_3;
         } else if (temp == 1) {
@@ -2269,34 +1812,6 @@ public class MediaDataRepository {
         }
     }
 
-    /**
-     * 清除异常数据
-     * 暂不删除
-     */
-    public void clearHistoryCrashData() {
-        ThreadPoolMaxThread.getInstance().execute(new Runnable() {
-            @Override
-            public void run() {
-                File file = new File(PathUtil.APPTPATH);
-                if (file == null || !file.exists()) {
-                    return;
-                }
-                File[] files = file.listFiles();
-                if (files != null) {
-                    for (File f : files) {
-                        if (PathUtil.checkIsInnerPath(f.getPath())) {
-                            continue;
-                        }
-                        Project project = SqliteDataFetchHelper.getProject(f.getName());
-                        if (project == null) {
-                            // 清除1天外的数据
-                            FileUtil.deleteFile(f);
-                        }
-                    }
-                }
-            }
-        });
-    }
 
     public RatioType calcRatioType(MediaItem mediaItem) {
         float scale;
@@ -2304,7 +1819,6 @@ public class MediaDataRepository {
         if (mediaItem.getRotation() == 90 || mediaItem.getRotation() == 270) {
             scale = (float) mediaItem.getHeight() / (float) mediaItem.getWidth();
         }
-        Dlog.i(TAG, "scale:" + scale);
         if (scale > 1.33) {
             return RatioType._16_9;
         }
@@ -2572,11 +2086,11 @@ public class MediaDataRepository {
         if (!ObjectUtils.isEmpty(themeAudio)) {
             themeAudio.setDurationInterval(null);
         }
-        if (currentProject != null) {
-            currentProject.setThemeEnum(ThemeEnum.NONE);
-            currentProject.setThemeMusicPath("");
-            currentProject.setThemeZipPath("");
-        }
+//        if (currentProject != null) {
+//            currentProject.setThemeEnum(ThemeEnum.NONE);
+//            currentProject.setThemeMusicPath("");
+//            currentProject.setThemeZipPath("");
+//        }
         return dataOperate;
 
     }
@@ -2651,9 +2165,9 @@ public class MediaDataRepository {
         List<GifDecoder.GifFrame> list = new ArrayList();
         if (gifPath.endsWith(LocalPreTreatmentTemplate.END_SUFFIX)) {
             int resourceId = Integer.parseInt(gifPath.replace(LocalPreTreatmentTemplate.END_SUFFIX, ""));
-            list = GlideGifDecoder.Companion.getGif(MyApplication.getInstance(), resourceId).getFrames();
+            list = GlideGifDecoder.Companion.getGif(MyApplication.instance, resourceId).getFrames();
         } else {
-            list = GlideGifDecoder.Companion.getGif(MyApplication.getInstance(), ConstantMediaSize.themePath + gifPath + ConstantMediaSize.SUFFIX).getFrames();
+            list = GlideGifDecoder.Companion.getGif(MyApplication.instance, ConstantMediaSize.themePath + gifPath + ConstantMediaSize.SUFFIX).getFrames();
         }
         if (!ObjectUtils.isEmpty(list)) {
             return list;
@@ -2744,7 +2258,7 @@ public class MediaDataRepository {
                 }
             }
         }
-        SharedPreferencesUtil.setObject(ContactUtils.SAVE_LOCAL_CROP_RECT + getProjectID(), cropInfo.isEmpty() ? null : cropInfo);
+        SpUtil.INSTANCE.setObject(SpUtil.SAVE_LOCAL_CROP_RECT + getProjectID(), cropInfo.isEmpty() ? null : cropInfo);
     }
 
     /**
@@ -2753,7 +2267,7 @@ public class MediaDataRepository {
      * @param dataOperate
      */
     public void loadCropInfo(List<MediaItem> dataOperate) {
-        Map<Integer, Rect> cropInfo = (Map<Integer, Rect>) SharedPreferencesUtil.getObject(ContactUtils.SAVE_LOCAL_CROP_RECT + getProjectID(), CORP_RECT_MAP_TYPE);
+        Map<Integer, Rect> cropInfo = (Map<Integer, Rect>) SpUtil.INSTANCE.getObject(SpUtil.SAVE_LOCAL_CROP_RECT + getProjectID(), CORP_RECT_MAP_TYPE);
         if (cropInfo == null || cropInfo.size() > dataOperate.size()) {
             return;
         }
@@ -2854,7 +2368,7 @@ public class MediaDataRepository {
             if (mediaEntity.id == mediaItem.getId()) {
                 return index;
             }
-            if (PathStringComparator.isPathStringEquals(mediaEntity.path, mediaItem.getPath())) {
+            if (mediaEntity.path.equals(mediaItem.getPath())) {
                 return index;
             }
             index++;

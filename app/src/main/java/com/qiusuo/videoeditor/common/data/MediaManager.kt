@@ -3,29 +3,26 @@ package com.qiusuo.videoeditor.common.data
 import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
-import android.media.MediaPlayer
 import android.net.Uri
 import android.provider.MediaStore
-import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.ijoysoft.mediasdk.common.utils.ObjectUtils
+import com.qiusuo.videoeditor.R
+import com.qiusuo.videoeditor.base.MyApplication
 import com.qiusuo.videoeditor.common.bean.MediaEntity
 import com.qiusuo.videoeditor.common.bean.MediaSet
 import com.qiusuo.videoeditor.common.bean.MusicEntity
 import com.qiusuo.videoeditor.common.bean.MusicGroupEntity
 import com.qiusuo.videoeditor.common.bean.type.MusicSortType
 import com.qiusuo.videoeditor.common.constant.DownloadPath
+import com.qiusuo.videoeditor.module.select.LoadMediaViewModel
+import com.qiusuo.videoeditor.module.select.MediaShowType
+import com.qiusuo.videoeditor.module.select.MediaSortType
+import com.qiusuo.videoeditor.util.IOUtil
 import com.qiusuo.videoeditor.util.SpUtil
-import org.w3c.dom.Element
-import org.xml.sax.SAXException
-import java.io.File
-import java.io.FileInputStream
 import java.io.IOException
-import java.io.InputStream
 import java.util.*
-import javax.xml.parsers.DocumentBuilderFactory
-import javax.xml.parsers.ParserConfigurationException
 
 /**
  * Created by DELL on 2019/4/26.
@@ -33,7 +30,7 @@ import javax.xml.parsers.ParserConfigurationException
  * MediaEntity 对象时重复利用，而这里的所
  */
 
-class
+
 object MediaManager {
     //当前的刷新查询到的页数
     private val cutPage = 0
@@ -57,7 +54,7 @@ object MediaManager {
         return mMediaImageSets
     }
 
-    val mediaSets: List<Any>
+    val mediaSets: List<MediaSet>
         get() = mMediaSets
 
     fun getmMediaVideoSets(): List<MediaSet> {
@@ -175,18 +172,11 @@ object MediaManager {
      * @param reverse
      */
     private fun sortByName(reverse: Boolean) {
-        Collections.sort(audioLists, Comparator<Any> { o1, o2 ->
-            var flag = 1
-            if (reverse) {
-                flag = -1
-            }
-            if (o1.pinyinChar < o2.pinyinChar) {
-                return@Comparator -1 * flag
-            } else if (o1.pinyinChar > o2.pinyinChar) {
-                return@Comparator 1 * flag
-            }
-            0
-        })
+        if (reverse) {
+            audioLists.sortByDescending { it?.pinyinChar }
+            return
+        }
+        audioLists.sortBy { it?.pinyinChar }
     }
 
     /**
@@ -195,18 +185,11 @@ object MediaManager {
      * @param reverse
      */
     private fun sortByDuration(reverse: Boolean) {
-        Collections.sort(audioLists, Comparator<Any> { o1, o2 ->
-            var flag = 1
-            if (reverse) {
-                flag = -1
-            }
-            if (o1.duration > o2.duration) {
-                return@Comparator -1 * flag
-            } else if (o1.duration < o2.duration) {
-                return@Comparator 1 * flag
-            }
-            0
-        })
+        if (reverse) {
+            audioLists.sortByDescending { it?.duration }
+            return
+        }
+        audioLists.sortBy { it?.duration }
     }
 
     /**
@@ -215,26 +198,13 @@ object MediaManager {
      * @param reverse
      */
     private fun sortDate(reverse: Boolean) {
-        Collections.sort(audioLists, Comparator<Any> { o1, o2 ->
-            var flag = 1
-            if (reverse) {
-                flag = -1
-            }
-            if (o1.dateModify > o2.dateModify) {
-                return@Comparator -1 * flag
-            } else if (o1.dateModify < o2.dateModify) {
-                return@Comparator 1 * flag
-            }
-            0
-        })
+        if (reverse) {
+            audioLists.sortByDescending { it?.dateModify }
+            return
+        }
+        audioLists.sortBy { it?.dateModify }
     }
 
-    //
-    private class MusicJudge(private val musicType: Int) : CollectionUtil.Judge<MusicEntity?> {
-        fun canRemove(music: MusicEntity): Boolean {
-            return musicType != music.getType()
-        }
-    }
 
     fun needLoadData(): Boolean {
 //       return hadMediaAdd&&
@@ -296,11 +266,11 @@ object MediaManager {
      *
      * @return
      */
-    fun getCurrentMediaSets(selectFragmtnType: Int): List<MediaSet>? {
-        when (selectFragmtnType) {
-            SelectFragmentEvent.SELECT_ALL -> return mMediaSets
-            SelectFragmentEvent.SELECT_PHOTO -> return mMediaImageSets
-            SelectFragmentEvent.SELECT_VIDEO -> return mMediaVideoSets
+    fun getCurrentMediaSets(@LoadMediaViewModel.MediaMode mediaMode: Int): List<MediaSet>? {
+        when (mediaMode) {
+            LoadMediaViewModel.MIX -> return mMediaSets
+            LoadMediaViewModel.PHOTO -> return mMediaImageSets
+            LoadMediaViewModel.VIDEO -> return mMediaVideoSets
         }
         return null
     }
@@ -325,168 +295,53 @@ object MediaManager {
     fun createDefaultMediaSet(selectFragmtnType: Int): MediaSet {
         val mediaSet = MediaSet()
         mediaSet.bucketId = -1
-        mediaSet.name = ActivityLifecycle.get().getApplication().getString(R.string.all)
+        mediaSet.name = MyApplication.instance.getString(R.string.all)
         var count = 0
         var list: List<MediaSet>? = null
         when (selectFragmtnType) {
-            SelectFragmentEvent.SELECT_ALL -> list = mMediaSets
-            SelectFragmentEvent.SELECT_PHOTO -> list = mMediaImageSets
-            SelectFragmentEvent.SELECT_VIDEO -> list = mMediaVideoSets
+            LoadMediaViewModel.MIX -> list = mMediaSets
+            LoadMediaViewModel.PHOTO -> list = mMediaImageSets
+            LoadMediaViewModel.VIDEO -> list = mMediaVideoSets
         }
-        for (set in list) {
-            count += set.count
+        list?.forEach {
+            count += it.count
         }
         mediaSet.setCoverpath(list!![0].getCoverpath())
         mediaSet.setCount(count)
         return mediaSet
     }
 
-    companion object {
-        /**
-         * 每次查询的文件数量
-         */
-        const val pageSize = 100
 
-        //    private MediaFolder mediaFolder;
-        //
-        //    public int getMediaMode() {
-        //        return mediaMode;
-        //    }
-        //
-        //    public void setMediaMode(int mediaMode) {
-        //        this.mediaMode = mediaMode;
-        //    }
-        @Volatile
-        var instance: MediaManager? = null
-            get() {
-                if (field == null) {
-                    synchronized(MediaManager::class.java) {
-                        if (field == null) {
-                            field = MediaManager()
-                        }
-                    }
-                }
-                return field
-            }
-            private set
-
-        /**
-         * 获取在线音乐
-         *
-         * @param context
-         * @return
-         */
-        fun getOnlineMusic(context: Context, musicType: Int): List<MusicEntity> {
-            val musicEntities: MutableList<MusicEntity> = ArrayList<MusicEntity>()
-            try {
-                val listType = object : TypeToken<ArrayList<MusicEntity?>?>() {}.type
-                //在线音乐使用json配置在本地
-                val json: String = IOUtil.readStream(context.resources.assets.open("music.json"))
-                val musics: List<MusicEntity> = Gson().fromJson<List<MusicEntity>>(json, listType)
-                CollectionUtil.removeElement(musics, MusicJudge(musicType))
-                musicEntities.addAll(musics)
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-            return musicEntities
+    /**
+     * 获取在线音乐
+     *
+     * @param context
+     * @return
+     */
+    fun getOnlineMusic(context: Context, musicType: Int): List<MusicEntity> {
+        val musicEntities: MutableList<MusicEntity> = ArrayList<MusicEntity>()
+        try {
+            val listType = object : TypeToken<ArrayList<MusicEntity?>?>() {}.type
+            //在线音乐使用json配置在本地
+            val json: String = IOUtil.readStream(context.resources.assets.open("music.json"))
+            val musics: List<MusicEntity> = Gson().fromJson<List<MusicEntity>>(json, listType)
+            musicEntities.addAll(musics)
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
-
-        val onlineMusic: List<Any>
-            get() {
-                val mMusicGroupEntity: MusicGroupEntity = XmlParserHelper.pullxmlMusic(DownloadPath.MUSIC_DATA_SAVE)
-                return mMusicGroupEntity.getAllList()
-            }
-
-        fun requireMusic(): List<MusicEntity>? {
-            var musicGroupEntity: MusicGroupEntity? = null
-            if (FileUtil.exists(DownloadPath.MUSIC_DATA_SAVE)) {
-                musicGroupEntity = XmlParserHelper.pullxmlMusic(DownloadPath.MUSIC_DATA_SAVE)
-            } else {
-                try {
-                    MyApplication.getInstance().getAssets().open("music.xml").use { `is` -> musicGroupEntity = XmlParserHelper.pullxmlMusic(`is`) }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-            return if (musicGroupEntity == null) {
-                null
-            } else musicGroupEntity.getAllList()
-        }
-
-        fun getVersion(path: String?): String {
-            var version = ""
-            val file = File(path)
-            if (!file.exists()) {
-                return version
-            }
-            var `is`: InputStream? = null
-            try {
-                val factory = DocumentBuilderFactory.newInstance()
-                val builder = factory.newDocumentBuilder()
-                `is` = FileInputStream(file.absolutePath)
-                val document = builder.parse(`is`)
-                val element = document.documentElement
-                val items = element.getElementsByTagName("item")
-                for (j in 0 until items.length) {
-                    val personNode = items.item(j) as Element
-                    version = personNode.getAttribute("version")
-                }
-            } catch (e: IOException) {
-                e.printStackTrace()
-            } catch (e: ParserConfigurationException) {
-                e.printStackTrace()
-            } catch (e: SAXException) {
-                e.printStackTrace()
-            } finally {
-                try {
-                    `is`!!.close()
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-            }
-            return version
-        }
-
-        fun getAudioFileVoiceTime(filePath: String?): Long {
-            var mediaPlayerDuration = 0L
-            if (filePath == null || filePath.isEmpty()) {
-                return 0
-            }
-            val mediaPlayer = MediaPlayer()
-            try {
-                mediaPlayer.setDataSource(filePath)
-                mediaPlayer.prepare()
-                mediaPlayerDuration = mediaPlayer.duration.toLong()
-            } catch (ioException: IOException) {
-                ioException.printStackTrace()
-            }
-            if (mediaPlayer != null) {
-                mediaPlayer.stop()
-                mediaPlayer.reset()
-                mediaPlayer.release()
-            }
-            return mediaPlayerDuration
-        }
-
-        fun getAudioFileVoiceTime(filePath: String?, onPreparedListener: MediaPlayer.OnPreparedListener?) {
-            if (filePath == null || filePath.isEmpty()) {
-                return
-            }
-            val mediaPlayer = MediaPlayer()
-            try {
-                mediaPlayer.setDataSource(filePath)
-                mediaPlayer.prepare()
-                mediaPlayer.setOnPreparedListener(onPreparedListener)
-            } catch (ioException: IOException) {
-                Log.d("asdada", "duration1===")
-                ioException.printStackTrace()
-            } finally {
-//            if (mediaPlayer != null) {
-//                mediaPlayer.stop();
-//                mediaPlayer.reset();
-//                mediaPlayer.release();
-//            }
-            }
-        }
+        return musicEntities
     }
+
+    fun createDefaultMusic(): MusicEntity? {
+        val musicEntity = MusicEntity()
+        //musicEntity.type = TypeMusicFragment.MUSIC_TYPE_GENERAL
+        musicEntity.duration = 160000
+        //musicEntity.localPath = PathUtil.DEFAULT_MUSIC
+        //musicEntity.path = PathUtil.DEFAULT_MUSIC
+        musicEntity.name = "Happy-19"
+        musicEntity.size = 1287689
+        musicEntity.copyRight = "copyright=\"http://www.etaaudio.com/\\n\""
+        return musicEntity
+    }
+
 }

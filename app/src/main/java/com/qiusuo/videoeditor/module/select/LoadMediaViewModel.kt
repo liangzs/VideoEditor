@@ -19,6 +19,10 @@ import com.ijoysoft.mediasdk.module.mediacodec.PhoneAdatarList
 import com.qiusuo.videoeditor.base.MyApplication
 import com.qiusuo.videoeditor.common.bean.MediaEntity
 import com.qiusuo.videoeditor.common.bean.MediaFolder
+import com.qiusuo.videoeditor.common.data.ContentDataObserver
+import com.qiusuo.videoeditor.common.data.MediaManager
+import com.qiusuo.videoeditor.common.data.MediaManager.mediaSets
+import com.qiusuo.videoeditor.common.data.MediaSetLoadTask
 import com.qiusuo.videoeditor.util.TimeUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -224,8 +228,8 @@ class LoadMediaViewModel : ViewModel() {
         /**
          * 出现崩溃再次进来是，文件夹数据不存在需要重新查询
          */
-        if (ObjectUtils.isEmpty(MediaManager.getInstance().mediaSets)) {
-            val task = ContentDataLoadTask();
+        if (ObjectUtils.isEmpty(MediaManager.mediaSets)) {
+            val task = MediaSetLoadTask();
             task.execute()
         }
         return job
@@ -1006,9 +1010,9 @@ class LoadMediaViewModel : ViewModel() {
      * 做一个媒体更新的监听，图片、视频文件增加的广播监听
      */
     init {
-        contentDataObserver = ContentDataObserver(MyApplication.getInstance(), Handler(Looper.getMainLooper()))
+        contentDataObserver = ContentDataObserver(MyApplication.instance, Handler(Looper.getMainLooper()))
         contentDataObserver?.let {
-            it.setOnUriChange(onUriChange { uri ->
+            it.setOnUriChange({ uri ->
                 LogUtils.i("onChanged", "uri.toString():$uri")
                 if (uri.toString().contains("images")) {
                     queryLatestImageMedia()
@@ -1017,8 +1021,8 @@ class LoadMediaViewModel : ViewModel() {
                     queryLatestVideoMedia()
                 }
             })
-            MyApplication.getInstance().contentResolver.registerContentObserver(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, true, it)
-            MyApplication.getInstance().contentResolver.registerContentObserver(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, true, it)
+            MyApplication.instance.contentResolver.registerContentObserver(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, true, it)
+            MyApplication.instance.contentResolver.registerContentObserver(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, true, it)
         }
 
     }
@@ -1030,12 +1034,12 @@ class LoadMediaViewModel : ViewModel() {
     override fun onCleared() {
         super.onCleared()
         contentDataObserver?.let {
-            MyApplication.getInstance().contentResolver.unregisterContentObserver(it)
+            MyApplication.instance.contentResolver.unregisterContentObserver(it)
             contentDataObserver = null
         }
         //清除引用
-        SelectClipActivity.vmOwner = null
-        VideoTrimActivity.vmOwner = null
+        //SelectClipActivity.vmOwner = null
+        //VideoTrimActivity.vmOwner = null
 
     }
 
