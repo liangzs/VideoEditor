@@ -51,7 +51,7 @@ public class MediaAdapterProxy {
     /**
      * 原生Adapter使用的
      */
-    List<MediaEntity> nativeData = new ArrayList<>();
+    public List<MediaEntity> nativeData = new ArrayList<>();
     Map<Integer, Integer> idToIndex = new HashMap<>();
 
     public MediaAdapterProxy(Context context, List<String> dates, Map<String, List<MediaEntity>> hashMap, List<MediaEntity> nativeData) {
@@ -193,13 +193,13 @@ public class MediaAdapterProxy {
         return mediaItems.size();
     }
 
-    protected MyViewHolder onCreateItemViewHolder(ViewGroup parent, int viewType) {
+     public MyViewHolder onCreateItemViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.item_fragment_media_layout, parent, false);
         MyViewHolder holder = new MyViewHolder(view);
         return holder;
     }
 
-    protected void onBindItemViewHolder(MyViewHolder holder, final int section, final int position) {
+    public void onBindItemViewHolder(MyViewHolder holder, final int section, final int position) {
         holder.section = section;
         holder.positionInSection = position;
         MediaEntity mediaEntity;

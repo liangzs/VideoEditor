@@ -36,7 +36,7 @@ abstract class BaseActivity<T : ViewBinding>(var inflater: (inflater: LayoutInfl
         viewBinding = inflater(layoutInflater);
         setContentView(viewBinding.root);
         setStatusBar()
-        initData()
+        initData(savedInstanceState)
     }
 
 
@@ -58,7 +58,7 @@ abstract class BaseActivity<T : ViewBinding>(var inflater: (inflater: LayoutInfl
         return false
     }
 
-    abstract open fun initData();
+    abstract open fun initData(savedInstanceState: Bundle?);
 
 
     /**

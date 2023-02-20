@@ -98,12 +98,811 @@
     <string name="ps_select_no_support">不支持的选择类型</string>
 
     <!--select-->
-    <string name="imported">Imported</string>
+<!--    <string name="imported">Imported</string>-->
+<!--    <string name="add_clip_tip">Please select at least one clip</string>-->
+<!--    <string name="drag_tip">Long press and drag to reorder</string>-->
+<!--    <string name="next">Next</string>-->
+<!--    <string name="click_preview">Click to view</string>-->
+<!--    <string name="all">All</string>-->
+<!--    <string name="photo">Photo</string>-->
+<!--    <string name="video">Video</string>-->
+
+
+    <!--common-->
+    <string name="update_on">Update on: %s</string>
+    <string name="theme">Theme</string>
+    <string name="more">More</string>
+    <string name="select_clip">Select Clip</string>
+    <string name="editor">Editor</string>
+    <string name="remove_orginal_sound">Remove orginal sound</string>
+    <string name="add_music">Add Music</string>
+    <string name="start_time">Start time</string>
+    <string name="end_time">End time</string>
+    <string name="tip">Please use → to set pause time as start time or end time</string>
+    <string name="ok">OK</string>
+    <string name="no">NO</string>
+    <string name="no_thanks">NO</string>
+    <string name="start_more_than_end">End time must be more than start time</string>
+    <string name="yes_shi">YES</string>
+    <string name="no_fou">NO</string>
+    <string name="start_same_as_end">Start time and end time cannot be the same one</string>
+    <string name="time_out_of_bound_end">End time cannot exceed editable time</string>
+    <string name="time_out_of_bound_start">Start time cannot exceed editable time</string>
+    <string name="clips">clips</string>
+    <string name="add_clip_gallery">Gallery</string>
+    <string name="add_blank_clip">Add a blank clip</string>
+    <string name="afilter_title">Filter</string>
+    <string name="transition_title">Transition</string>
+    <string name="substile">Subtitle</string>
+    <string name="add_doodle">Add Doodle</string>
+    <string name="add_sticker">Sticker</string>
+    <string name="add_subtitle_hint">Please enter the subtitles</string>
+    <string name="cancel">CANCEL</string>
+    <string name="yes">YES</string>
+    <string name="draft_save">Draft saved</string>
+    <string name="color">Color</string>
+    <string name="fontsize">Fontsize</string>
+    <string name="video_edit">Video Edit</string>
+    <string name="video_trim">Video Trim</string>
     <string name="add_clip_tip">Please select at least one clip</string>
     <string name="drag_tip">Long press and drag to reorder</string>
-    <string name="next">Next</string>
+    <string name="undo">Undo</string>
+    <string name="resume">Resume</string>
+    <string name="pen">Pen</string>
+    <string name="eraser">Eraser</string>
+    <string name="mosaic">Mosaic</string>
+    <string name="material">Material</string>
+    <string name="blur">Blur</string>
+    <string name="white">White</string>
+    <string name="black">Black</string>
+    <string name="add_blank" translatable="false">Add a blank clip</string>
+    <string name="title_video_trim">Video Trim</string>
+    <string name="trim">Trim</string>
+    <string name="go_home">Home</string>
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
+    <string name="share_split">Share</string>
+    <string name="trim_center">Trim</string>
+    <string name="cut">Cut</string>
+    <string name="splite">Split</string>
+    <string name="font_setting">Font setting</string>
+    <string name="my_work">My Works</string>
+    <string name="my_drafts">My Drafts</string>
+    <string name="my_sudio">My Studio</string>
+    <string name="share">Share to</string>
+    <string name="delete">Delete</string>
+    <string name="rename">Rename</string>
+    <string name="fade_in">Fade in</string>
+    <string name="fade_out">Fade out</string>
+    <string name="edit_clip">Clip Edit</string>
+    <string name="edit">Edit</string>
+    <string name="camera">Camera</string>
+    <string name="cutting">Cutting...</string>
+    <string name="guide_preview">Long press to view</string>
     <string name="click_preview">Click to view</string>
+    <string name="guide_transition">Tap here to add a transition</string>
+    <string name="loading">loading</string>
+    <string name="current_duration_short">You need 0.5s blank space to add new item</string>
+
+    <!--editor-->
+    <string name="save">SAVE</string>
+    <string name="image_duration">Duration</string>
+    <string name="image_duration_apply">Apply to all images</string>
+    <string name="stop_play_first">Please stop play first</string>
+    <string name="zoom_edit_save">Zoom Saved</string>
+    <string name="zoom_save_first">please save zoom first</string>
+    <string name="video_audio">Video</string>
+    <string name="original_sound">Original Sound</string>
+    <string name="music_audio">Music</string>
+    <string name="tap_add_music">Tap to add music</string>
+    <string name="audio_muted">Video has been muted</string>
+    <string name="origin_voice_close">Original sound is closed</string>
+    <string name="origin_voice_open">Original sound is opend</string>
+    <string name="recover_voice_close">Recover original sound</string>
+    <string name="remove_voice_close">Remove original sound</string>
+    <string name="trim_success">Cut successfully</string>
+    <string name="trim_fail">Cut fail</string>
+    <string name="select_over_photo">You have selected many photos,it will run out your memory</string>
+    <string name="no_audio">This file don\'t contain voice</string>
+    <string name="audio_error">Audio file is error </string>
+    <string name="try_this_app">Come and try this app</string>
+    <string name="murge_fail">Merge failed</string>
+    <string name="audio_murge_fail">audio merge failed</string>
+    <string name="gif_support">Support GIF import</string>
+    <string name="export_total_size">Estimated file size: %s MB</string>
+    <string name="export_resolution">Resolution</string>
+    <string name="export_frame">Frame rate</string>
+    <string name="export_resolution_tip1">Normal definition - less space, lower resolution</string>
+    <string name="export_resolution_tip2">Standard definition - recommended resolution for most videos</string>
+    <string name="export_resolution_tip3">High definition - excellent video resolution</string>
+    <string name="export_resolution_tip4">Ultra-high definition- restore Ultra HD Video, use more space</string>
+    <string name="export_frame_tip">Smoother playback</string>
+    <string name="way_to_obtain_max_defination">How to make the best video?</string>
+    <string name="consistency_better_raw_low_unavailble">For a better playback experience, it is recommended that you keep the same resolution of the exported and imported videos. If the original low-resolution video is exported at a higher resolution, the increase in clarity may not be noticeable.</string>
+    <string name="studio">Studio</string>
+    <string name="music_file_unsupport">Your device does not support playing %s files</string>
+
+    <!--transition-->
+    <string name="first_element_no_support">The first clip doesn\'t support transition</string>
+    <string name="save_success">Saved successfully</string>
+    <!--afilter-->
+
+    <string name="select_clip_enable_tip">Select at least one clip</string>
+    <string name="music_incorret">Music format is incorrect</string>
+    <string name="add_music_complete_first_tip">Please complete the addition first</string>
+    <string name="clip_zoom">Pinch the screen to zoom</string>
+
+    <string name="work_and_draft_title">My Studio</string>
+    <string name="preview_last_one_second_tip">At least 0.5 seconds of blank space is required to add</string>
+
+    <string name="subActivity_dialog_message">Discard changes?</string>
+    <string name="save_drafts">Save to My Draft?</string>
+    <string name="discard">DISCARD</string>
+    <string name="success">Successfully</string>
+    <string name="work_no_data">No video has been created yet</string>
+    <string name="duration_tip">Duration should\'t be less than 0.1s or more than 3600s</string>
+    <string name="duration_tip_empty">Duration cannot be empty</string>
+    <string name="menu_save">save</string>
+    <string name="create_now">Create now</string>
+    <string name="create">Create</string>
+    <string name="single_not_support_transition">Single file does not support transitions</string>
+    <string name="unsupport_transition">This Theme can\'t custom transition</string>
+    <string name="duration_too_short">File length is too short</string>
+    <string name="file_not_exist">The file does not exist</string>
+    <string name="export_stop">Are you sure to stop exporting this video?</string>
+    <string name="title_rename">The title cannot be empty</string>
+    <string name="cut_video_min_time">Duration should\'t be less than 2s</string>
+    <string name="min_duration">Duration should\'t be less than 1.8s</string>
+    <string name="min_transition_duration">Exist transition,Duration should\'t be less than 1.8s</string>
+    <string name="cutting_tip">Cutting, please wait...</string>
+    <string name="add_music_successfully">Added music successfully</string>
+    <string name="delete_media_tip">Reading File, please delete later</string>
+    <string name="move_media_tip">Reading File, please move later</string>
+    <string name="video_not_support_duration">Video does not support setting time</string>
+    <string name="theme_not_support_duration">this Theme not support setting time</string>
+    <string name="save_at_least_one_clip">Please keep at least one clip</string>
+    <string name="no_music">No music</string>
+    <string name="pull_to_refresh">Pull down to refresh</string>
+    <string name="no_history">No history</string>
+    <string name="random_transition">Apply random transition</string>
+    <string name="remove_transition">Remove transition</string>
+    <string name="cancel_theme">Cancel Theme</string>
+    <string name="apply_default_music">Apply default music</string>
+    <string name="filter_setting_one">Randomly use filters to all clips</string>
+    <string name="filter_setting_two">Remove filters from all clips</string>
+    <string name="filter_setting_three">Use this filter to all clips</string>
+    <string name="transition_setting_one">Apply transitions randomly to all clips</string>
+    <string name="transition_setting_two">Remove transitions from all clips</string>
+    <string name="transition_setting_three">Apply transitions  to all clips</string>
+    <string name="camera_permission_ask_again">Camera permission for taking photos or videos,Go to "Pemissions">"Camera" to open it</string>
+    <string name="camera_permission_ask">Camera permission for taking photos or videos</string>
+    <string name="record_permission_ask_again">The microphone permission for recording audio, Go to "Permission" in Settings > Turn on Microphone</string>
+    <string name="no_photo">No photos</string>
+    <string name="no_sticker_history">You have not used any sticker</string>
+    <string name="no_video">No videos</string>
+    <string name="no_photo_video">No photos or videos</string>
     <string name="all">All</string>
     <string name="photo">Photo</string>
     <string name="video">Video</string>
+    <string name="selected">Selected</string>
+    <string name="next">Next</string>
+    <string name="settings">Settings</string>
+    <string name="my_music">Local</string>
+    <string name="music_history">History</string>
+    <string name="export">Exporting....</string>
+    <string name="export_tip">The time depends on the size of the video.</string>
+    <string name="export_save">Save</string>
+    <string name="text_not_empty">Text cannot be empty</string>
+    <string name="add_music_success">Add music successfully</string>
+    <string name="delete_confirm">Are you sure to delete?</string>
+    <string name="copy_confirm">Are you sure to copy?</string>
+    <string name="not_draw_any">You did not draw anything</string>
+    <string name="out_of_memory">You have selected many photos，it will run out of memory</string>
+    <string name="not_add_more_video">can not add more videos</string>
+    <string name="not_add_more_photo">can not add more photos</string>
+    <string name="draft_murge_faile">Source file is missing</string>
+    <string name="redirect_market">Please install this app to try again</string>
+    <string name="install">INSTALL</string>
+    <string name="memory_no_enough">Hello, there is not enough storage</string>
+    <string name="data_invalid">Data had saved to drafts</string>
+    <string name="app_error">app error</string>
+    <string name="special_characters">Not support %s </string>;
+
+    <!--select_music-->
+    <string name="please_select_music">Please select music</string>
+    <string name="music_search_hint">Search&#8230;</string>
+    <string name="recent">Recent</string>
+    <string name="online">Online</string>
+    <string name="library">Library</string>
+    <string name="local">Local</string>
+    <string name="search_not_found">No music found</string>
+    <string name="recent_music_empty">No recent used</string>
+    <string name="local_music_empty">No local songs</string>
+    <string name="music_type_general">General</string>
+    <string name="music_type_happy">Happy</string>
+    <string name="music_type_love">Love</string>
+    <string name="music_type_soft">Soft</string>
+    <string name="music_type_children">Children</string>
+    <string name="music_type_birthday">Birthday</string>
+    <string name="music_type_dynamic">Dynamic</string>
+    <string name="music_type_epic">Epic</string>
+    <string name="music_type_vlog">VLog</string>
+    <string name="music_type_festival">Festival</string>
+    <string name="music_type_beats">Beats</string>
+    <string name="music_type_travel">Travel</string>
+    <string name="music_type_blue">Blue</string>
+    <string name="network_request_exception">Check your connection and try again</string>
+    <string name="music_copyright">To avoid copyright issues and support the artist, Please add the following info to your video\'s description.</string>
+    <string name="music_copyright_close">CLOSE</string>
+    <string name="music_copyright_copy">COPY</string>
+    <string name="music_copyright_had_copy">Copy to clip broad</string>
+    <string name="length">Length</string>
+
+    <!--edit_title-->
+    <string name="activity_editor_frame">Frame</string>
+    <string name="activity_editor_effect">Effect</string>
+    <string name="clip_edit">Clip Edit</string>
+    <string name="canvas">Canvas</string>
+    <string name="subTitle">SubTitle</string>
+    <string name="music">Music</string>
+    <string name="volume">Volume</string>
+    <string name="multi_music">Multi Music</string>
+    <string name="music_fade">Music fade</string>
+    <string name="filter">Filter</string>
+    <string name="transition">Transition</string>
+    <string name="background">Background</string>
+    <string name="doodle">Doodle</string>
+    <string name="sticker">Sticker</string>
+    <string name="duration">Duration</string>
+    <string name="default_duration">Default duration</string>
+    <string name="add_clips">Add clips</string>
+
+    <string name="open_music_fade">Open Music fade</string>
+    <string name="close_music_fade">Close Music fade</string>
+    <string name="total">Total %s</string>
+
+
+    <!--theme-slideshow-->
+    <string name="select_music">Select music</string>
+    <string name="network_exception_tip1">Please connect to the network and then pull down to refresh</string>
+    <string name="network_exception_tip2">Please connect to the network for theme resources</string>
+
+    <!--Slideshow-->
+    <string name="select_photos">Select photos</string>
+    <string name="count">(%1$s)</string>
+    <string name="slideshow_selected">Selected %d/</string>
+    <string name="select_image_tip">Please select at least one clip</string>
+    <string name="preview">Preview</string>
+    <string name="all_theme">All Theme</string>
+    <string name="ratio">Ratio</string>
+    <string name="ratio_11">1:1</string>
+    <string name="ratio_169">16:9</string>
+    <string name="ratio_916">9:16</string>
+    <string name="ratio_43">4:3</string>
+    <string name="ratio_34">3:4</string>
+    <string name="text">Text</string>
+    <string name="filters">Filters</string>
+    <string name="slideshow_stickers">Stickers</string>
+    <string name="add">Add</string>
+    <string name="back">Back</string>
+    <string name="time_setting_tip">Tip: You can click \"→\" to set current pause time as start time or end time</string>
+    <string name="single_edit">Clip Edit</string>
+    <string name="editor_duration">Duration</string>
+    <string name="editor_zoom">Zoom</string>
+    <string name="editor_rotate">Rotate</string>
+    <string name="editor_copy">Copy</string>
+    <string name="select_image_cout_tip">can not add more photos</string>
+    <string name="export_ratio"></string>
+
+
+    <!--theme-->
+    <string name="move_file_count">Moved %s files </string>
+    <string name="copy_file_count">Copied %s files </string>
+    <string name="picture"> Photos </string>
+    <string name="privacy"> Privacy </string>
+    <string name="album"> Albums </string>
+    <string name="not_play_slide">No currently available file.</string>
+    <string name="not_play_edit">No currently available file.</string>
+    <string name="collection">Favorite</string>
+    <string name="my_favorite">Favorites</string>
+    <string name="collage">Collage</string>
+    <string name="collages">Collages</string>
+    <string name="address">Locations</string>
+    <string name="collection_fail">Added to favorite failed!</string>
+    <string name="remove_collection">Unfavorite</string>
+    <string name="collection_add">Added to favorite</string>
+    <string name="collection_remove">Cancel favorite</string>
+    <string name="confirm">OK</string>
+    <string name="new_album">New album</string>
+    <string name="new_album_name">Please enter the album name!</string>
+    <string name="new_album_count">New album %s</string>
+    <string name="selected_picture">Please selected the files to operate again!</string>
+    <string name="selected_bucket">Please selected the album to operate again! </string>
+    <string name="confirm_delete">Are you sure to delete %d file?</string>
+    <string name="confirm_delete_s">Are you sure to delete %d files?</string>
+    <string name="rename_not_empty">Your input can not be empty!</string>
+    <string name="toast_rename_success">Successfully renamed!</string>
+    <string name="name_has_existed">The name has been existed!</string>
+    <string name="share_bottom">Share</string>
+    <string name="main_search"> Search</string>
+    <string name="main_edit"> Edit</string>
+    <string name="main_rotate"> Rotate</string>
+    <string name="main_rename"> Rename </string>
+    <string name="main_restore"> Restore</string>
+    <string name="trash_restore_msg">Are you sure  to restore these files?</string>
+    <string name="restore_success">Restored successfully!</string>
+    <string name="restore_failed">Restored failed!</string>
+    <string name="trash_auto_clear_msg">Items in trash will be removed after %d days.</string>
+    <string name="permanently_delete"> Permanently delete</string>
+    <string name="new_picture_name">Please enter a photo name!</string>
+    <string name="new_video_name">Please enter a video name!</string>
+    <string name="set_up_photos"> Set as </string>
+    <string name="main_exif">Details</string>
+    <string name="detail_name">Title:</string>
+    <string name="detail_time">Time:</string>
+    <string name="detail_locale">Location:</string>
+    <string name="detail_duration">Duration:</string>
+    <string name="detail_resolution">Resolution:</string>
+    <string name="detail_size">Size:</string>
+    <string name="detail_width">Width:</string>
+    <string name="detail_height">Height:</string>
+    <string name="detail_path">Path:</string>
+    <string name="detail_focal_lengt">Focal Length:</string>
+    <string name="detail_aperture">Aperture:</string>
+    <string name="detail_iso">ISO:</string>
+    <string name="detail_white_balance">White Balance:</string>
+    <string name="detail_white_balance_auto">Auto</string>
+    <string name="detail_white_balance_manual">Manual</string>
+    <string name="detail_flash">Flash Lamp:</string>
+    <string name="detail_flash_on">On</string>
+    <string name="detail_flash_off">Off</string>
+    <string name="detail_expoture_time">Exposure Time:</string>
+    <string name="detail_count">Count:</string>
+    <string name="date_format_year_month_day"> MMM dd, yyyy</string>
+    <string name="date_format_year">yyyy</string>
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="delete_success">Deleted successfully!</string>
+    <string name="delete_failed">Part of the operation is denied by the OS. Please try again with right permissions.</string>
+    <string name="selected_count"> %d</string>
+
+    <!--Settings-->
+    <string name="setting">Settings</string>
+    <string name="similar_photos">Similar photos</string>
+    <string name="setting_similar_pic">Find similar photos</string>
+    <string name="setting_similar_pic_info">Scan photos and find similar photos</string>
+    <string name="setting_hide_pic">Hide small photos</string>
+    <string name="setting_hide_pic_info">Hide the photos smaller than 50kb in Photos</string>
+    <string name="setting_hide_video">Hide videos</string>
+    <string name="setting_hide_video_info">Hide the videos in Photos</string>
+    <string name="setting_trash_time">Trash empty time interval</string>
+    <string name="setting_trash_time_info">Set the interval time to empty trash</string>
+    <string name="trash_time_immediately">Immediately</string>
+    <string name="trash_time_30">30 days</string>
+    <string name="trash_time_60">60 days</string>
+    <string name="manual_input">Manual input</string>
+    <string name="days">days</string>
+    <string name="setting_trash_time_value">%s day</string>
+    <string name="setting_trash_times_value">%s days</string>
+    <string name="setting_hide_trash_bin">Hide the Trash Bin</string>
+    <string name="setting_hide_trash_bin_info">Whether hide the Trash Bin or not</string>
+    <string name="setting_show_pic_time">Display shooting time</string>
+    <string name="setting_show_pic_time_info">View the timestamps on the photos</string>
+    <string name="setting_show_pic_addr">Display location</string>
+    <string name="setting_show_pic_addr_info">View the positions on the photos</string>
+    <string name="setting_show_location_album">Show Locations Album</string>
+    <string name="setting_show_location_album_info">Set whether show Locations in Albums </string>
+    <string name="setting_slide_time">Slide show setting</string>
+    <string name="setting_slide_time_info">Setting the slide time interval</string>
+    <string name="setting_auto_slide_mode">Auto play slide mode</string>
+    <string name="setting_auto_slide_mode_info">Automatically start slide after opening</string>
+    <string name="setting_auto_slide_time">Auto play slide setting</string>
+    <string name="setting_auto_slide_time_info">Set automatically into the slide interval</string>
+    <string name="setting_slide_time_value">%s s</string>
+    <string name="setting_set_play_time">Enter your time interval</string>
+    <string name="setting_set_auto_play_time">Enter your time interval</string>
+    <string name="setting_set_play_time_hint">Enter integer between 1 and 9</string>
+    <string name="setting_set_play_auto_time_hint">Enter integer between 1 and 999</string>
+    <string name="setting_set_play_time_invalid">Invalid input. Please try again!</string>
+    <string name="clear_cache">Clear cache</string>
+
+
+    <string name="main_pop_view_size">Layout</string>
+    <string name="view_size_large">Large view</string>
+    <string name="view_size_medium">Medium view</string>
+    <string name="view_size_small">Small view</string>
+
+
+    <string name="sort_by">Sort by</string>
+    <string name="view_mode">View as</string>
+    <string name="picture_slide_normal">Up to down</string>
+    <string name="picture_slide_reverse">Reverse</string>
+    <string name="sort_reverse">Reverse all</string>
+    <string name="sort_by_name">Name</string>
+    <string name="sort_by_count">Count</string>
+    <string name="sort_by_date">Date</string>
+    <string name="sort_by_album">Album name</string>
+    <string name="sort_by_privacy_time">Encryption time</string>
+
+    <string name="private_no_items">No privacy photos</string>
+    <string name="image_no_items">No item</string>
+    <string name="other_album_no_item_info">Infrequent used albums can be collected here</string>
+    <string name="image_no_items_info">open the camera to take pictures or videos</string>
+    <string name="location_album_no_item">The places you will see</string>
+    <string name="location_album_no_item_info">Turn on location history to see photos grouped by where you have been</string>
+    <string name="delete_no_item_info">The photos you deleted will be collected here</string>
+    <string name="my_creation_no_item">No slideshow has been created</string>
+
+    <string name="open_failed">File open error！</string>
+    <string name="can_not_operation">This operation is not supported.</string>
+
+    <string name="rename_input_fliter">%s are not supported</string>
+    <string name="rename_max_length">Up to 60 characters available.</string>
+
+    <string name="select_photo">Select a photo</string>
+    <string name="delete_source_files">Delete items from original album</string>
+    <string name="photo_video_size">%1$s photo and %2$s video total</string>
+    <string name="photo_videos_size">%1$s photo and %2$s videos total</string>
+    <string name="photos_video_size">%1$s photos and %2$s video total</string>
+    <string name="photos_videos_size">%1$s photos and %2$s videos total</string>
+    <string name="photo_format">%s photo</string>
+    <string name="photos_format">%s photos</string>
+    <string name="video_format">%s video</string>
+    <string name="videos_format">%s videos</string>
+    <string name="share_selected_count"> %d Selected</string>
+    <string name="main_add_to_album">Add to album</string>
+    <string name="select">Select</string>
+    <string name="deselect">Deselect</string>
+    <string name="data_error">Data error. Please try again.</string>
+    <string name="screenshot">Screenshots</string>
+    <string name="sort_reset">Reset</string>
+    <string name="toast_change_setting_reoperation">Please re-select and operating</string>
+
+    <string name="similarphoto_message">Scanning photos…</string>
+    <string name="similarphoto_message_info">Scanning time depends on number of photos</string>
+    <string name="scanning_processing">Processing photos…</string>
+    <string name="scanning_processing_info">Processing time depends on number of photos</string>
+    <string name="similar_photo_no_items">No similar photos found</string>
+    <string name="search_history">Search history</string>
+    <string name="set_index">Set:%d</string>
+    <string name="already_exists">The name already exists</string>
+
+    <string name="rotate_left">Rotate left</string>
+    <string name="rotate_right">Rotate right</string>
+    <string name="rotate_180">Rotate 180°</string>
+
+    <!--video-->
+    <string name="input_error">Your input is wrong</string>
+    <string name="others">Others</string>
+    <string name="trash">Trash Bin</string>
+    <string name="trash_empty"> Empty trash</string>
+    <string name="phone_storage">Phone (%s free)</string>
+    <string name="sdcard_storage">SD card (%s free)</string>
+    <string name="add_photos_to">Add photos to \"%s\"</string>
+    <string name="add_to_album_name">\"%s\".</string>
+    <string name="copy_picture_to">%1$d file copy to </string>
+    <string name="copy_pictures_to">%1$d files copy to </string>
+    <string name="move_picture_to">%1$d file move to </string>
+    <string name="move_pictures_to">%1$d files move to </string>
+
+    <string name="set_password">Set password</string>
+    <string name="lock_pattern_title">Set lock pattern</string>
+    <string name="lock_password_title">Set password</string>
+    <string name="unencrypt_success">Unhide to public successfully</string>
+    <string name="lock_confirm_pattern">Confirm your unlock pattern</string>
+    <string name="lock_check_pattern">Draw unlock pattern</string>
+    <string name="lock_set_password">Please input password</string>x
+    <string name="lock_confirm_password">Confirm your password</string>
+    <string name="lock_check_password">Please input password</string>
+    <string name="secrecy_tip">You can retrieve your password via security question</string>
+    <string name="password_not_match">Password doesn\'t match, try again!</string>
+    <string name="pattern_not_match">Patterns do not match, try again!</string>
+    <string name="pwd_not_match_02">Wrong, try again(You have %s times)</string>
+    <string name="pwd_not_match_03">Wrong, try again(You have %s time)</string>
+    <string name="least_draw_four_point">Connect at least 4 dots, try again</string>
+    <string name="retry_seconds">Try again in %s seconds</string>
+    <string name="retry_second">Try again in %s second</string>
+    <string name="pwd_save_success">Set successfully</string>
+    <string name="pwd_modify_success">Modified successfully</string>
+    <string name="secrecy_setting">Choose a security question</string>
+    <string name="secrecy_question_hint">Please enter a security question</string>
+    <string name="secrecy_answer_hint">Please enter the answer</string>
+    <string name="secrecy_0">What is your favorite food?</string>
+    <string name="secrecy_1">What is your favorite movie?</string>
+    <string name="secrecy_2">What is your father\'s name?</string>
+    <string name="secrecy_3">Who is your best friend?</string>
+    <string name="secrecy_4">What is your favorite song?</string>
+    <string name="secrecy_5">What is your lucky number?</string>
+    <string name="secrecy_6">What is your favorite color?</string>
+    <string name="secrecy_7">Custom</string>
+    <string name="secrecy_successed">Set successfully</string>
+    <string name="secrecy_modify_successed">Modified successfully</string>
+    <string name="secrecy_failed">Your answer is error</string>
+    <string name="set_secrecy">Set security question</string>
+    <string name="reset_secrecy">Reset security question</string>
+    <string name="check_secrecy">Verify security question</string>
+    <string name="secrecy_message_0">You can retrieve your password via security question</string>
+    <string name="secrecy_message_1">The security question is set when creating a password</string>
+    <string name="update_password">Change password</string>
+    <string name="update_secrecy_question">Change security question</string>
+    <string name="hide_error">System permissions limited，encryption failed</string>
+    <string name="hide_success">Hide to privacy successfully</string>
+    <string name="secrecy_input_question_null">You have not input the secret security question yet</string>
+    <string name="secrecy_input_anwser_null">Input your answer</string>
+    <string name="lock_tip_text">Please keep your password in mind</string>
+    <string name="pattern_reset_pwd">Reset passcode</string>
+    <string name="number_reset_pwd">Reset password</string>
+    <string name="number_lock_style">Passcode</string>
+    <string name="pattern_lock_style">Patterns</string>
+    <string name="security_skip">Skip</string>
+    <string name="security_settings">Security settings</string>
+    <string name="unlock_mode">Unlock Mode</string>
+    <string name="lock_mode">Lock Mode</string>
+    <string name="retrieve_password">Retrieve Password</string>
+    <string name="lock_immediately">Lock photos at screen-off or upon exiting</string>
+    <string name="lock_later">Lock photos after screen-off or upon exiting 1 minute</string>
+    <string name="tip_set_security">Tap to set security questions!</string>
+    <string name="tip_set_security_info">Use security questions to reset passwords</string>
+
+
+    <string name="rotate">Rotate</string>
+    <string name="set_as">Set as</string>
+    <string name="details">Details</string>
+    <string name="slideshow">Slideshow</string>
+    <string name="merge_folders">Merge albums</string>
+    <string name="album_list">Album List</string>
+    <string name="select_theme">Select Theme</string>
+    <string name="merge_folder_message">Merge to the selected album?\nMerge complete, other album will be deleted automatically</string>
+
+    <string name="loading_video">Loading video\u2026</string>
+
+    <!--new-->
+    <string name="photos_management">Photos Management</string>
+    <string name="add_to_other">Add to others</string>
+    <string name="move_out">Move out</string>
+    <string name="operation_complete">Complete!</string>
+    <string name="search_text_hint">Search photos</string>
+    <string name="search_text_empty">Please input the keyword first</string>
+    <string name="msg_clear_search_history">Are you sure to clear Search history?</string>
+    <string name="time">Time</string>
+    <string name="place">Places</string>
+    <string name="search_album_no_item">No photos or videos</string>
+    <string name="last_week">Last week</string>
+    <string name="last_month">Last month</string>
+    <string name="this_year">This year</string>
+    <string name="last_year">Last year</string>
+    <string name="hide">Hide</string>
+    <string name="un_hide">Unhide</string>
+    <string name="clip">Clip</string>
+    <string name="merge">Merge</string>
+    <string name="exclude_album">Exclude albums</string>
+    <string name="fromat_precent">%d%%</string>
+    <string name="date_format_ymd">MMMM dd, yyyy</string>
+
+    <!--VideoCut-->
+    <string name="video_cut_save">Save</string>
+    <string name="save_loading">Exporting…</string>
+    <string name="save_error">Error</string>
+    <string name="load_error">Load failed</string>
+    <string name="save_error_message">File exported error!</string>
+    <string name="version_error_message">System version does not support!</string>
+
+    <!--Me page-->
+    <string name="main_me">Me</string>
+    <string name="gift_wall">Gift wall</string>
+    <string name="my_creation">My Creation</string>
+    <string name="downloaded_themes">Downloaded Themes</string>
+    <string name="find_similar_photos">Find similar photos</string>
+    <string name="hot_app">Hot App</string>
+    <string name="rate_for_us">Rate for us</string>
+
+
+    <!--Filter-->
+    <string name="slideshow_filter_none">none</string>
+    <string name="slideshow_filter_warm">warm</string>
+    <string name="slideshow_filter_cold">cold</string>
+    <string name="slideshow_filter_hudson">hudson</string>
+    <string name="slideshow_filter_sketch">sketch</string>
+    <string name="slideshow_filter_portrait">portrait</string>
+    <string name="slideshow_filter_retro">retro</string>
+    <string name="slideshow_filter_antique">antique</string>
+    <string name="slideshow_filter_brannan">brannan</string>
+    <string name="slideshow_filter_hefe">hefe</string>
+    <string name="slideshow_filter_inkwell">inkwell</string>
+    <string name="slideshow_filter_n1977">N1977</string>
+    <string name="slideshow_filter_nashville">nashville</string>
+    <string name="slideshow_filter_beauty">beauty</string>
+    <string name="slideshow_filter_sweety">sweety</string>
+    <string name="slideshow_filter_rosy">rosy</string>
+    <string name="slideshow_filter_lolita">lolita</string>
+    <string name="slideshow_filter_pink">pink</string>
+    <string name="slideshow_filter_rise">rise</string>
+    <string name="slideshow_filter_sunset">sunset</string>
+    <string name="slideshow_filter_vintage">vintage</string>
+    <string name="slideshow_filter_rococo">rococo</string>
+    <string name="slideshow_filter_romance">romance</string>
+    <string name="slideshow_filter_lomo">lomo</string>
+    <string name="slideshow_filter_latte">latte</string>
+    <string name="slideshow_filter_calm">calm</string>
+    <string name="slideshow_filter_invertColor">invertColor</string>
+    <string name="slideshow_filter_pixelize">pixelize</string>
+    <string name="slideshow_filter_cracked">cracked</string>
+
+
+    <!--local theme-->
+    <string name="birthday1">Birthday Bunting</string>
+    <string name="birthday2">Pink Birthday</string>
+    <string name="valentine1">Valentine Heart</string>
+    <string name="valentine4">Valentine Love</string>
+    <string name="common13">Say Love</string>
+    <string name="common21">My Life Be Like</string>
+    <string name="common27">Shine</string>
+    <string name="common28">See My Love</string>
+    <string name="unsupport_theme">Video does not support setting themes</string>
+
+
+    <string name="export_ratio_tip">Delete the original media will damage the draft file</string>
+
+    <string name="export_quality">Export video quality</string>
+    <string name="hight_quality">High quality</string>
+    <string name="low_quality">Low quality</string>
+    <string name="medium_quality">Medium quality</string>
+
+    <string name="export_full_hight">Full HD 1080P</string>
+    <string name="export_medium">HD 720p</string>
+    <string name="export_higher">Higher 640P</string>
+    <string name="export_normal">Normal 480P</string>
+    <string name="export_low">low 360P</string>
+
+    <string name="hight">High</string>
+    <string name="medium">Medium</string>
+    <string name="low">Low</string>
+    <string name="name">Name</string>
+    <string name="date">Date</string>
+    <string name="reverse">Reverse</string>
+    <string name="filter_strength">strength</string>
+    <string name="select_all">Select all</string>
+    <string name="clear_all">Deselect</string>
+    <string name="share_all">Share all</string>
+    <string name="delete_all">Delete</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="clean_success">Clean success</string>
+    <string name="use_language">Use English language</string>
+    <string name="share_friend">Share to my friends</string>
+    <string name="ratio_none">Original</string>
+
+
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming email</string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+
+
+    <string name="photoeditor_add">Add</string>
+    <string name="photoeditor_bubble">Bubble</string>
+    <string name="photoeditor_font">Font</string>
+    <string name="photoeditor_color">Color</string>
+    <string name="photoeditor_style">Style</string>
+    <string name="photoeditor_text_color">Text Color</string>
+    <string name="photoeditor_background_color">Background</string>
+    <string name="photoeditor_border_color">Border</string>
+    <string name="photoeditor_shadow_color">Shadow</string>
+    <string name="photoeditor_text_format_0">Default</string>
+    <string name="photoeditor_text_format_1">Format1</string>
+    <string name="photoeditor_text_format_2">Format2</string>
+    <string name="photoeditor_text_format_3">Format3</string>
+    <string name="photoeditor_alignment_center">Align Center</string>
+    <string name="photoeditor_alignment_left">Align Left</string>
+    <string name="photoeditor_alignment_right">Align Right</string>
+    <string name="photoeditor_underline">Underline</string>
+    <string name="photoeditor_normal">Normal</string>
+    <string name="photoeditor_bold">Bold</string>
+    <string name="photoeditor_italic">Italic</string>
+    <string name="photoeditor_text_shadow">Shadow</string>
+    <string name="photoeditor_text_shadow_degree">Degree</string>
+    <string name="photoeditor_word_spacing">Word Spacing</string>
+    <string name="photoeditor_row_spacing">Row Spacing</string>
+    <string name="photoeditor_default">Default</string>
+    <string name="photoeditor_font_name">Font %d</string>
+    <string name="photoeditor_font1">Font1</string>
+    <string name="photoeditor_font2">Font2</string>
+
+
+    <!-- compress activity -->
+    <string name="compress_video">Compress</string>
+
+    <string name="_2160p">2160p</string>
+    <string name="_1440p">1440p</string>
+    <string name="_1080p">1080p</string>
+    <string name="_720p">720p</string>
+    <string name="_640p">640p</string>
+    <string name="_540p">540p</string>
+    <string name="_480p">480p</string>
+    <string name="_360p">360p</string>
+    <string name="_240p">240p</string>
+
+    <!--Background Name-->
+    <string name="tags">Tags</string>
+    <string name="weather">Weather</string>
+    <string name="cute">Cute</string>
+    <string name="cartoon">Cartoon</string>
+    <string name="holo">Holo</string>
+    <string name="cloth_pattern">Cloth Pattern</string>
+    <string name="emoji">Emoji</string>
+    <string name="geometric_collage">Geometric Collage</string>
+    <string name="retro_dots">Retro Dots</string>
+    <string name="paper">Paper</string>
+    <string name="metallic_feel">Metallic Feel</string>
+    <string name="macaroon">Macaroon</string>
+    <string name="memphis">Memphis</string>
+    <string name="painting">Painting</string>
+    <string name="texture">Texture</string>
+    <string name="marble">Marble</string>
+    <string name="graphics">Graphics</string>
+    <string name="shining">Shining</string>
+    <string name="festival">Festival</string>
+    <string name="love_stroy">Love Story</string>
+    <string name="winter_holiday">Winter Holiday</string>
+    <string name="color_cartoon">Color Cartoon</string>
+    <string name="background_amount">%d backgrounds</string>
+    <string name="download_failed">Download failed</string>
+    <string name="download">GET</string>
+    <string name="use">USE</string>
+
+    <!--editclip-->
+    <string name="ratio_free">Free</string>
+    <string name="ratio_screen">Screen</string>
+    <string name="crop_set_width_failed">Width should be between %s, please try again</string>
+    <string name="crop_set_height_failed">Height should be between %s, please try again</string>
+    <string name="array_duration">Duration</string>
+    <string name="array_zoom">Zoom</string>
+    <string name="array_rotate">Rotate</string>
+    <string name="array_mirror">Mirror</string>
+    <string name="array_copy">Copy</string>
+    <string name="array_trim">Trim</string>
+    <string name="array_crop">Crop</string>
+    <string name="array_speed">Speed</string>
+    <string name="array_reverse">Reverse</string>
+    <string name="proportion_is_not_supported_tip">The photo proportion is not supported</string>
+    <string name="v_flip">V-flip</string>
+    <string name="h_flip">H-flip</string>
+    <string name="custom_crop_ratio">Custom crop ratio</string>
+
+
+    <string name="compress_size">Size</string>
+
+
+    <string name="sound_record">Record</string>
+    <string name="templates">Templates</string>
+    <string name="downloading">Downloading...</string>
+    <string name="select_clip_layout_list">List</string>
+    <string name="select_clip_layout_grid">Grid</string>
+    <string name="imported">Imported</string>
+    <string name="select_folder_all">Select all clips in the folder?</string>
+
+
+    <string name="dialog_ask_select_over_100">Already have many clips selected, may crash because out of memory, keep selecting more?</string>
+
+    <string name="notice">Notice</string>
+    <string name="theme_conflict_used">%s has been used by %s</string>
+    <string name="theme_conflict_action">Please delete %s before deleting the theme</string>
+    <string name="theme_had_delete">The theme has been deleted, please download it again</string>
+    <string name="theme_conflict_delete">When deleting a theme, the drafts using this theme will also be deleted. Are you sure to delete?</string>
+    <string name="theme_conflict_clear">After deleting the theme, the drafts file using the theme becomes a file that does not use the theme and does not use transition</string>
+    <string name="current_project">Current Draft</string>
+
+
+
+    <string name="activity_main_video_to_audio">Video to Mp3</string>
+
+    <string name="share_to">Share to</string>
 </resources>

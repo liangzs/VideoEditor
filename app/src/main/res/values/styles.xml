@@ -108,4 +108,43 @@
     </style>
 
 
+
+    <!--animate-->
+
+
+
+    <style name="fade_popwindow">
+        <item name="android:windowEnterAnimation">@anim/fade_in</item>
+        <item name="android:windowExitAnimation">@anim/fade_out</item>
+    </style>
+
+
+    <!--缩放弹出动画-->
+    <style name="Animation_Scale">
+        <item name="android:windowEnterAnimation">@anim/dialog_scale_enter</item>
+        <item name="android:windowExitAnimation">@anim/dialog_scale_exit</item>
+    </style>
+
+
+
+<!--view-->
+    <style name="Shapeable13pxRoundedStyle">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">13px</item>
+    </style>
+
+    <style name="Shapeabledp4RoundedStyle">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">4dp</item>
+    </style>
+
+    <style name="Shapeable_dp_4_RoundedStyle">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">4dp</item>
+    </style>
+
+
 </resources>
+
+
+<!---->

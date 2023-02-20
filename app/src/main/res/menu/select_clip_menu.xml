@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+<!--    <item-->
+<!--        android:id="@+id/select_clip_menu_camera"-->
+<!--        android:icon="@drawable/vector_camera"-->
+<!--        android:title=""-->
+<!--        app:showAsAction="ifRoom"></item>-->
+<!--    <item-->
+<!--        android:id="@+id/select_clip_menu_video"-->
+<!--        android:icon="@drawable/vector_camera_video"-->
+<!--        android:title=""-->
+<!--        android:visible="false"-->
+<!--        app:showAsAction="ifRoom" />-->
+    <item
+        android:id="@+id/select_all"
+        android:icon="@drawable/vector_selectall"
+        android:title=""
+        android:visible="true"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/grid_layout"
+        android:icon="@drawable/menu_more"
+        android:title=""
+        app:showAsAction="ifRoom" />
+</menu>

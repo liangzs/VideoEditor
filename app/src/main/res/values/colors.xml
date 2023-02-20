@@ -108,4 +108,5 @@
     <!--select-->
     <color name="tabIndicate_color">#FC5730</color>
     <color name="selected_media_item_alpha">#4CFC5730</color>
+    <color name="pressed_color">#BB888888</color>
 </resources>
