@@ -8,33 +8,33 @@
 
     <ImageView
         android:id="@+id/image_select"
-        android:layout_width="@dimen/dp_70"
-        android:layout_height="@dimen/dp_70"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:scaleType="centerCrop"
-        android:layout_marginHorizontal="@dimen/dp_7"
-        android:layout_marginTop="@dimen/dp_7"
-        android:layout_marginBottom="@dimen/dp_3" />
+        android:layout_marginHorizontal="7dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginBottom="3dp" />
 
 
 
     <TextView
         android:id="@+id/bottom_duration"
-        android:layout_width="@dimen/dp_70"
+        android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_marginHorizontal="@dimen/dp_7"
-        android:layout_marginBottom="@dimen/dp_3"
+        android:layout_marginHorizontal="7dp"
+        android:layout_marginBottom="3dp"
         android:textColor="@color/white"
-        android:textSize="@dimen/sp_12"
+        android:textSize="12sp"
         android:gravity="end"
         android:background="@drawable/color_shader"
-        android:paddingEnd="@dimen/dp_2"
+        android:paddingEnd="2dp"
         />
 
     <ImageView
         android:id="@+id/delete_img"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_gravity="top|end"
         android:scaleType="centerCrop" />
 

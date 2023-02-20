@@ -3,10 +3,6 @@ package com.ijoysoft.videoeditor.theme.manager
 import androidx.annotation.IntDef
 import com.ijoysoft.mediasdk.common.utils.FileUtils
 import com.ijoysoft.mediasdk.module.opengl.transition.*
-import com.ijoysoft.videoeditor.R
-import com.ijoysoft.videoeditor.entity.FilterEntity
-import com.ijoysoft.videoeditor.model.download.DownloadHelper
-import com.ijoysoft.videoeditor.model.download.DownloadPath
 import com.ijoysoft.videoeditor.theme.manager.TransitionRepository.TransiArray.Companion.CLASSIC
 import com.ijoysoft.videoeditor.theme.manager.TransitionRepository.TransiArray.Companion.GLITCH
 import com.ijoysoft.videoeditor.theme.manager.TransitionRepository.TransiArray.Companion.GRAPH
@@ -22,6 +18,9 @@ import com.ijoysoft.videoeditor.theme.manager.TransitionRepository.TransiGroup.C
 import com.ijoysoft.videoeditor.theme.manager.TransitionRepository.TransiGroup.Companion.GROUP_MG
 import com.ijoysoft.videoeditor.theme.manager.TransitionRepository.TransiGroup.Companion.GROUP_NONE
 import com.ijoysoft.videoeditor.theme.manager.TransitionRepository.TransiGroup.Companion.GROUP_PARTICLE
+import com.qiusuo.videoeditor.R
+import com.qiusuo.videoeditor.common.bean.FilterEntity
+import com.qiusuo.videoeditor.common.constant.DownloadPath
 import java.lang.annotation.Retention
 import java.lang.annotation.RetentionPolicy
 import kotlin.random.Random
@@ -118,7 +117,7 @@ object TransitionRepository {
      * 下载存储地址
      */
     fun dealLocalPath(transitionType: TransitionType): String {
-        return DownloadHelper.getDownloadPath(DownloadPath.BASE_PATH + "/" + transitionType.downOffet)
+        return (DownloadPath.BASE_PATH + "/" + transitionType.downOffet)
     }
 
 

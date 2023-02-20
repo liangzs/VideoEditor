@@ -10,8 +10,10 @@ import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.ijoysoft.mediasdk.common.utils.LogUtils
 import com.qiusuo.videoeditor.R
 import com.qiusuo.videoeditor.base.BaseFragment
+import com.qiusuo.videoeditor.common.bean.MediaEntity
 import com.qiusuo.videoeditor.databinding.SelecteMediaFragmentLayoutBinding
 import com.qiusuo.videoeditor.module.select.LoadMediaViewModel
+import com.qiusuo.videoeditor.module.select.adapter.TitlePagerViewAdapter
 import com.qiusuo.videoeditor.ui.widgegt.guide.util.ViewUtils
 
 /**
@@ -34,7 +36,7 @@ class SelectMediaFragment : BaseFragment<SelecteMediaFragmentLayoutBinding>(Sele
     /**
      * fragment集合
      */
-    var listFragment: MutableList<Fragment>? = null
+    var listFragment: MutableList<Fragment?>? = null
 
     override fun initView() {
         mediaMode = requireArguments().getInt(MODE_TAG, -1)

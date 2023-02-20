@@ -97,7 +97,6 @@
     <string name="ps_select_audio_min_second">选择音频小于%1$d秒</string>
     <string name="ps_select_no_support">不支持的选择类型</string>
 
-    <!--select-->
 <!--    <string name="imported">Imported</string>-->
 <!--    <string name="add_clip_tip">Please select at least one clip</string>-->
 <!--    <string name="drag_tip">Long press and drag to reorder</string>-->
@@ -181,7 +180,6 @@
     <string name="guide_preview">Long press to view</string>
     <string name="click_preview">Click to view</string>
     <string name="guide_transition">Tap here to add a transition</string>
-    <string name="loading">loading</string>
     <string name="current_duration_short">You need 0.5s blank space to add new item</string>
 
     <!--editor-->
@@ -467,7 +465,6 @@
     <string name="selected_count"> %d</string>
 
     <!--Settings-->
-    <string name="setting">Settings</string>
     <string name="similar_photos">Similar photos</string>
     <string name="setting_similar_pic">Find similar photos</string>
     <string name="setting_similar_pic_info">Scan photos and find similar photos</string>

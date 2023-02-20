@@ -23,7 +23,7 @@ class WelcomeActivity : BaseActivity<ActivityWelcomeBinding>(ActivityWelcomeBind
     }
 
 
-    override fun initData() {
+    override fun initData(savedInstanceState: Bundle?) {
         if (!EasyPermissions.hasPermissions(this, *STORAGE_PERMISSIONS)) {
             EasyPermissions.requestPermissions(PermissionRequest.Builder(this, REQUEST_STORAGE_PREMISSION, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .build())

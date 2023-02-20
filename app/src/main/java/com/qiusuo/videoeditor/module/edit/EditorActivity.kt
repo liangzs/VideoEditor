@@ -17,7 +17,7 @@ class EditorActivity : BaseActivity<ActivityEditorBinding>(ActivityEditorBinding
         super.onCreate(savedInstanceState)
     }
 
-    override fun initData() {
+    override fun initData(savedInstanceState: Bundle?) {
         mediaList = MediaDataRepository.getInstance().getDataOperate()
         mDoodleItems = MediaDataRepository.getInstance().getAllDoodle()
 //        val isfade: Boolean = SharedPreferencesUtil

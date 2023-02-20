@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.PointF
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.media.MediaScannerConnection
 import android.media.MediaScannerConnection.MediaScannerConnectionClient
 import android.net.Uri
@@ -57,12 +56,15 @@ import com.qiusuo.videoeditor.common.bean.MediaItemPicker
 import com.qiusuo.videoeditor.common.constant.RequestCode
 import com.qiusuo.videoeditor.common.data.MediaDataRepository
 import com.qiusuo.videoeditor.common.data.MediaManager
+import com.qiusuo.videoeditor.databinding.ActivitySelectClipBinding
+import com.qiusuo.videoeditor.module.edit.EditorActivity
 import com.qiusuo.videoeditor.module.select.adapter.BottomContentRecyclerAdapter
 import com.qiusuo.videoeditor.module.select.fragment.PhotoFragment
 import com.qiusuo.videoeditor.module.select.fragment.SelectFragment
 import com.qiusuo.videoeditor.module.select.fragment.SelectMediaFragment
 import com.qiusuo.videoeditor.ui.adapter.idocode.ItemDragHelperCallback
 import com.qiusuo.videoeditor.ui.adapter.idocode.SmoothScrollLayoutManager
+import com.qiusuo.videoeditor.ui.animate.PointFTypeEvaluator
 import com.qiusuo.videoeditor.ui.widgegt.MoveImageView
 import com.qiusuo.videoeditor.ui.widgegt.guide.util.ScreenUtils
 import com.qiusuo.videoeditor.ui.widgegt.pop.BaseTitleMenu
@@ -84,7 +86,10 @@ import kotlin.coroutines.suspendCoroutine
 /**
  * Created by wh on 2019/4/26.
  */
-class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectClipviewBinding>(ActivitySelectClipviewBinding::inflate,LoadMediaViewModel::class.java),
+class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectClipBinding>(
+    ActivitySelectClipBinding::inflate,
+    LoadMediaViewModel::class.java
+),
     MediaItemPicker, EasyPermissions.PermissionCallbacks, View.OnClickListener {
 
     private var mBottomContentRecyclerAdapter: BottomContentRecyclerAdapter? = null
@@ -168,7 +173,7 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
      */
     var originSize = 0
 
-     fun getIntentExtras(intent: Intent?) {
+    fun getIntentExtras(intent: Intent?) {
         if (intent != null) {
             isAddClip = intent.getBooleanExtra(RequestCode.ADD_CLIP, false)
 
@@ -210,7 +215,7 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
         super.onCreate(savedInstanceState)
     }
 
-     override fun initData(savedInstanceState: Bundle?) {
+    override fun initData(savedInstanceState: Bundle?) {
         showLoading(true, "")
         hintLeft = getString(R.string.photo)
         hintRight = getString(R.string.video)
@@ -220,7 +225,12 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
                 val hint = hint.substring(hintLeft!!.length)
                 val builder = SpannableStringBuilder(hint)
                 //为不同位置字符串设置不同颜色
-                builder.setSpan(themeSpan, 0, hint.length - hintRight!!.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                builder.setSpan(
+                    themeSpan,
+                    0,
+                    hint.length - hintRight!!.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
                 //最后为textview赋值
                 viewBinding.textNum.text = builder
             }
@@ -230,52 +240,55 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
         viewBinding.llFolder.root.setOnClickListener(this)
         viewBinding.buttonNext.setOnClickListener(this)
         mVibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
-        bottomSheetHelper = BottomSheetHelper(viewBinding.recycler, viewBinding.dragView, resources.getDimension(100).toInt(), 0.7f, object : SlidingUpListener {
-            override fun onExpanded() {
+        bottomSheetHelper =
+            BottomSheetHelper(viewBinding.recycler, viewBinding.dragView, 100.dp.toInt(), 0.7f,
+                object : SlidingUpListener {
+                    override fun onExpanded() {
 //                        setTipsParams(RelativeLayout.LayoutParams.MATCH_PARENT);
-                if (mBottomContentRecyclerAdapter!!.datas.isEmpty()) {
-                    // setTipsParams(RelativeLayout.LayoutParams.MATCH_PARENT);
-                    viewBinding.dragTip.visibility = View.INVISIBLE
-                } else {
-                    viewBinding.dragTip.visibility = View.VISIBLE
-                }
-            }
+                        if (mBottomContentRecyclerAdapter!!.datas.isEmpty()) {
+                            // setTipsParams(RelativeLayout.LayoutParams.MATCH_PARENT);
+                            viewBinding.dragTip.visibility = View.INVISIBLE
+                        } else {
+                            viewBinding.dragTip.visibility = View.VISIBLE
+                        }
+                    }
 
-            override fun onDraggingOut() {
+                    override fun onDraggingOut() {
 //                        setTipsParams(RelativeLayout.LayoutParams.MATCH_PARENT);
-                if (mBottomContentRecyclerAdapter!!.datas.isEmpty()) {
+                        if (mBottomContentRecyclerAdapter!!.datas.isEmpty()) {
 //                             setTipsParams(RelativeLayout.LayoutParams.MATCH_PARENT);
-                    viewBinding.dragTip.visibility = View.INVISIBLE
-                } else {
-                    viewBinding.dragTip.visibility = View.VISIBLE
-                }
-            }
+                            viewBinding.dragTip.visibility = View.INVISIBLE
+                        } else {
+                            viewBinding.dragTip.visibility = View.VISIBLE
+                        }
+                    }
 
-            override fun onDraggingIn() {
+                    override fun onDraggingIn() {
 //                        setTipsParams((int) getResources().getDimension(R.dimen.dp_120));
-                if (mBottomContentRecyclerAdapter!!.datas.isEmpty()) {
+                        if (mBottomContentRecyclerAdapter!!.datas.isEmpty()) {
 //                             setTipsParams((int) getResources().getDimension(R.dimen.dp_120));
-                    viewBinding.dragTip.visibility = View.INVISIBLE
-                } else {
-                    viewBinding.dragTip.visibility = View.VISIBLE
-                }
-            }
+                            viewBinding.dragTip.visibility = View.INVISIBLE
+                        } else {
+                            viewBinding.dragTip.visibility = View.VISIBLE
+                        }
+                    }
 
-            override fun onCollapsed() {
+                    override fun onCollapsed() {
 //                        setTipsParams((int) getResources().getDimension(R.dimen.dp_120));
-                if (mBottomContentRecyclerAdapter!!.datas.isEmpty()) {
-                    // setTipsParams((int) getResources().getDimension(R.dimen.dp_120));
-                    viewBinding.dragTip.visibility = View.INVISIBLE
-                } else {
-                    viewBinding.dragTip.visibility = View.VISIBLE
-                }
-            }
-        })
+                        if (mBottomContentRecyclerAdapter!!.datas.isEmpty()) {
+                            // setTipsParams((int) getResources().getDimension(R.dimen.dp_120));
+                            viewBinding.dragTip.visibility = View.INVISIBLE
+                        } else {
+                            viewBinding.dragTip.visibility = View.VISIBLE
+                        }
+                    }
+                })
         //rv会自动调整
         bottomSheetHelper!!.fitRecyclerMode = BottomSheetHelper.MODE_WEIGHT
 
         //在布局完成后调整高度
-        viewBinding.recycler.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
+        viewBinding.recycler.viewTreeObserver.addOnGlobalLayoutListener(object :
+            OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 if (bottomSheetHelper!!.setExpandHeight()) {
                     viewBinding.recycler.viewTreeObserver.removeOnGlobalLayoutListener(this)
@@ -315,7 +328,11 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
         //MediaManager.getInstance().folderType = MediaManager.ALL
         fragment = SelectMediaFragment.newInstance(viewModel.mediaMode)
         (fragment as SelectMediaFragment?)!!.showSelect()
-        fragmentTransaction!!.replace(R.id.rl_container, (fragment as Fragment?)!!, "SelectMediaFragment_clip")
+        fragmentTransaction!!.replace(
+            R.id.rl_container,
+            (fragment as Fragment?)!!,
+            "SelectMediaFragment_clip"
+        )
         if (savedInstanceState == null) {
             fragmentTransaction!!.addToBackStack("0")
         }
@@ -339,7 +356,10 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
             }
             LogUtils.i("SelectClipActivity", "not empty continue return ")
             mBottomContentRecyclerAdapter!!.datas = MediaDataRepository.getInstance().dataOperate
-            updateNum(mBottomContentRecyclerAdapter!!.photoCount, mBottomContentRecyclerAdapter!!.videoCount)
+            updateNum(
+                mBottomContentRecyclerAdapter!!.photoCount,
+                mBottomContentRecyclerAdapter!!.videoCount
+            )
             viewBinding.addClipTip.visibility = View.INVISIBLE
             viewBinding.recycler.visibility = View.VISIBLE
             viewBinding.dragTip.visibility = View.VISIBLE
@@ -348,7 +368,10 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
                 return
             }
             mBottomContentRecyclerAdapter!!.datas = MediaDataRepository.getInstance().dataOperate
-            updateNum(mBottomContentRecyclerAdapter!!.photoCount, mBottomContentRecyclerAdapter!!.videoCount)
+            updateNum(
+                mBottomContentRecyclerAdapter!!.photoCount,
+                mBottomContentRecyclerAdapter!!.videoCount
+            )
             viewBinding.addClipTip.visibility = View.INVISIBLE
             viewBinding.recycler.visibility = View.VISIBLE
             viewBinding.dragTip.visibility = View.VISIBLE
@@ -360,7 +383,8 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
             updateNum(0, 0)
         }
         viewBinding.buttonNext.isEnabled = mBottomContentRecyclerAdapter!!.datas.size != 0
-        mBottomContentRecyclerAdapter!!.setItemClickListener(object : BottomContentRecyclerAdapter.ItemClickListener {
+        mBottomContentRecyclerAdapter!!.setItemClickListener(object :
+            BottomContentRecyclerAdapter.ItemClickListener {
             override fun onItemClick(view: View, position: Int) {
                 if (!AndroidUtil.chekcFastClickShort()) {
                     val moperateData = MediaDataRepository.getInstance().dataOperate
@@ -380,7 +404,10 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
                         viewBinding.recycler.visibility = View.INVISIBLE
                         viewBinding.dragTip.visibility = View.INVISIBLE
                     }
-                    updateNum(mBottomContentRecyclerAdapter!!.photoCount, mBottomContentRecyclerAdapter!!.videoCount)
+                    updateNum(
+                        mBottomContentRecyclerAdapter!!.photoCount,
+                        mBottomContentRecyclerAdapter!!.videoCount
+                    )
                     //TODO:性能可能会比较差，权宜之计
                     fragment!!.recountSections()
                     view.post { mBottomContentRecyclerAdapter!!.notifyDataSetChanged() }
@@ -511,13 +538,20 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
             } else {
                 if (isAddClip && mBottomContentRecyclerAdapter!!.indexOfPath(mediaEntity.path) == -1) {
                     //添加模式下还未被复制
-                    MediaDataRepository.getInstance().copyMediaItemToPosition(index, MediaDataRepository.getInstance().dataOperate.size)
+                    MediaDataRepository.getInstance().copyMediaItemToPosition(
+                        index,
+                        MediaDataRepository.getInstance().dataOperate.size
+                    )
                     val date = TimeUtils.format(mediaEntity.dateModify, TimeUtils.Date_PATTER)
                     fragment?.updateDateCount(date, mediaEntity.getType(), true)
                     runOnUiThread {
                         if (loadShowing()) {
                             //如果已经关闭则不显示
-                            showLoading(resources.getString(R.string.selected) + " ${MediaDataRepository.getInstance().dataOperate.size} " + resources.getString(R.string.clips), true)
+                            showLoading(
+                                resources.getString(R.string.selected) + " ${MediaDataRepository.getInstance().dataOperate.size} " + resources.getString(
+                                    R.string.clips
+                                ), true
+                            )
                         }
                     }
                 }
@@ -539,15 +573,26 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
             viewBinding.addClipTip.visibility = View.INVISIBLE
             viewBinding.recycler.visibility = View.VISIBLE
             if (originSize > 0) {
-                mBottomContentRecyclerAdapter!!.datas = MediaDataRepository.getInstance().dataOperate.subList(originSize, MediaDataRepository.getInstance().dataOperate.size)
+                mBottomContentRecyclerAdapter!!.datas =
+                    MediaDataRepository.getInstance().dataOperate.subList(
+                        originSize,
+                        MediaDataRepository.getInstance().dataOperate.size
+                    )
             } else {
-                mBottomContentRecyclerAdapter!!.datas = MediaDataRepository.getInstance().dataOperate
+                mBottomContentRecyclerAdapter!!.datas =
+                    MediaDataRepository.getInstance().dataOperate
             }
-            updateNum(mBottomContentRecyclerAdapter!!.photoCount, mBottomContentRecyclerAdapter!!.videoCount)
+            updateNum(
+                mBottomContentRecyclerAdapter!!.photoCount,
+                mBottomContentRecyclerAdapter!!.videoCount
+            )
             fragment!!.updateSelect()
             endLoading()
             if (MediaDataRepository.getInstance().dataOperate.size == 200) {
-                T.showShort(this@SelectClipActivity, resources.getString(R.string.not_add_more_photo))
+                T.showShort(
+                    this@SelectClipActivity,
+                    resources.getString(R.string.not_add_more_photo)
+                )
             }
         }
     }
@@ -593,12 +638,20 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
                 mBottomContentRecyclerAdapter!!.clear()
             } else {
                 if (originSize > 0) {
-                    mBottomContentRecyclerAdapter!!.datas = MediaDataRepository.getInstance().dataOperate.subList(originSize, MediaDataRepository.getInstance().dataOperate.size)
+                    mBottomContentRecyclerAdapter!!.datas =
+                        MediaDataRepository.getInstance().dataOperate.subList(
+                            originSize,
+                            MediaDataRepository.getInstance().dataOperate.size
+                        )
                 } else {
-                    mBottomContentRecyclerAdapter!!.datas = MediaDataRepository.getInstance().dataOperate
+                    mBottomContentRecyclerAdapter!!.datas =
+                        MediaDataRepository.getInstance().dataOperate
                 }
             }
-            updateNum(mBottomContentRecyclerAdapter!!.photoCount, mBottomContentRecyclerAdapter!!.videoCount)
+            updateNum(
+                mBottomContentRecyclerAdapter!!.photoCount,
+                mBottomContentRecyclerAdapter!!.videoCount
+            )
             fragment!!.updateSelect()
             endLoading()
         }
@@ -745,7 +798,7 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
                         view.post {
                             mBottomContentRecyclerAdapter!!.clear()
                             viewBinding.buttonNext.isEnabled = false
-                            mediaNotifyfy(PhotoNotifyEvent(true))
+//                            mediaNotifyfy(PhotoNotifyEvent(true))
                         }
                     }
                 }
@@ -769,18 +822,25 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
 
     private fun showMediaFolder() {
         if (mediaFolderSelectPopup == null) {
-            mediaFolderSelectPopup = MediaFolderSelectPopup(this,
-                MediaManager.getCurrentMediaSets(viewModel.mediaMode), viewModel.mediaMode)
+            mediaFolderSelectPopup = MediaFolderSelectPopup(
+                this,
+                MediaManager.getCurrentMediaSets(viewModel.mediaMode), viewModel.mediaMode
+            )
             //具体高度要看布局再做调整不要盲目调整
             //部分手机有1像素的误差，加1
-            mediaFolderSelectPopup!!.height = ((1 + viewBinding.rlContainer.height) - viewBinding.toolbar.height - 184.dp).toInt()
+            mediaFolderSelectPopup!!.height =
+                ((1 + viewBinding.rlContainer.height) - viewBinding.toolbar.height - 184.dp).toInt()
             mediaFolderSelectPopup!!.showAsDropDown(viewBinding.toolbar)
         } else {
             //具体高度要看布局再做调整不要盲目调整
             //部分手机有1像素的误差，加1
-            mediaFolderSelectPopup!!.height = ((1 + viewBinding.slideuppannel.height) - viewBinding.toolbar.height - 184.dp).toInt()
+            mediaFolderSelectPopup!!.height =
+                ((1 + viewBinding.slideuppannel.height) - viewBinding.toolbar.height - 184.dp).toInt()
             mediaFolderSelectPopup!!.showAsDropDown(viewBinding.toolbar)
-            mediaFolderSelectPopup!!.setMediaSets(MediaManager.getCurrentMediaSets(viewModel.mediaMode), viewModel.mediaMode)
+            mediaFolderSelectPopup!!.setMediaSets(
+                MediaManager.getCurrentMediaSets(viewModel.mediaMode),
+                viewModel.mediaMode
+            )
         }
     }
 
@@ -821,24 +881,32 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
                                 } else {
                                     //移除记录，只跳转一次
                                     intent.removeExtra(RequestCode.MATERIAL_CREATE)
-                                    val intent = Intent(this@SelectClipActivity, EditorActivity::class.java)
+                                    val intent =
+                                        Intent(this@SelectClipActivity, EditorActivity::class.java)
                                     intent.putExtra(RequestCode.MATERIAL_CREATE, true)
-                                    startActivityForResult(intent, RequestCode.REQUEST_SELECT_TO_EDIT)
+                                    startActivityForResult(
+                                        intent,
+                                        RequestCode.REQUEST_SELECT_TO_EDIT
+                                    )
                                 }
                             } else {
                                 if (toStickerGroup != null) {
-                                    val intent = Intent(this@SelectClipActivity, EditStickerActivity::class.java)
-                                    intent.putExtra(RequestCode.STICKER_GROUP, toStickerGroup)
-                                    startActivityForResult(intent, RequestCode.REQUEST_SELECT_TO_EDIT)
-                                    toStickerGroup = null
+//                                    val intent = Intent(this@SelectClipActivity, EditStickerActivity::class.java)
+//                                    intent.putExtra(RequestCode.STICKER_GROUP, toStickerGroup)
+//                                    startActivityForResult(intent, RequestCode.REQUEST_SELECT_TO_EDIT)
+//                                    toStickerGroup = null
                                 } else if (toFontEntity != null) {
-                                    val intent = Intent(this@SelectClipActivity, EditSubTitleActivity::class.java)
-                                    intent.putExtra(RequestCode.FONT_ENTITY, toFontEntity)
-                                    startActivityForResult(intent, RequestCode.REQUEST_SELECT_TO_EDIT)
-                                    toFontEntity = null
+//                                    val intent = Intent(this@SelectClipActivity, EditSubTitleActivity::class.java)
+//                                    intent.putExtra(RequestCode.FONT_ENTITY, toFontEntity)
+//                                    startActivityForResult(intent, RequestCode.REQUEST_SELECT_TO_EDIT)
+//                                    toFontEntity = null
                                 } else {
-                                    val intent = Intent(this@SelectClipActivity, EditorActivity::class.java)
-                                    startActivityForResult(intent, RequestCode.REQUEST_SELECT_TO_EDIT)
+                                    val intent =
+                                        Intent(this@SelectClipActivity, EditorActivity::class.java)
+                                    startActivityForResult(
+                                        intent,
+                                        RequestCode.REQUEST_SELECT_TO_EDIT
+                                    )
                                 }
                             }
                         } else {
@@ -888,7 +956,8 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
         img!!.layoutParams = layoutParams
         img!!.x = (childCoordinate[0] - parentCoordinate[0]).toFloat()
         img!!.y = (childCoordinate[1] - parentCoordinate[1]).toFloat()
-        Glide.with(this@SelectClipActivity).load(mediaItem.path).diskCacheStrategy(DiskCacheStrategy.NONE).override(100, 100).into(img!!)
+        Glide.with(this@SelectClipActivity).load(mediaItem.path)
+            .diskCacheStrategy(DiskCacheStrategy.NONE).override(100, 100).into(img!!)
         viewBinding.rlContainer.addView(img)
         val startP = PointF()
         val endP = PointF()
@@ -902,7 +971,8 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
         // 控制点坐标 x等于 numtext x；y等于 选择图片的y
         controlP.x = endP.x
         controlP.y = startP.y
-        val animator = ObjectAnimator.ofObject(img, "mPointF", PointFTypeEvaluator(controlP), startP, endP)
+        val animator =
+            ObjectAnimator.ofObject(img, "mPointF", PointFTypeEvaluator(controlP), startP, endP)
         animator.duration = 500
         animator.addListener(object : Animator.AnimatorListener {
             override fun onAnimationStart(animation: Animator) {}
@@ -946,17 +1016,27 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
                 }
                 if (i < length) {
                     //已经存在，采用复制方式
-                    val mediaItem1: MediaItem = MediaDataRepository.getInstance().copyMediaItemToPosition(i, MediaDataRepository.getInstance().dataOperate.size)
+                    val mediaItem1: MediaItem = MediaDataRepository.getInstance()
+                        .copyMediaItemToPosition(
+                            i,
+                            MediaDataRepository.getInstance().dataOperate.size
+                        )
                     runOnUiThread {
                         mBottomContentRecyclerAdapter!!.update(mediaItem1)
-                        updateNum(mBottomContentRecyclerAdapter!!.photoCount, mBottomContentRecyclerAdapter!!.videoCount)
+                        updateNum(
+                            mBottomContentRecyclerAdapter!!.photoCount,
+                            mBottomContentRecyclerAdapter!!.videoCount
+                        )
                     }
                     return@execute
                 }
             }
             MediaDataRepository.getInstance().addMediaItem(mediaItem, true) { mediaItem ->
                 mBottomContentRecyclerAdapter!!.update(mediaItem)
-                updateNum(mBottomContentRecyclerAdapter!!.photoCount, mBottomContentRecyclerAdapter!!.videoCount)
+                updateNum(
+                    mBottomContentRecyclerAdapter!!.photoCount,
+                    mBottomContentRecyclerAdapter!!.videoCount
+                )
             }
         }
     }
@@ -984,7 +1064,8 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
     fun onMediaItemSelectingChanged(mediaItem: MediaEntity?, childCoordinate: IntArray?) {
         val index: Int? = getMediaItemSelectedIndex((mediaItem)!!)
         if (index != null) {
-            ThreadPoolManager.getThreadPool().execute({ MediaDataRepository.getInstance().remove(index + originSize) })
+            ThreadPoolManager.getThreadPool()
+                .execute({ MediaDataRepository.getInstance().remove(index + originSize) })
             val date = TimeUtils.format(mediaItem.dateModify, TimeUtils.Date_PATTER)
             fragment!!.updateDateCount(date, mediaItem.getType(), false)
             mBottomContentRecyclerAdapter!!.remove(null, index)
@@ -993,7 +1074,10 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
                 viewBinding.recycler.visibility = View.INVISIBLE
                 viewBinding.dragTip.visibility = View.INVISIBLE
             }
-            updateNum(mBottomContentRecyclerAdapter!!.photoCount, mBottomContentRecyclerAdapter!!.videoCount)
+            updateNum(
+                mBottomContentRecyclerAdapter!!.photoCount,
+                mBottomContentRecyclerAdapter!!.videoCount
+            )
 
             return
         }
@@ -1050,12 +1134,16 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
                 viewBinding.recycler.visibility = View.INVISIBLE
                 viewBinding.dragTip.visibility = View.INVISIBLE
             } else {
-                mBottomContentRecyclerAdapter!!.datas = MediaDataRepository.getInstance().dataOperate
+                mBottomContentRecyclerAdapter!!.datas =
+                    MediaDataRepository.getInstance().dataOperate
                 viewBinding.addClipTip.visibility = View.INVISIBLE
                 viewBinding.recycler.visibility = View.VISIBLE
                 viewBinding.dragTip.visibility = View.VISIBLE
             }
-            updateNum(mBottomContentRecyclerAdapter!!.photoCount, mBottomContentRecyclerAdapter!!.videoCount)
+            updateNum(
+                mBottomContentRecyclerAdapter!!.photoCount,
+                mBottomContentRecyclerAdapter!!.videoCount
+            )
         } else {
             val subList = MediaDataRepository.getInstance().dataOperate.let {
                 it.subList(originSize, it.size)
@@ -1071,7 +1159,10 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
                 viewBinding.recycler.visibility = View.VISIBLE
                 viewBinding.dragTip.visibility = View.VISIBLE
             }
-            updateNum(mBottomContentRecyclerAdapter!!.photoCount, mBottomContentRecyclerAdapter!!.videoCount)
+            updateNum(
+                mBottomContentRecyclerAdapter!!.photoCount,
+                mBottomContentRecyclerAdapter!!.videoCount
+            )
         }
         fragment?.recountSections()
         fragment?.updateSelect()
@@ -1101,7 +1192,10 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
             finish()
             return
         }
-        LogUtils.i("test", "fragmentManager.getBackStackEntryCount():" + fragmentManager!!.backStackEntryCount)
+        LogUtils.i(
+            "test",
+            "fragmentManager.getBackStackEntryCount():" + fragmentManager!!.backStackEntryCount
+        )
         if (fragmentManager!!.backStackEntryCount == 1) {
             if (!ObjectUtils.isEmpty(mBottomContentRecyclerAdapter!!.datas)) { // MediaDataRepository.getInstance().getDataOperate().size()
                 if (MediaDataRepository.getInstance().isLocal || isSave) {
@@ -1162,7 +1256,14 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
         when (item.itemId) {
             R.id.grid_layout -> {
                 if (menuPopup == null) {
-                    menuPopup = BaseTitleMenu(this, listOf(PopupItem.create(R.string.camera), PopupItem.createSubMenu(R.string.view_mode), PopupItem.createSubMenu(R.string.sort_by))) label@{ pos: Int ->
+                    menuPopup = BaseTitleMenu(
+                        this,
+                        listOf(
+                            PopupItem.create(R.string.camera),
+                            PopupItem.createSubMenu(R.string.view_mode),
+                            PopupItem.createSubMenu(R.string.sort_by)
+                        )
+                    ) label@{ pos: Int ->
                         when (pos) {
                             0 -> {
                                 if (MediaDataRepository.getInstance().dataOperate.size == 200) {
@@ -1170,48 +1271,54 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
                                     return@label
                                 }
                                 commonMenuPop = null
-                                val isGranted: Boolean = PermissionUtil.verifyCameraPermissions(this)
+                                val isGranted: Boolean =
+                                    PermissionUtil.verifyCameraPermissions(this)
                                 if (isGranted) {
                                     openCamera()
                                 }
                             }
-                            1 -> commonMenuPop = CommonMenuPop(this, mediaShowType, listOf(R.string.select_clip_layout_list, R.string.select_clip_layout_grid), CommonMenuPop.ItemClick { position: Int ->
-                                mediaShowType = position
-                                SpUtil.putInt(SpUtil.MEDIA_SHOW_TYPE, position)
-                                viewModel.mediaSortType = mediaSortType!!
-                                fragment!!.switchAdapter(position)
-                            })
-                            2 -> commonMenuPop = CommonMenuPop(this, mediaSortType!!.type, listOf(R.string.date, R.string.name, R.string.compress_size), CommonMenuPop.ItemClick { position: Int ->
-                                //更新大小
-                                showLoading("")
-                                lifecycleScope.launch {
-                                    mediaSortType = MediaSortType.getSortType(position)
-                                    withContext(Dispatchers.IO) {
-                                        SpUtil.putInt(SpUtil.MEDIA_SORT, position)
-                                        viewModel.mediaFolderSort(mediaSortType!!);
+                            1 -> commonMenuPop = CommonMenuPop(
+                                this,
+                                mediaShowType,
+                                listOf(
+                                    R.string.select_clip_layout_list,
+                                    R.string.select_clip_layout_grid
+                                ),
+                                CommonMenuPop.ItemClick { position: Int ->
+                                    mediaShowType = position
+                                    SpUtil.putInt(SpUtil.MEDIA_SHOW_TYPE, position)
+                                    viewModel.mediaSortType = mediaSortType!!
+                                    fragment!!.switchAdapter(position)
+                                })
+                            2 -> commonMenuPop = CommonMenuPop(
+                                this,
+                                mediaSortType!!.type,
+                                listOf(R.string.date, R.string.name, R.string.compress_size),
+                                CommonMenuPop.ItemClick { position: Int ->
+                                    //更新大小
+                                    showLoading("")
+                                    lifecycleScope.launch {
+                                        mediaSortType = MediaSortType.getSortType(position)
+                                        withContext(Dispatchers.IO) {
+                                            SpUtil.putInt(SpUtil.MEDIA_SORT, position)
+                                            viewModel.mediaFolderSort(mediaSortType!!);
+                                        }
+                                        endLoading()
                                     }
-                                    endLoading()
-                                }
-                                //viewModel.mediaSortType=mediaSortType!!;
-                                //ExecutorFactory.io().execute(Runnable {
-                                //    contentDataLoadTask!!.synchMediaData()
-                                //    MediaManager.getInstance()
-                                //        .mediaFolderSort(mediaSortType)
-                                //    try {
-                                //        AppBus.get().post(PhotoNotifyEvent(true))
-                                //    } catch (e: Exception) {
-                                //        e.printStackTrace()
-                                //    }
-                                //    runOnUiThread(Runnable { endLoading() })
-                                //})
-                            })
+                                })
                         }
-                        commonMenuPop?.showAtWithoutMargin(viewBinding.toolbar.findViewById(R.id.grid_layout), Gravity.TOP or Gravity.END)
+                        commonMenuPop?.showAtWithoutMargin(
+                            viewBinding.toolbar.findViewById(R.id.grid_layout),
+                            Gravity.TOP or Gravity.END
+                        )
                     }
                 }
                 menuPopup!!.show(viewBinding.toolbar.findViewById(R.id.grid_layout))
             }
-            R.id.select_all -> DialogUtil.createCommonDialog(this, getString(R.string.select_folder_all)) {
+            R.id.select_all -> DialogUtil.createCommonDialog(
+                this,
+                getString(R.string.select_folder_all)
+            ) {
 
                 val list: List<MediaEntity> = viewModel.getCurrentFolderPhotos()
                 //MediaManager.getInstance().currentFolderPhotos
@@ -1230,7 +1337,7 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
 
     private var photoUri: Uri? = null
     private var file: File? = null
-     fun openCamera() {
+    fun openCamera() {
         try {
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             val dirParent = File(PathUtil.IMAGE_PATH)
@@ -1280,69 +1387,89 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
             TAKE_PHOTO -> {
                 MyApplication.getInstance().isCamera = false
                 if (resultCode == RESULT_OK) {
-                    mMediaScannerConnection = MediaScannerConnection(applicationContext, object : MediaScannerConnectionClient {
-                        override fun onMediaScannerConnected() {
-                            try {
-                                if (file != null) {
-                                    mMediaScannerConnection!!.scanFile(file!!.absolutePath, ".jpg")
+                    mMediaScannerConnection = MediaScannerConnection(
+                        applicationContext,
+                        object : MediaScannerConnectionClient {
+                            override fun onMediaScannerConnected() {
+                                try {
+                                    if (file != null) {
+                                        mMediaScannerConnection!!.scanFile(
+                                            file!!.absolutePath,
+                                            ".jpg"
+                                        )
+                                    }
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
                                 }
-                            } catch (e: Exception) {
-                                e.printStackTrace()
                             }
-                        }
 
-                        override fun onScanCompleted(path: String, uri: Uri) {
-                            val mediaItem = LoadMediaUtils.loadSingleMedia(this@SelectClipActivity, uri)
-                            mediaItem.setDuration(ConstantMediaSize.IMAGE_DURATION.toLong())
-                            if (bucketId == mediaItem.bucketId) {
-                                val mediaFolder = viewModel.mediaFolder
-                                mediaFolder?.addLatestMedia(mediaItem)
-                                fragment!!.updateData()
-                            }
-                            mediaFolderSelectPopup?.addAllCount()
+                            override fun onScanCompleted(path: String, uri: Uri) {
+                                val mediaItem =
+                                    LoadMediaUtils.loadSingleMedia(this@SelectClipActivity, uri)
+                                mediaItem.setDuration(ConstantMediaSize.IMAGE_DURATION.toLong())
+                                if (bucketId == mediaItem.bucketId) {
+                                    val mediaFolder = viewModel.mediaFolder
+                                    mediaFolder?.addLatestMedia(mediaItem)
+                                    fragment!!.updateData()
+                                }
+                                mediaFolderSelectPopup?.addAllCount()
 
-                            runOnUiThread {
-                                val locate: IntArray = intArrayOf(ScreenUtils.getScreenWidth(this@SelectClipActivity) / 2, ScreenUtils.getScreenHeight(this@SelectClipActivity) / 2)
-                                //刚拍的照片使用拍摄时间
-                                fragment?.recountSections()
-                                addView(mediaItem, locate)
+                                runOnUiThread {
+                                    val locate: IntArray = intArrayOf(
+                                        ScreenUtils.getScreenWidth(this@SelectClipActivity) / 2,
+                                        ScreenUtils.getScreenHeight(this@SelectClipActivity) / 2
+                                    )
+                                    //刚拍的照片使用拍摄时间
+                                    fragment?.recountSections()
+                                    addView(mediaItem, locate)
+                                }
+                                photoUri = null
                             }
-                            photoUri = null
-                        }
-                    })
+                        })
                     mMediaScannerConnection!!.connect()
                 }
             }
             TAKE_VIDEO -> {
 //                MyApplication..isCamera = false
                 if (resultCode == RESULT_OK) {
-                    mMediaScannerConnection = MediaScannerConnection(applicationContext, object : MediaScannerConnectionClient {
-                        override fun onMediaScannerConnected() {
-                            try {
-                                if (file != null) {
-                                    mMediaScannerConnection!!.scanFile(file!!.absolutePath, ".mp4")
+                    mMediaScannerConnection = MediaScannerConnection(
+                        applicationContext,
+                        object : MediaScannerConnectionClient {
+                            override fun onMediaScannerConnected() {
+                                try {
+                                    if (file != null) {
+                                        mMediaScannerConnection!!.scanFile(
+                                            file!!.absolutePath,
+                                            ".mp4"
+                                        )
+                                    }
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
                                 }
-                            } catch (e: Exception) {
-                                e.printStackTrace()
                             }
-                        }
 
-                        override fun onScanCompleted(path: String, uri: Uri) {
-                            val mediaItem = LoadMediaUtils.loadSingleVideoMedia(this@SelectClipActivity, uri)
-                            if (bucketId == mediaItem!!.bucketId) {
-                                val mediaFolder = viewModel.mediaFolder
-                                mediaFolder?.addLatestMedia(mediaItem)
-                                fragment!!.updateData()
-                            }
-                            mediaFolderSelectPopup?.addAllCount()
+                            override fun onScanCompleted(path: String, uri: Uri) {
+                                val mediaItem = LoadMediaUtils.loadSingleVideoMedia(
+                                    this@SelectClipActivity,
+                                    uri
+                                )
+                                if (bucketId == mediaItem!!.bucketId) {
+                                    val mediaFolder = viewModel.mediaFolder
+                                    mediaFolder?.addLatestMedia(mediaItem)
+                                    fragment!!.updateData()
+                                }
+                                mediaFolderSelectPopup?.addAllCount()
 
-                            runOnUiThread {
-                                val locate = intArrayOf(ScreenUtils.getScreenWidth(this@SelectClipActivity) / 2, ScreenUtils.getScreenHeight(this@SelectClipActivity) / 2)
-                                addView(mediaItem, locate)
+                                runOnUiThread {
+                                    val locate = intArrayOf(
+                                        ScreenUtils.getScreenWidth(this@SelectClipActivity) / 2,
+                                        ScreenUtils.getScreenHeight(this@SelectClipActivity) / 2
+                                    )
+                                    addView(mediaItem, locate)
+                                }
+                                videoUri = null
                             }
-                            videoUri = null
-                        }
-                    })
+                        })
                     mMediaScannerConnection!!.connect()
                 }
             }
@@ -1377,7 +1504,8 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
 
     private fun showCameraTip() {
         AppSettingsDialog.Builder(this).setRequestCode(
-            RequestCode.REQUEST_CAMERA_PREMISSION).build().show()
+            RequestCode.REQUEST_CAMERA_PREMISSION
+        ).build().show()
     }
 
     /**
@@ -1399,9 +1527,15 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
             withContext(Dispatchers.Default) {
                 MediaDataRepository.getInstance().recyleBitmaps()
                 MediaDataRepository.getInstance().onDestroyCurrentThread()
-                LogUtils.v("test", "datalist.size:inner..." + MediaDataRepository.getInstance().dataOperate.size);
+                LogUtils.v(
+                    "test",
+                    "datalist.size:inner..." + MediaDataRepository.getInstance().dataOperate.size
+                );
             }
-            LogUtils.v("test", "datalist.size:" + MediaDataRepository.getInstance().dataOperate.size);
+            LogUtils.v(
+                "test",
+                "datalist.size:" + MediaDataRepository.getInstance().dataOperate.size
+            );
             endLoading()
             T.showShort(this@SelectClipActivity, getString(R.string.draft_save))
             finish()
@@ -1434,15 +1568,16 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
      */
     override fun getMediaItemSelectedIndex(mediaItem: MediaEntity): Int? {
         var result: Int? = -1
-        val mediaType = if (mediaItem.getType() == MediaEntity.TYPE_VIDEO) MediaType.VIDEO else MediaType.PHOTO
+        val mediaType =
+            if (mediaItem.getType() == MediaEntity.TYPE_VIDEO) MediaType.VIDEO else MediaType.PHOTO
         result = getMediaItemSelectedIndex(mediaType, mediaItem.getId())
-        if (result == null && isAddClip) {
-            for ((i, item: MediaItem) in mBottomContentRecyclerAdapter!!.datas.withIndex()) {
-                if (PathStringComparator.isPathStringEquals(item.path, mediaItem.getPath())) {
-                    return i
-                }
-            }
-        }
+//        if (result == null && isAddClip) {
+//            for ((i, item: MediaItem) in mBottomContentRecyclerAdapter!!.datas.withIndex()) {
+//                if (PathStringComparator.isPathStringEquals(item.path, mediaItem.getPath())) {
+//                    return i
+//                }
+//            }
+//        }
         return if ((Integer.valueOf(-1) == result)) {
             null
         } else result
@@ -1503,19 +1638,28 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
             if (fragment is SelectMediaFragment) {
                 if (mediaType == MediaType.PHOTO) {
                     if ((fragment as SelectMediaFragment).photoFragment != null) {
-                        (fragment as SelectMediaFragment).photoFragment.updateSelectedItemIndex(mediaId)
+                        (fragment as SelectMediaFragment).photoFragment.updateSelectedItemIndex(
+                            mediaId
+                        )
                     }
-                    if ((fragment as SelectMediaFragment).imageMaterialFragment != null) {
-                        (fragment as SelectMediaFragment).imageMaterialFragment.updateSelectedItemIndex(mediaId)
-                    }
+//                    if ((fragment as SelectMediaFragment).imageMaterialFragment != null) {
+//                        (fragment as SelectMediaFragment).imageMaterialFragment.updateSelectedItemIndex(
+//                            mediaId
+//                        )
+//                    }
                 }
                 if (mediaType == MediaType.VIDEO) {
                     if ((fragment as SelectMediaFragment).videoFragment != null) {
-                        (fragment as SelectMediaFragment).videoFragment.updateSelectedItemIndex(mediaId)
+                        (fragment as SelectMediaFragment).videoFragment.updateSelectedItemIndex(
+                            mediaId
+                        )
                     }
                 }
                 if ((fragment as SelectMediaFragment).dirFragment != null) {
-                    (fragment as SelectMediaFragment).dirFragment.updateSelectedItemIndex(mediaId, mediaType)
+                    (fragment as SelectMediaFragment).dirFragment.updateSelectedItemIndex(
+                        mediaId,
+                        mediaType
+                    )
                 }
             }
         }

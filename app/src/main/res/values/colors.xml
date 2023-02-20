@@ -109,4 +109,6 @@
     <color name="tabIndicate_color">#FC5730</color>
     <color name="selected_media_item_alpha">#4CFC5730</color>
     <color name="pressed_color">#BB888888</color>
+    <color name="text_num">@color/colorAccent</color>
+    <color name="divider_color">#C9C9C9</color>
 </resources>

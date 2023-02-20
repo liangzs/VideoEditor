@@ -1,8 +1,8 @@
 package com.ijoysoft.videoeditor.theme.manager
 
+import com.google.android.exoplayer2.offline.DownloadHelper
 import com.ijoysoft.mediasdk.module.opengl.particle.GlobalParticles
-import com.ijoysoft.videoeditor.model.download.DownloadHelper
-import com.ijoysoft.videoeditor.model.download.DownloadPath
+import com.qiusuo.videoeditor.common.constant.DownloadPath
 import org.libpag.PAGFile
 
 object ParticleRepository {
@@ -17,7 +17,8 @@ object ParticleRepository {
      * 请求地址本地处处路径
      */
     fun dealSavePath(globalParticle: GlobalParticles): String {
-        return DownloadHelper.getDownloadPath(DownloadPath.BASE_PATH + "/" + globalParticle.offsetPath)
+//        return DownloadHelper.getDownloadPath(DownloadPath.BASE_PATH + "/" + globalParticle.offsetPath)
+        return "";
     }
 
     /**

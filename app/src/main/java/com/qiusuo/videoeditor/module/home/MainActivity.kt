@@ -82,7 +82,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
     }
 
-    override fun initData() {
+    override fun initData(savedInstanceState: Bundle?) {
     }
 
 }

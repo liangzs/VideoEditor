@@ -1,5 +1,6 @@
 package com.qiusuo.videoeditor.ui.widgegt.guide.util;
 
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
@@ -10,6 +11,7 @@ import android.view.Display;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.ViewConfiguration;
+import android.view.WindowManager;
 
 
 /**
@@ -99,5 +101,12 @@ public class ScreenUtils {
         if (resourceId > 0)
             height = resources.getDimensionPixelSize(resourceId);
         return height;
+    }
+
+    public static boolean isTablet(Context context) {
+        DisplayMetrics metrics = new DisplayMetrics();
+        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        windowManager.getDefaultDisplay().getMetrics(metrics);
+        return (int) ((float) Math.min(metrics.widthPixels, metrics.heightPixels) / metrics.density) >= 600;
     }
 }

@@ -24,13 +24,12 @@ import androidx.core.graphics.ColorUtils;
 
 import com.ijoysoft.mediasdk.common.utils.LogUtils;
 import com.ijoysoft.mediasdk.module.mediacodec.PhoneAdatarList;
-import com.ijoysoft.videoeditor.R;
-import com.ijoysoft.videoeditor.base.BaseActivity;
-import com.lb.library.CollectionUtil;
-import com.lb.library.DensityUtils;
-import com.lb.library.DrawableHelper;
-import com.lb.library.ScreenUtils;
-import com.lb.library.ViewUtil;
+import com.qiusuo.videoeditor.R;
+import com.qiusuo.videoeditor.base.BaseActivity;
+import com.qiusuo.videoeditor.ui.widgegt.guide.util.DrawableHelper;
+import com.qiusuo.videoeditor.ui.widgegt.guide.util.ScreenUtils;
+import com.qiusuo.videoeditor.ui.widgegt.guide.util.ViewUtil;
+import com.qiusuo.videoeditor.util.DensityUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,30 +100,30 @@ public class BaseTitleMenu implements AdapterView.OnItemClickListener, PopupWind
 
     @Override
     public void onDismiss() {
-        CollectionUtil.removeElement(mMenus, new CollectionUtil.Judge<BaseTitleMenu>() {
-            @Override
-            public boolean canRemove(BaseTitleMenu basePupouMenu) {
-                return basePupouMenu == BaseTitleMenu.this;
-            }
-        });
+//        CollectionUtil.removeElement(mMenus, new CollectionUtil.Judge<BaseTitleMenu>() {
+//            @Override
+//            public boolean canRemove(BaseTitleMenu basePupouMenu) {
+//                return basePupouMenu == BaseTitleMenu.this;
+//            }
+//        });
     }
 
     public static void releasePopupWindow(final Activity activity) {
-        CollectionUtil.removeElement(mMenus, new CollectionUtil.Judge<BaseTitleMenu>() {
-            @Override
-            public boolean canRemove(BaseTitleMenu menu) {
-                if (menu != null && menu.mActivity == activity) {
-                    try {
-                        menu.mPopupWindow.setOnDismissListener(null);
-                        menu.mPopupWindow.dismiss();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    return true;
-                }
-                return false;
-            }
-        });
+//        CollectionUtil.removeElement(mMenus, new CollectionUtil.Judge<BaseTitleMenu>() {
+//            @Override
+//            public boolean canRemove(BaseTitleMenu menu) {
+//                if (menu != null && menu.mActivity == activity) {
+//                    try {
+//                        menu.mPopupWindow.setOnDismissListener(null);
+//                        menu.mPopupWindow.dismiss();
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                    return true;
+//                }
+//                return false;
+//            }
+//        });
     }
 
     protected Drawable createRightArrow() {
@@ -214,7 +213,7 @@ public class BaseTitleMenu implements AdapterView.OnItemClickListener, PopupWind
             return Math.max(DensityUtils.dp2px(mActivity, 168), (int) maxWidth);
         } else {
             //加上两个14的padding等于28 加上LinearLayoutMarginEnd dp_10
-            return (int) (maxWidth + DensityUtils.dp2px(mActivity, 28) + mActivity.getResources().getDimension(R.dimen.dp_10));
+            return (int) (maxWidth + DensityUtils.dp2px(mActivity, 38));
         }
     }
 
@@ -298,10 +297,10 @@ public class BaseTitleMenu implements AdapterView.OnItemClickListener, PopupWind
             int textColor = 0;
             int rippleColor = 0;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                textColor = mActivity.getColor(R.color.black_alpha_80);
+                textColor = mActivity.getColor(R.color.black_80_color);
                 rippleColor = mActivity.getColor(R.color.pressed_color);
             } else {
-                textColor = mActivity.getResources().getColor(R.color.black_alpha_80);
+                textColor = mActivity.getResources().getColor(R.color.black_80_color);
                 rippleColor = mActivity.getResources().getColor(R.color.pressed_color);
             }
             if (popupItem.isSubMenu()) {

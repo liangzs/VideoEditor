@@ -21,7 +21,7 @@ class RequestCode {
         const val EDIT_TRIM = "edit_trim"
         const val SHARE_TIMES = "share_times"
         const val MURGE_TIMES = "murge_times"
-
+        const val MATERIAL_CREATE = "material_create"
         /**
          * 指定贴纸类型的tag
          */
