@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:name=".base.MyApplication"
@@ -28,12 +29,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".module.home.MainActivity"/>
+        <activity android:name=".module.home.MainActivity" />
 
         <activity
             android:name=".module.select.PictureSelectorSupporterActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            >
+            android:configChanges="orientation|keyboardHidden|screenSize">
 
         </activity>
     </application>

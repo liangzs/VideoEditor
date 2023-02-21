@@ -53,6 +53,7 @@ import com.qiusuo.videoeditor.base.MyApplication
 import com.qiusuo.videoeditor.base.ViewModelActivity
 import com.qiusuo.videoeditor.common.bean.MediaEntity
 import com.qiusuo.videoeditor.common.bean.MediaItemPicker
+import com.qiusuo.videoeditor.common.constant.PathConstant
 import com.qiusuo.videoeditor.common.constant.RequestCode
 import com.qiusuo.videoeditor.common.data.MediaDataRepository
 import com.qiusuo.videoeditor.common.data.MediaManager
@@ -1340,11 +1341,11 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
     fun openCamera() {
         try {
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            val dirParent = File(PathUtil.IMAGE_PATH)
+            val dirParent = File(PathConstant.IMAGE_PATH)
             if (!dirParent.exists()) {
                 dirParent.mkdirs()
             }
-            file = File(dirParent, PathUtil.getImageChildPath())
+            file = File(dirParent, PathConstant.getImageChildPath())
             photoUri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) { // 兼容7.0以上
                 FileProvider.getUriForFile(this, "$packageName.fileProvider", file!!)
             } else {
@@ -1352,7 +1353,6 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
             }
             intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
             startActivityForResult(intent, TAKE_PHOTO)
-            MyApplication.getInstance().isCamera = true
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -1362,11 +1362,11 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
     private fun openVideoCamera() {
         try {
             val intent = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
-            val dirParent = File(PathUtil.IMAGE_PATH)
+            val dirParent = File(PathConstant.IMAGE_PATH)
             if (!dirParent.exists()) {
                 dirParent.mkdirs()
             }
-            file = File(dirParent, PathUtil.getVideoChildPath())
+            file = File(dirParent, PathConstant.getVideoChildPath())
             videoUri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) { // 兼容7.0以上
                 FileProvider.getUriForFile(this, "$packageName.fileProvider", file!!)
             } else {
@@ -1374,7 +1374,6 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
             }
             intent.putExtra(MediaStore.EXTRA_OUTPUT, videoUri)
             startActivityForResult(intent, TAKE_VIDEO)
-            MyApplication.getInstance().isCamera = true
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -1385,7 +1384,6 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             TAKE_PHOTO -> {
-                MyApplication.getInstance().isCamera = false
                 if (resultCode == RESULT_OK) {
                     mMediaScannerConnection = MediaScannerConnection(
                         applicationContext,
@@ -1489,16 +1487,12 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
             } else if (videoOrPhoto == 1) {
                 openVideoCamera()
             }
-        } else {
-            super.onPermissionsGranted(requestCode, perms)
         }
     }
 
     override fun onPermissionsDenied(requestCode: Int, perms: List<String>) {
         if (PermissionUtil.REQUEST_CAMERA == requestCode) {
             showCameraTip()
-        } else {
-            super.onPermissionsDenied(requestCode, perms)
         }
     }
 
@@ -1558,7 +1552,6 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
         }
     }
 
-    override fun checkMediaDataGC(savedInstanceState: Bundle?) {}
 
     /**
      * 获取素材在选中片段中的顺序位置
@@ -1638,25 +1631,20 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
             if (fragment is SelectMediaFragment) {
                 if (mediaType == MediaType.PHOTO) {
                     if ((fragment as SelectMediaFragment).photoFragment != null) {
-                        (fragment as SelectMediaFragment).photoFragment.updateSelectedItemIndex(
+                        (fragment as SelectMediaFragment).photoFragment?.updateSelectedItemIndex(
                             mediaId
                         )
                     }
-//                    if ((fragment as SelectMediaFragment).imageMaterialFragment != null) {
-//                        (fragment as SelectMediaFragment).imageMaterialFragment.updateSelectedItemIndex(
-//                            mediaId
-//                        )
-//                    }
                 }
                 if (mediaType == MediaType.VIDEO) {
                     if ((fragment as SelectMediaFragment).videoFragment != null) {
-                        (fragment as SelectMediaFragment).videoFragment.updateSelectedItemIndex(
+                        (fragment as SelectMediaFragment).videoFragment?.updateSelectedItemIndex(
                             mediaId
                         )
                     }
                 }
                 if ((fragment as SelectMediaFragment).dirFragment != null) {
-                    (fragment as SelectMediaFragment).dirFragment.updateSelectedItemIndex(
+                    (fragment as SelectMediaFragment).dirFragment?.updateSelectedItemIndex(
                         mediaId,
                         mediaType
                     )
