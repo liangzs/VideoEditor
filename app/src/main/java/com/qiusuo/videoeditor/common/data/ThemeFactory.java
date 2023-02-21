@@ -15,6 +15,7 @@ import com.qiusuo.videoeditor.common.bean.ThemeGroupEntity;
 import com.qiusuo.videoeditor.common.bean.ThemeResGroupEntity;
 import com.qiusuo.videoeditor.common.bean.ThemeResourceEntity;
 import com.qiusuo.videoeditor.common.constant.DownloadPath;
+import com.qiusuo.videoeditor.common.constant.PathConstant;
 
 import java.io.FileReader;
 import java.io.Reader;
@@ -143,9 +144,9 @@ public class ThemeFactory {
             slideshowEntity.setName(downEntity.getName());
             slideshowEntity.setThemeEnum(themeEnum);
             slideshowEntity.setZipPath(DownloadPath.BASE_PATH + downEntity.getPath());
-            slideshowEntity.setPath(DownloadHelper.BASE_DOWNLOAD_PATH);
+//            slideshowEntity.setPath(DownloadHelper.BASE_DOWNLOAD_PATH);
             slideshowEntity.setMusicDownPath(DownloadPath.BASE_PATH + downEntity.getMusicPath());
-            localMusicPath = PathUtil.MUSIC + downEntity.getMusicPath();
+            localMusicPath = PathConstant.MUSIC + downEntity.getMusicPath();
             localMusicPath = localMusicPath.substring(0, localMusicPath.lastIndexOf("."));
             slideshowEntity.setMusicLocalPath(localMusicPath);
             slideshowEntity.setSize(downEntity.getSize());
@@ -155,7 +156,7 @@ public class ThemeFactory {
             if (!ObjectUtils.isEmpty(themeResourceEntity)) {
                 slideshowEntity.setResName(themeResourceEntity.getTitle().getTitle());
                 slideshowEntity.setResRequestPath(DownloadPath.BASE_PATH + themeResourceEntity.getPath());
-                slideshowEntity.setResLocalPath(DownloadHelper.BASE_DOWNLOAD_PATH + themeResourceEntity.getPath());
+//                slideshowEntity.setResLocalPath(DownloadHelper.BASE_DOWNLOAD_PATH + themeResourceEntity.getPath());
             }
             list.add(slideshowEntity);
         }
@@ -198,12 +199,12 @@ public class ThemeFactory {
             slideshowEntity.setName(downEntity.getName());
             slideshowEntity.setResName(themeResourceEntity.getTitle().getTitle());
             slideshowEntity.setResRequestPath(DownloadPath.BASE_PATH + themeResourceEntity.getPath());
-            slideshowEntity.setResLocalPath(DownloadHelper.BASE_DOWNLOAD_PATH + themeResourceEntity.getPath());
+//            slideshowEntity.setResLocalPath(DownloadHelper.BASE_DOWNLOAD_PATH + themeResourceEntity.getPath());
             slideshowEntity.setThemeEnum(themeEnum);
             slideshowEntity.setZipPath(DownloadPath.BASE_PATH + downEntity.getPath());
-            slideshowEntity.setPath(DownloadHelper.BASE_DOWNLOAD_PATH);
+//            slideshowEntity.setPath(DownloadHelper.BASE_DOWNLOAD_PATH);
             slideshowEntity.setMusicDownPath(DownloadPath.BASE_PATH + downEntity.getMusicPath());
-            localMusicPath = PathUtil.MUSIC + downEntity.getMusicPath();
+            localMusicPath = PathConstant.MUSIC + downEntity.getMusicPath();
             localMusicPath = localMusicPath.substring(0, localMusicPath.lastIndexOf("."));
             slideshowEntity.setMusicLocalPath(localMusicPath);
             slideshowEntity.setMusicName(downEntity.getMusicName());
@@ -228,7 +229,7 @@ public class ThemeFactory {
                 entity.setResName(themeEnum.getName());
                 entity.setThemeEnum(themeEnum);
                 entity.setZipPath(DownloadPath.BASE_PATH + "/theme/birthday/birthday1.zip");
-                entity.setMusicLocalPath(PathUtil.MUSIC + "/music/birthday/BirthdaySong");
+                entity.setMusicLocalPath(PathConstant.MUSIC + "/music/birthday/BirthdaySong");
                 locals.add(entity);
             }
         }
@@ -243,7 +244,7 @@ public class ThemeFactory {
                 entity.setResName(themeEnum.getName());
                 entity.setThemeEnum(themeEnum);
                 entity.setZipPath(DownloadPath.BASE_PATH + "/theme/birthday/birthday1.zip");
-                entity.setMusicLocalPath(PathUtil.MUSIC + "/music/birthday/BirthdaySong");
+                entity.setMusicLocalPath(PathConstant.MUSIC + "/music/birthday/BirthdaySong");
                 locals.add(entity);
             }
         }
@@ -258,7 +259,7 @@ public class ThemeFactory {
                 entity.setResName((themeEnum.getName()));
                 entity.setThemeEnum(themeEnum);
                 entity.setZipPath(DownloadPath.BASE_PATH + "/theme/birthday/birthday1.zip");
-                entity.setMusicLocalPath(PathUtil.MUSIC + "/music/birthday/BirthdaySong");
+                entity.setMusicLocalPath(PathConstant.MUSIC + "/music/birthday/BirthdaySong");
                 locals.add(entity);
             }
         }

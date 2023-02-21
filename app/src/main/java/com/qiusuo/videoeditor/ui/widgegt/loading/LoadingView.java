@@ -7,8 +7,9 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.ijoysoft.videoeditor.R;
-import com.ijoysoft.videoeditor.utils.DensityUtils;
+import com.qiusuo.videoeditor.R;
+import com.qiusuo.videoeditor.util.DensityUtils;
+
 
 /**
  * Created by DELL on 2019/9/16.

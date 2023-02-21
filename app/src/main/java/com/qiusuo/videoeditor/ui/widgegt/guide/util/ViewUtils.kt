@@ -14,14 +14,11 @@ import android.view.View.MeasureSpec.UNSPECIFIED
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
-import com.ijoysoft.mediasdk.common.utils.LogUtils
-import com.ijoysoft.videoeditor.theme.manager.TransitionRepository
-import com.qiusuo.videoeditor.R
 import kotlin.math.exp
 
 
@@ -339,6 +336,39 @@ object ViewUtils {
         }
     }
 
+    private const val FRAGMENT_CON = "NoSaveStateFrameLayout"
+    fun getLocationInView(parent: View?, child: View?): Rect? {
+        require(!(child == null || parent == null)) { "parent and child can not be null ." }
+        var decorView: View? = null
+        val context = child.context
+        if (context is Activity) {
+            decorView = context.window.decorView
+        }
+        val result = Rect()
+        val tmpRect = Rect()
+        var tmp = child
+        if (child === parent) {
+            child.getHitRect(result)
+            return result
+        }
+        while (tmp !== decorView && tmp !== parent) {
+            tmp!!.getHitRect(tmpRect)
+            if (!tmp.javaClass.equals(FRAGMENT_CON)) {
+                result.left += tmpRect.left
+                result.top += tmpRect.top
+            }
+            tmp = tmp.parent as View
+            requireNotNull(tmp) { "the view is not showing in the window!" }
+
+            //added by isanwenyu@163.com fix bug #21 the wrong rect user will received in ViewPager
+            if (tmp.parent != null && tmp.parent is ViewPager) {
+                tmp = tmp.parent as View
+            }
+        }
+        result.right = result.left + child.measuredWidth
+        result.bottom = result.top + child.measuredHeight
+        return result
+    }
 
 }
 

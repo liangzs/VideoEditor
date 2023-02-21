@@ -1,12 +1,10 @@
 package com.qiusuo.videoeditor.common.bean;
 
 
-import com.ijoysoft.download.Downloader;
+import com.google.android.exoplayer2.offline.DownloadHelper;
 import com.ijoysoft.mediasdk.common.utils.ObjectUtils;
 import com.ijoysoft.mediasdk.module.opengl.theme.ThemeConstant;
-import com.ijoysoft.videoeditor.model.download.DownloadHelper;
-import com.ijoysoft.videoeditor.model.download.DownloadPath;
-import com.ijoysoft.videoeditor.theme.manager.ThemeFactory;
+import com.qiusuo.videoeditor.common.data.ThemeFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -335,11 +333,11 @@ public class ThemeGroupEntity {
         allList.addAll(daily);
         allList.addAll(sport);
         List<ThemeDownEntity> result = new ArrayList<>();
-        for (ThemeDownEntity downEntity : allList) {
-            if (DownloadHelper.getSingleState(DownloadPath.BASE_PATH + downEntity.getPath()) == Downloader.STATE_LOADED) {
-                result.add(downEntity);
-            }
-        }
+//        for (ThemeDownEntity downEntity : allList) {
+//            if (DownloadHelper.getSingleState(DownloadPath.BASE_PATH + downEntity.getPath()) == Downloader.STATE_LOADED) {
+//                result.add(downEntity);
+//            }
+//        }
         return result;
     }
 

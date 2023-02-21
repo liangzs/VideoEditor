@@ -4,7 +4,8 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.view.View;
 
-import com.ijoysoft.videoeditor.view.guide.util.ViewUtils;
+import com.qiusuo.videoeditor.ui.widgegt.guide.util.ViewUtils;
+
 
 /**
  * Created by hubert
@@ -64,7 +65,7 @@ public class HighlightView implements HighLight {
         }
         if (rectF == null) {
             rectF = new RectF();
-            Rect locationInView = ViewUtils.getLocationInView(target, mHole);
+            Rect locationInView = ViewUtils.INSTANCE.getLocationInView(target, mHole);
             rectF.left = locationInView.left - padding;
             rectF.top = locationInView.top - padding;
             rectF.right = locationInView.right + padding;
