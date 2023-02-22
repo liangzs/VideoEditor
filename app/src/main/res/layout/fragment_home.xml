@@ -4,15 +4,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingHorizontal="16dp">
+    android:background="@color/bg">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="match_parent"
+        android:layout_height="285dp"
+        android:scaleType="fitXY"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@mipmap/banner" />
+
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/icon_game"
+        app:srcCompat="@drawable/vector_main_video_go"
         tools:ignore="ImageContrastCheck" />
 
     <View
@@ -46,13 +56,38 @@
 
     <FrameLayout
         android:id="@+id/fl_create"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_marginTop="20dp"
-        android:background="@color/bg_image"
-        app:layout_constraintTop_toBottomOf="@+id/bt_vip">
+        android:layout_width="350dp"
+        android:layout_height="115dp"
+        android:layout_marginTop="80dp"
+        android:background="@drawable/shape_main_create"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bt_vip" />
 
-    </FrameLayout>
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_create_now"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/fl_create"
+        app:layout_constraintEnd_toStartOf="@+id/tv_create_now"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="@+id/fl_create"
+        app:layout_constraintTop_toTopOf="@+id/fl_create"
+        app:srcCompat="@drawable/vector_create_now" />
+
+    <TextView
+        android:id="@+id/tv_create_now"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="Create Now"
+        android:textColor="@color/white_80_color"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/fl_create"
+        app:layout_constraintEnd_toEndOf="@+id/fl_create"
+        app:layout_constraintStart_toEndOf="@+id/iv_create_now"
+        app:layout_constraintTop_toTopOf="@+id/fl_create" />
 
 
     <androidx.recyclerview.widget.RecyclerView
