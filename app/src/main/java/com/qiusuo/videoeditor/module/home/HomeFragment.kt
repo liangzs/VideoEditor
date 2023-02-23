@@ -38,11 +38,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         gridlayout.orientation = GridLayoutManager.HORIZONTAL;
         gridlayout.isAutoMeasureEnabled = true
         viewBinding.rvMainFunc.setLayoutManager(gridlayout)
-        viewBinding.rvMainFunc.addItemDecoration(
-            RecyclerItemDecoration(
-                activity.resources.getDimensionPixelOffset(R.dimen.item_padding), true, true
-            )
-        )
+//        viewBinding.rvMainFunc.addItemDecoration(
+//            RecyclerItemDecoration(
+//                activity.resources.getDimensionPixelOffset(R.dimen.item_padding), true, true
+//            )
+//        )
         viewBinding.rvMainFunc.adapter = HomeFunAdapter { position: Int -> funItemClick(position) }
 
         viewBinding.flCreate.setOnClickListener {

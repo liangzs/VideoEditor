@@ -7,7 +7,7 @@
     <dimen name="bottom_tab_image_size">24dp</dimen>
     <dimen name="item_radius">5dp</dimen>
     <dimen name="video_item_icon_size">12dp</dimen>
-    <dimen name="item_padding">10dp</dimen>
+    <dimen name="item_padding">5dp</dimen>
     <dimen name="item_translation_z">1dp</dimen>
 
     <dimen name="font_size_large">20sp</dimen>

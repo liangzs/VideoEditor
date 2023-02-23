@@ -9,6 +9,7 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="match_parent"
         android:layout_height="285dp"
+        android:fitsSystemWindows="true"
         android:scaleType="fitXY"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@mipmap/banner" />
@@ -34,24 +35,27 @@
         app:layout_constraintRight_toLeftOf="@+id/bt_vip"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/bt_vip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/vip"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_logo"
         app:layout_constraintLeft_toRightOf="@+id/v_line_top"
         app:layout_constraintRight_toLeftOf="@+id/iv_setting"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/iv_logo"
+        app:srcCompat="@drawable/vector_main_ad" />
 
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_setting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="14dp"
+        app:layout_constraintBottom_toBottomOf="@+id/bt_vip"
         app:layout_constraintLeft_toRightOf="@+id/bt_vip"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/icon_game"
+        app:layout_constraintTop_toTopOf="@+id/bt_vip"
+        app:srcCompat="@drawable/vector_main_setting"
         tools:ignore="ImageContrastCheck" />
 
     <FrameLayout
@@ -95,10 +99,10 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_marginTop="10dp"
-        android:background="@color/bg_window"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+
         app:layout_constraintTop_toBottomOf="@id/fl_create" />
 
     <com.google.android.material.tabs.TabLayout

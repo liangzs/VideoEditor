@@ -127,14 +127,14 @@ public class BaseTitleMenu implements AdapterView.OnItemClickListener, PopupWind
     }
 
     protected Drawable createRightArrow() {
-        Drawable right = mActivity.getResources().getDrawable(R.drawable.ic_arrow_right_2);
+        Drawable right = mActivity.getResources().getDrawable(R.mipmap.ic_arrow_right_2);
         int drawableSize = DensityUtils.dp2px(mActivity, 10);
         right.setBounds(0, 0, drawableSize / 2, drawableSize);
         return right;
     }
 
     protected Drawable createRightCheck() {
-        Drawable right = mActivity.getResources().getDrawable(R.drawable.ic_menu_checked_right);
+        Drawable right = mActivity.getResources().getDrawable(R.mipmap.ic_menu_checked_right);
         int drawableSize = DensityUtils.dp2px(mActivity, 15);
         right.setBounds(0, 0, drawableSize, drawableSize);
         return right;

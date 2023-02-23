@@ -2,8 +2,18 @@
     <string name="app_name">VideoEditor</string>
     <string name="main_home">HOME</string>
 
+    <!--main-->
     <string name="main_hot_theme">Hot Theme</string>
     <string name="main_studio">My Studio</string>
+    <string name="to_onkey">One Make</string>
+    <string name="to_gif">Make Gif</string>
+    <string name="to_photo_edit">Photo Edit</string>
+    <string name="to_mosaic">Add Mosaic</string>
+    <string name="to_trim">Trim</string>
+    <string name="to_compress">Compress</string>
+    <string name="to_camera">Camera</string>
+    <string name="to_video2mp3">Video2Mp3</string>
+
 
     <string name="no_network">No network connection, please check the network settings</string>
     <string name="network_error">Out of the accident, content loading failed</string>

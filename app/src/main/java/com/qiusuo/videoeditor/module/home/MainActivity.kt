@@ -2,12 +2,14 @@ package com.qiusuo.videoeditor.module.home
 
 import android.os.Bundle
 import com.gyf.immersionbar.ktx.immersionBar
+import com.ijoysoft.mediasdk.common.global.ConstantMediaSize
 import com.nan.xarch.bean.Tab
 import com.qiusuo.videoeditor.R
 import com.qiusuo.videoeditor.base.BaseActivity
 import com.qiusuo.videoeditor.common.constant.TabId
 import com.qiusuo.videoeditor.databinding.ActivityMainBinding
 import com.qiusuo.videoeditor.ui.widgegt.TabIndicatorView
+import com.qiusuo.videoeditor.ui.widgegt.guide.util.ScreenUtils
 
 class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
 
@@ -16,7 +18,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        initSystembar()
+        initSystembar()
         updateTitle()
         initTab()
     }
@@ -24,11 +26,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
     fun initSystembar() {
         immersionBar {
+//            statusBarColor(R.color.colorPrimary)
+//            navigationBarColor(R.color.colorPrimary)
             transparentStatusBar()
-            statusBarDarkFont(true)
-            navigationBarColor(R.color.white)
-            navigationBarDarkIcon(true)
+//            statusBarDarkFont(true)
+//            navigationBarColor(R.color.white)
+//            navigationBarDarkIcon(true)
         }
+        ConstantMediaSize.screenWidth=ScreenUtils.getScreenWidth(this);
     }
 
     fun updateTitle() {
