@@ -7,8 +7,10 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.qiusuo.videoeditor.R
 import com.qiusuo.videoeditor.base.BaseFragment
 import com.qiusuo.videoeditor.common.constant.PageName
@@ -47,6 +49,17 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
         viewBinding.flCreate.setOnClickListener {
 
+        }
+
+        //tab 我的作品和最新主題
+        viewBinding.viewPager.adapter=object :FragmentStateAdapter(this){
+            override fun getItemCount(): Int =2
+
+            override fun createFragment(position: Int): Fragment {
+               if(position==0){
+                   return
+               }
+            }
         }
     }
 

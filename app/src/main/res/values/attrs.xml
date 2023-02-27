@@ -37,4 +37,21 @@
         <attr name="topNormal" format="boolean" />
         <attr name="bottomNormal" format="boolean" />
     </declare-styleable>
+
+    <declare-styleable name="CornerFrameLayout">
+        <attr name="corner_radiusTopLeft" format="dimension|reference" />
+        <attr name="corner_radiusTopRight" format="dimension|reference" />
+        <attr name="corner_radiusBottomLeft" format="dimension|reference" />
+        <attr name="corner_radiusBottomRight" format="dimension|reference" />
+        <attr name="corner_radiu" format="dimension|reference" />
+    </declare-styleable>
+
+    <declare-styleable name="SquareLayout">
+        <attr name="squareRatio" format="float|reference" />
+        <attr name="squareFactory">
+            <enum name="adjustWidth" value="0" />
+            <enum name="adjustHeight" value="1" />
+            <enum name="withMin" value="2" />
+        </attr>
+    </declare-styleable>
 </resources>

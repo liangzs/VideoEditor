@@ -13,7 +13,6 @@ import android.media.MediaMetadataRetriever;
 
 import androidx.annotation.Nullable;
 
-import com.google.android.exoplayer2.offline.DownloadHelper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.ijoysoft.mediasdk.common.global.ConstantMediaSize;
@@ -65,7 +64,7 @@ import com.qiusuo.videoeditor.common.bean.CutMusicItem;
 import com.qiusuo.videoeditor.common.bean.MediaEntity;
 import com.qiusuo.videoeditor.common.bean.MusicEntity;
 import com.qiusuo.videoeditor.common.bean.Project;
-import com.qiusuo.videoeditor.common.bean.SlideshowEntity;
+import com.qiusuo.videoeditor.common.bean.ThemeEntity;
 import com.qiusuo.videoeditor.common.bean.SpBgInfo;
 import com.qiusuo.videoeditor.common.bean.ThemeGroupEntity;
 import com.qiusuo.videoeditor.common.bean.ThemeResGroupEntity;
@@ -75,7 +74,6 @@ import com.qiusuo.videoeditor.util.BytesBitmap;
 import com.qiusuo.videoeditor.util.FileUtil;
 import com.qiusuo.videoeditor.util.IOUtil;
 import com.qiusuo.videoeditor.util.SpUtil;
-import com.qiusuo.videoeditor.util.ZipUtils;
 
 import org.libpag.PAGFile;
 
@@ -86,7 +84,6 @@ import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -121,7 +118,7 @@ public class MediaDataRepository {
     private boolean isLocalMultiEdit;// 本地draft多次进入编辑
     private ThemeGroupEntity mThemeGroupEntity;
     private ThemeResGroupEntity mThemeResGroupEntity;
-    private SlideshowEntity mSlideshowEntity;
+    private ThemeEntity mSlideshowEntity;
     private IPretreatment preTreatment;//添加主题模块
     private boolean hasEdit;
     //针对主题，把挂载在片段中的控件抽取出来，重复利用
@@ -313,7 +310,7 @@ public class MediaDataRepository {
      * @param slideEntity
      */
     @SuppressLint("WrongConstant")
-    public void setCurrentSlideEntity(SlideshowEntity slideEntity) {
+    public void setCurrentSlideEntity(ThemeEntity slideEntity) {
         mSpBgInfo.setBackgrondType(BackgroundType.SELF);
         mSpBgInfo.setBlurLevel(50);
         //当且仅当同一主题，然后已选了自定义歌曲时，不进行歌曲切换
@@ -422,12 +419,12 @@ public class MediaDataRepository {
                 ConstantMediaSize.particles = themeEnum.getParticleType();
             }
         }
-        mSlideshowEntity = new SlideshowEntity();
+        mSlideshowEntity = new ThemeEntity();
         mSlideshowEntity.setThemeEnum(themeEnum);
     }
 
     @Nullable
-    public SlideshowEntity getCurrentSlideShow() {
+    public ThemeEntity getCurrentSlideShow() {
         return mSlideshowEntity;
     }
 
@@ -1942,7 +1939,7 @@ public class MediaDataRepository {
      *
      * @return
      */
-    public List<MediaItem> changeTheme(SlideshowEntity slideshowEntity) {
+    public List<MediaItem> changeTheme(ThemeEntity slideshowEntity) {
         if (ConstantMediaSize.themeType == ThemeEnum.NONE) {
             bakNoThemeDuration();
         }

@@ -1,6 +1,5 @@
 package com.qiusuo.videoeditor.common.data;
 
-import com.google.android.exoplayer2.offline.DownloadHelper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.ijoysoft.mediasdk.common.utils.LogUtils;
@@ -9,7 +8,7 @@ import com.ijoysoft.mediasdk.module.opengl.theme.ThemeConstant;
 import com.ijoysoft.mediasdk.module.opengl.theme.ThemeEnum;
 import com.ijoysoft.mediasdk.module.opengl.theme.ThemeHelper;
 import com.ijoysoft.mediasdk.module.opengl.theme.pretreatment.IPretreatment;
-import com.qiusuo.videoeditor.common.bean.SlideshowEntity;
+import com.qiusuo.videoeditor.common.bean.ThemeEntity;
 import com.qiusuo.videoeditor.common.bean.ThemeDownEntity;
 import com.qiusuo.videoeditor.common.bean.ThemeGroupEntity;
 import com.qiusuo.videoeditor.common.bean.ThemeResGroupEntity;
@@ -40,9 +39,9 @@ public class ThemeFactory {
      *
      * @return
      */
-    public static List<SlideshowEntity> getThemeData(@ThemeConstant.ThemeType int themeType) {
+    public static List<ThemeEntity> getThemeData(@ThemeConstant.ThemeType int themeType) {
         String localMusicPath = "";
-        List<SlideshowEntity> list = new ArrayList<>();
+        List<ThemeEntity> list = new ArrayList<>();
         ThemeGroupEntity themeGroupEntity = MediaDataRepository.getInstance().getThemeGroupEntity();
         if (ObjectUtils.isEmpty(themeGroupEntity)) {
             //如果主题基础数据没有从服务端获取，则创建四个主题本地数据进行显示
@@ -56,7 +55,7 @@ public class ThemeFactory {
         if (ObjectUtils.isEmpty(themeResGroupEntity)) {
             return createLocalTheme(themeType);
         }
-        SlideshowEntity slideshowEntity;
+        ThemeEntity slideshowEntity;
         ThemeEnum themeEnum;
         ThemeResourceEntity themeResourceEntity;
         for (ThemeDownEntity downEntity : downEntities) {
@@ -69,7 +68,7 @@ public class ThemeFactory {
                 continue;
             }
             themeResourceEntity = themeResGroupEntity.getIndexResourEntity(downEntity.getIndex(), downEntity.getName());
-            slideshowEntity = new SlideshowEntity();
+            slideshowEntity = new ThemeEntity();
             slideshowEntity.setName(downEntity.getName());
             slideshowEntity.setThemeEnum(themeEnum);
             slideshowEntity.setZipPath(DownloadPath.BASE_PATH + downEntity.getPath());
@@ -98,8 +97,8 @@ public class ThemeFactory {
     }
 
 
-    public static List<SlideshowEntity> getBottomSelectTheme() {
-        List<SlideshowEntity> themes = new ArrayList();
+    public static List<ThemeEntity> getBottomSelectTheme() {
+        List<ThemeEntity> themes = new ArrayList();
         themes.addAll(getThemeData(ThemeConstant.HOT));
         themes.addAll(getAllTheme());
         return themes;
@@ -111,9 +110,9 @@ public class ThemeFactory {
      *
      * @return
      */
-    public static List<SlideshowEntity> getAllTheme() {
+    public static List<ThemeEntity> getAllTheme() {
         String localMusicPath = "";
-        List<SlideshowEntity> list = new ArrayList<>();
+        List<ThemeEntity> list = new ArrayList<>();
         ThemeGroupEntity themeGroupEntity = MediaDataRepository.getInstance().getThemeGroupEntity();
         if (ObjectUtils.isEmpty(themeGroupEntity)) {
             //如果主题基础数据没有从服务端获取，则创建四个主题本地数据进行显示
@@ -127,7 +126,7 @@ public class ThemeFactory {
         if (ObjectUtils.isEmpty(themeResGroupEntity) || ObjectUtils.isEmpty(themeResGroupEntity.getAllResource())) {
             return createCommonTheme();
         }
-        SlideshowEntity slideshowEntity;
+        ThemeEntity slideshowEntity;
         ThemeEnum themeEnum;
         ThemeResourceEntity themeResourceEntity;
         for (ThemeDownEntity downEntity : downEntities) {
@@ -140,7 +139,7 @@ public class ThemeFactory {
                 continue;
             }
             themeResourceEntity = themeResGroupEntity.getIndexResourEntity(downEntity.getIndex(), downEntity.getName());
-            slideshowEntity = new SlideshowEntity();
+            slideshowEntity = new ThemeEntity();
             slideshowEntity.setName(downEntity.getName());
             slideshowEntity.setThemeEnum(themeEnum);
             slideshowEntity.setZipPath(DownloadPath.BASE_PATH + downEntity.getPath());
@@ -171,9 +170,9 @@ public class ThemeFactory {
      *
      * @return
      */
-    public static List<SlideshowEntity> getDownloadTheme() {
+    public static List<ThemeEntity> getDownloadTheme() {
         String localMusicPath;
-        List<SlideshowEntity> list = new ArrayList<>();
+        List<ThemeEntity> list = new ArrayList<>();
         ThemeGroupEntity themeGroupEntity = MediaDataRepository.getInstance().getThemeGroupEntity();
         if (ObjectUtils.isEmpty(themeGroupEntity)) {
             return list;
@@ -186,7 +185,7 @@ public class ThemeFactory {
         if (ObjectUtils.isEmpty(themeResGroupEntity)) {
             return list;
         }
-        SlideshowEntity slideshowEntity;
+        ThemeEntity slideshowEntity;
         ThemeEnum themeEnum;
         ThemeResourceEntity themeResourceEntity;
         for (ThemeDownEntity downEntity : downEntities) {
@@ -195,7 +194,7 @@ public class ThemeFactory {
             if (ObjectUtils.isEmpty(themeResGroupEntity)) {
                 continue;
             }
-            slideshowEntity = new SlideshowEntity();
+            slideshowEntity = new ThemeEntity();
             slideshowEntity.setName(downEntity.getName());
             slideshowEntity.setResName(themeResourceEntity.getTitle().getTitle());
             slideshowEntity.setResRequestPath(DownloadPath.BASE_PATH + themeResourceEntity.getPath());
@@ -221,11 +220,11 @@ public class ThemeFactory {
     }
 
 
-    public static List<SlideshowEntity> createBeatTheme() {
-        List<SlideshowEntity> locals = new ArrayList<>();
+    public static List<ThemeEntity> createBeatTheme() {
+        List<ThemeEntity> locals = new ArrayList<>();
         for (ThemeEnum themeEnum : ThemeEnum.values()) {
             if (themeEnum.getType() == ThemeConstant.BEAT) {
-                SlideshowEntity entity = new SlideshowEntity();
+                ThemeEntity entity = new ThemeEntity();
                 entity.setResName(themeEnum.getName());
                 entity.setThemeEnum(themeEnum);
                 entity.setZipPath(DownloadPath.BASE_PATH + "/theme/birthday/birthday1.zip");
@@ -236,11 +235,11 @@ public class ThemeFactory {
         return locals;
     }
 
-    public static List<SlideshowEntity> createHoliTheme() {
-        List<SlideshowEntity> locals = new ArrayList<>();
+    public static List<ThemeEntity> createHoliTheme() {
+        List<ThemeEntity> locals = new ArrayList<>();
         for (ThemeEnum themeEnum : ThemeEnum.values()) {
             if (themeEnum.getType() == ThemeConstant.HOLI) {
-                SlideshowEntity entity = new SlideshowEntity();
+                ThemeEntity entity = new ThemeEntity();
                 entity.setResName(themeEnum.getName());
                 entity.setThemeEnum(themeEnum);
                 entity.setZipPath(DownloadPath.BASE_PATH + "/theme/birthday/birthday1.zip");
@@ -251,11 +250,11 @@ public class ThemeFactory {
         return locals;
     }
 
-    public static List<SlideshowEntity> createDivaliTheme() {
-        List<SlideshowEntity> locals = new ArrayList<>();
+    public static List<ThemeEntity> createDivaliTheme() {
+        List<ThemeEntity> locals = new ArrayList<>();
         for (ThemeEnum themeEnum : ThemeEnum.values()) {
             if (themeEnum.getType() == ThemeConstant.DIVALI) {
-                SlideshowEntity entity = new SlideshowEntity();
+                ThemeEntity entity = new ThemeEntity();
                 entity.setResName((themeEnum.getName()));
                 entity.setThemeEnum(themeEnum);
                 entity.setZipPath(DownloadPath.BASE_PATH + "/theme/birthday/birthday1.zip");
@@ -272,7 +271,7 @@ public class ThemeFactory {
      *
      * @return
      */
-    public static List<SlideshowEntity> createLocalTheme(@ThemeConstant.ThemeType int themeType) {
+    public static List<ThemeEntity> createLocalTheme(@ThemeConstant.ThemeType int themeType) {
         if (themeType == ThemeConstant.COMMON || themeType == ThemeConstant.HOT) {
             return createCommonTheme();
         }
@@ -287,8 +286,8 @@ public class ThemeFactory {
      *
      * @return
      */
-    public static List<SlideshowEntity> createCommonTheme() {
-        List<SlideshowEntity> locals = new ArrayList<>();
+    public static List<ThemeEntity> createCommonTheme() {
+        List<ThemeEntity> locals = new ArrayList<>();
 //        for (ThemeEnum themeEnum : ThemeEnum.values()) {
 //            if (themeEnum.getType() == ThemeConstant.COMMON) {
 //                SlideshowEntity entity = new SlideshowEntity();
@@ -374,7 +373,7 @@ public class ThemeFactory {
      *
      * @param entity
      */
-    public static void saveDownloadTheme(SlideshowEntity entity) {
+    public static void saveDownloadTheme(ThemeEntity entity) {
 //        saveThemeLocker.lock();
 //        try {
 //            List<String> themeNames = SharedPreferencesUtil.getDataList(ContactUtils.SP_KEY_DOWNLOAD_THEME, String.class);

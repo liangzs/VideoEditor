@@ -877,7 +877,7 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
                                     } else {
                                         //移除记录，只跳转一次
                                         intent.removeExtra(RequestCode.MATERIAL_CREATE)
-//                                        ProjectImplement.editTransition(this@SelectClipActivity)
+//                                        ProjectImplement.editTransition(this@  )
                                     }
                                 } else {
                                     //移除记录，只跳转一次

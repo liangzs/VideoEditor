@@ -24,7 +24,7 @@ object T {
      * @param context
      * @param text
      */
-    fun showToast(context: Context, text: String?, boolShort: Boolean) {
+    private fun showToast(context: Context, text: String?, boolShort: Boolean) {
         if (isFastDoubleClick && TextUtils.equals(text, mLastText)) {
             return
         }
