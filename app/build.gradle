@@ -158,4 +158,8 @@ dependencies {
     implementation("io.coil-kt:coil:${configs.coil_version}")
     implementation("io.coil-kt:coil-gif:${configs.coil_version}")
 
+    implementation 'com.github.smarxpan:NotchScreenTool:0.0.1'
+    implementation('com.gyf.immersionbar:immersionbar-ktx:3.0.0')
+
+
 }

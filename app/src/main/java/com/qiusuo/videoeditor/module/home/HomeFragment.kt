@@ -1,6 +1,7 @@
 package com.qiusuo.videoeditor.module.home
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.activity.result.ActivityResult
@@ -11,12 +12,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.qiusuo.videoeditor.R
 import com.qiusuo.videoeditor.base.BaseFragment
 import com.qiusuo.videoeditor.common.constant.PageName
 import com.qiusuo.videoeditor.databinding.FragmentHomeBinding
 import com.qiusuo.videoeditor.ui.adapter.HomeFunAdapter
-import com.qiusuo.videoeditor.ui.widgegt.RecyclerItemDecoration
+import com.smarx.notchlib.NotchScreenManager
+
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate) {
     val viewModel: HomeViewModel by viewModels()
@@ -33,7 +34,22 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         super.onViewCreated(view, savedInstanceState)
         launcher = createActivityResultLauncher()
         initView();
+//        setStatusBar()
     }
+//    fun setStatusBar(){
+//        val statusBarHeight: Int = getStatusBarHeight()
+//        viewBinding.statusBar.layoutParams.height = statusBarHeight
+//    }
+
+    private fun getStatusBarHeight(): Int {
+        var result = 0
+        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
+        if (resourceId > 0) {
+            result = resources.getDimensionPixelSize(resourceId)
+        }
+        return result
+    }
+
 
     override fun initView() {
         var gridlayout = GridLayoutManager(context, SPAN_COUNT);
@@ -52,13 +68,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         }
 
         //tab 我的作品和最新主題
-        viewBinding.viewPager.adapter=object :FragmentStateAdapter(this){
-            override fun getItemCount(): Int =2
+        viewBinding.viewPager.adapter = object : FragmentStateAdapter(this) {
+            override fun getItemCount(): Int = 2
 
             override fun createFragment(position: Int): Fragment {
-               if(position==0){
-                   return
-               }
+                if (position == 0) {
+                }
+                return Fragment()
             }
         }
     }

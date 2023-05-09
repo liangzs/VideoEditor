@@ -85,7 +85,7 @@ public class ThemeFactory {
 
             if (!ObjectUtils.isEmpty(themeResourceEntity)) {
                 slideshowEntity.setResName(themeResourceEntity.getTitle().getTitle());
-                slideshowEntity.setResRequestPath(DownloadPath.BASE_PATH + themeResourceEntity.getPath());
+//                slideshowEntity.setResRequestPath(DownloadPath.BASE_PATH + themeResourceEntity.getPath());
 //                slideshowEntity.setResLocalPath(DownloadHelper.BASE_DOWNLOAD_PATH + themeResourceEntity.getPath());
             }
             list.add(slideshowEntity);
@@ -154,7 +154,7 @@ public class ThemeFactory {
 
             if (!ObjectUtils.isEmpty(themeResourceEntity)) {
                 slideshowEntity.setResName(themeResourceEntity.getTitle().getTitle());
-                slideshowEntity.setResRequestPath(DownloadPath.BASE_PATH + themeResourceEntity.getPath());
+//                slideshowEntity.setResRequestPath(DownloadPath.BASE_PATH + themeResourceEntity.getPath());
 //                slideshowEntity.setResLocalPath(DownloadHelper.BASE_DOWNLOAD_PATH + themeResourceEntity.getPath());
             }
             list.add(slideshowEntity);
@@ -197,7 +197,7 @@ public class ThemeFactory {
             slideshowEntity = new ThemeEntity();
             slideshowEntity.setName(downEntity.getName());
             slideshowEntity.setResName(themeResourceEntity.getTitle().getTitle());
-            slideshowEntity.setResRequestPath(DownloadPath.BASE_PATH + themeResourceEntity.getPath());
+//            slideshowEntity.setResRequestPath(DownloadPath.BASE_PATH + themeResourceEntity.getPath());
 //            slideshowEntity.setResLocalPath(DownloadHelper.BASE_DOWNLOAD_PATH + themeResourceEntity.getPath());
             slideshowEntity.setThemeEnum(themeEnum);
             slideshowEntity.setZipPath(DownloadPath.BASE_PATH + downEntity.getPath());

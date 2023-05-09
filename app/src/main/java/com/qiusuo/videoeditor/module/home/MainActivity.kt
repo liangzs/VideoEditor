@@ -1,6 +1,8 @@
 package com.qiusuo.videoeditor.module.home
 
+import android.os.Build
 import android.os.Bundle
+import android.view.WindowManager
 import com.gyf.immersionbar.ktx.immersionBar
 import com.ijoysoft.mediasdk.common.global.ConstantMediaSize
 import com.nan.xarch.bean.Tab
@@ -10,6 +12,8 @@ import com.qiusuo.videoeditor.common.constant.TabId
 import com.qiusuo.videoeditor.databinding.ActivityMainBinding
 import com.qiusuo.videoeditor.ui.widgegt.TabIndicatorView
 import com.qiusuo.videoeditor.ui.widgegt.guide.util.ScreenUtils
+import com.smarx.notchlib.NotchScreenManager
+
 
 class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
 
@@ -25,15 +29,26 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
 
     fun initSystembar() {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) { //透明状态栏
+//            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS); //透明导航栏
+//            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+//        }
         immersionBar {
-//            statusBarColor(R.color.colorPrimary)
-//            navigationBarColor(R.color.colorPrimary)
             transparentStatusBar()
-//            statusBarDarkFont(true)
-//            navigationBarColor(R.color.white)
-//            navigationBarDarkIcon(true)
+            statusBarDarkFont(false)
+            navigationBarDarkIcon(true)
         }
-        ConstantMediaSize.screenWidth=ScreenUtils.getScreenWidth(this);
+        ConstantMediaSize.screenWidth = ScreenUtils.getScreenWidth(this);
+        viewBinding.fragmentContainer
+    }
+
+    private fun getStatusBarHeight(): Int {
+        var statusBarHeight = 0
+        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
+        if (resourceId > 0) {
+            statusBarHeight = resources.getDimensionPixelSize(resourceId)
+        }
+        return statusBarHeight
     }
 
     fun updateTitle() {

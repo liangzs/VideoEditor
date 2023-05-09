@@ -3,17 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/bg">
+    android:background="@color/bg"
+    android:fitsSystemWindows="true"
+    android:layout_height="match_parent">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="match_parent"
         android:layout_height="285dp"
-        android:fitsSystemWindows="true"
         android:scaleType="fitXY"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@mipmap/banner" />
 
+
+<!--    <View
+        android:id="@+id/status_bar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:layout_constraintTop_toTopOf="parent"/>-->
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_logo"

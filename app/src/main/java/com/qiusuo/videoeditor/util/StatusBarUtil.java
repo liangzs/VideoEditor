@@ -11,9 +11,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
-/**
- * Created by DELL on 2019/11/2.
- */
 public class StatusBarUtil {
 
     /**
@@ -53,6 +50,7 @@ public class StatusBarUtil {
             activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
     }
+
 
     public static void setTransparentStatusBar(Activity activity, boolean isDarkIconText) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
