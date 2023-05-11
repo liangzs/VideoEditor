@@ -1,8 +1,7 @@
 package com.qiusuo.videoeditor.module.home
 
-import android.os.Build
 import android.os.Bundle
-import android.view.WindowManager
+import android.view.View
 import com.gyf.immersionbar.ktx.immersionBar
 import com.ijoysoft.mediasdk.common.global.ConstantMediaSize
 import com.nan.xarch.bean.Tab
@@ -12,7 +11,7 @@ import com.qiusuo.videoeditor.common.constant.TabId
 import com.qiusuo.videoeditor.databinding.ActivityMainBinding
 import com.qiusuo.videoeditor.ui.widgegt.TabIndicatorView
 import com.qiusuo.videoeditor.ui.widgegt.guide.util.ScreenUtils
-import com.smarx.notchlib.NotchScreenManager
+import com.qiusuo.videoeditor.util.dp
 
 
 class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
@@ -58,7 +57,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
             TabId.STUDIO -> getString(R.string.main_studio)
             else -> ""
         }
-        viewBinding.root
     }
 
     fun initTab() {
@@ -66,19 +64,19 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
             Tab(
                 TabId.HOT_THEME,
                 getString(R.string.main_hot_theme),
-                R.drawable.selector_btn_discovery,
+                R.drawable.selector_main_hot_theme,
                 HomeFragment::class
             ),
             Tab(
                 TabId.HOME,
                 getString(R.string.main_home),
-                R.drawable.btn_home,
+                R.drawable.selector_main_home,
                 HomeFragment::class
             ),
             Tab(
                 TabId.STUDIO,
                 getString(R.string.main_studio),
-                R.drawable.selector_btn_mine,
+                R.drawable.selector_main_studio,
                 HomeFragment::class
             )
         )
@@ -90,6 +88,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
                     setIndicator(TabIndicatorView(this@MainActivity).apply {
                         viewBinding.tabIcon.setImageResource(icon)
                         viewBinding.tabTitle.text = title
+                        if(id==TabId.HOME){
+                            val layoutParams=viewBinding.tabIcon.layoutParams;
+                            layoutParams.width= 48.dp.toInt()
+                            layoutParams.height= 48.dp.toInt()
+                            viewBinding.tabTitle.visibility= View.GONE
+                            viewBinding.tabIcon.layoutParams=layoutParams
+                        }
                     })
                 }
                 addTab(tabSpec, fragmentClz.java, null)

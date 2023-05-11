@@ -120,6 +120,7 @@
     <!--common-->
     <string name="update_on">Update on: %s</string>
     <string name="theme">Theme</string>
+    <string name="new_theme">New Theme</string>
     <string name="more">More</string>
     <string name="select_clip">Select Clip</string>
     <string name="editor">Editor</string>

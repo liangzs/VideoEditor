@@ -9,9 +9,13 @@ import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentPagerAdapter
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
+import com.qiusuo.videoeditor.R
 import com.qiusuo.videoeditor.base.BaseFragment
 import com.qiusuo.videoeditor.common.constant.PageName
 import com.qiusuo.videoeditor.databinding.FragmentHomeBinding
@@ -34,52 +38,43 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         super.onViewCreated(view, savedInstanceState)
         launcher = createActivityResultLauncher()
         initView();
-//        setStatusBar()
     }
-//    fun setStatusBar(){
-//        val statusBarHeight: Int = getStatusBarHeight()
-//        viewBinding.statusBar.layoutParams.height = statusBarHeight
-//    }
-
-    private fun getStatusBarHeight(): Int {
-        var result = 0
-        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
-        if (resourceId > 0) {
-            result = resources.getDimensionPixelSize(resourceId)
-        }
-        return result
-    }
-
 
     override fun initView() {
         var gridlayout = GridLayoutManager(context, SPAN_COUNT);
         gridlayout.orientation = GridLayoutManager.HORIZONTAL;
         gridlayout.isAutoMeasureEnabled = true
         viewBinding.rvMainFunc.setLayoutManager(gridlayout)
-//        viewBinding.rvMainFunc.addItemDecoration(
-//            RecyclerItemDecoration(
-//                activity.resources.getDimensionPixelOffset(R.dimen.item_padding), true, true
-//            )
-//        )
         viewBinding.rvMainFunc.adapter = HomeFunAdapter { position: Int -> funItemClick(position) }
-
         viewBinding.flCreate.setOnClickListener {
 
         }
-
         //tab 我的作品和最新主題
         viewBinding.viewPager.adapter = object : FragmentStateAdapter(this) {
             override fun getItemCount(): Int = 2
-
             override fun createFragment(position: Int): Fragment {
                 if (position == 0) {
                 }
                 return Fragment()
             }
         }
+        //初始化tab标签
+        viewBinding.viewPager.adapter = FragmentAdapter(this)
+        TabLayoutMediator(
+            viewBinding.tabHome,
+            viewBinding.viewPager
+        ) { tab: TabLayout.Tab, position: Int ->
+            when (position) {
+                0 -> tab.text = getString(R.string.main_studio)
+                1 -> tab.text = getString(R.string.new_theme)
+            }
+        }.attach()
     }
 
 
+    /**
+     * 功能表
+     */
     fun funItemClick(position: Int) {
         openGallery()
     }
@@ -89,9 +84,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         return PageName.HOME
     }
 
+    /**
+     * 跳转到照片选择页面
+     */
     fun openGallery() {
-
-
     }
 
 
@@ -109,5 +105,22 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
             })
     }
 
+
+    private inner class FragmentAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
+
+        override fun getItemCount(): Int {
+            return 2
+        }
+
+        override fun createFragment(position: Int): Fragment {
+            return when (position) {
+                0 -> MainHomeItemFragment.newInstance(3)
+                else -> {
+                    MainHomeItemFragment.newInstance(3)
+                }
+            }
+        }
+
+    }
 
 }
