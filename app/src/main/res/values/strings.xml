@@ -107,14 +107,14 @@
     <string name="ps_select_audio_min_second">选择音频小于%1$d秒</string>
     <string name="ps_select_no_support">不支持的选择类型</string>
 
-<!--    <string name="imported">Imported</string>-->
-<!--    <string name="add_clip_tip">Please select at least one clip</string>-->
-<!--    <string name="drag_tip">Long press and drag to reorder</string>-->
-<!--    <string name="next">Next</string>-->
-<!--    <string name="click_preview">Click to view</string>-->
-<!--    <string name="all">All</string>-->
-<!--    <string name="photo">Photo</string>-->
-<!--    <string name="video">Video</string>-->
+    <!--    <string name="imported">Imported</string>-->
+    <!--    <string name="add_clip_tip">Please select at least one clip</string>-->
+    <!--    <string name="drag_tip">Long press and drag to reorder</string>-->
+    <!--    <string name="next">Next</string>-->
+    <!--    <string name="click_preview">Click to view</string>-->
+    <!--    <string name="all">All</string>-->
+    <!--    <string name="photo">Photo</string>-->
+    <!--    <string name="video">Video</string>-->
 
 
     <!--common-->
@@ -909,8 +909,10 @@
     <string name="current_project">Current Draft</string>
 
 
-
     <string name="activity_main_video_to_audio">Video to Mp3</string>
 
     <string name="share_to">Share to</string>
+    <string name="manager">Manager</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?><!--底栏总高度52dp-->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:paddingBottom="8dp"
     android:layout_height="match_parent">
@@ -18,6 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/tab_title"
         android:layout_width="wrap_content"
         android:layout_height="12dp"
@@ -26,10 +28,11 @@
         android:gravity="center"
         android:text="aaaa"
         android:textColor="@color/selector_bottom_bar_title_color"
-        android:textSize="10sp"
+        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tab_icon" />
+        app:layout_constraintTop_toBottomOf="@+id/tab_icon"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

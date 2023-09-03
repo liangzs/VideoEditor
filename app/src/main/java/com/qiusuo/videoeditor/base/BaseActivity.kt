@@ -134,4 +134,6 @@ abstract class BaseActivity<T : ViewBinding>(var inflater: (inflater: LayoutInfl
 
     }
 
+//    abstract fun FragmentStateAdapter(): RecyclerView.Adapter<RecyclerView.ViewHolder>?
+
 }

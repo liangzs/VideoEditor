@@ -11,6 +11,7 @@ import com.nan.xarch.item.LargeVideoViewData
 import com.nan.xarch.item.VideoViewData
 import com.qiusuo.videoeditor.base.BaseRecyclerViewModel
 import com.qiusuo.videoeditor.base.BaseViewData
+import com.qiusuo.videoeditor.common.bean.Project
 import com.qiusuo.videoeditor.common.bean.ThemeEntity
 import com.qiusuo.videoeditor.common.constant.PageName
 import com.qiusuo.videoeditor.common.constant.VideoType
@@ -106,15 +107,26 @@ class HomeViewModel : BaseRecyclerViewModel() {
     }
 
 
-    var themeLiveData= MutableLiveData<List<ThemeEntity>>()
-    fun loadLatestTheme(){
+    var themeLiveData = MutableLiveData<List<ThemeEntity>>()
+    fun loadLatestTheme() {
         viewModelScope.launch {
-            LogUtils.i("thread",Thread.currentThread().name)
+            LogUtils.i("thread", Thread.currentThread().name)
             delay(500)
-            val list= listOf<ThemeEntity>(ThemeEntity(),ThemeEntity(),ThemeEntity(),ThemeEntity(),ThemeEntity())
+            val list = listOf<ThemeEntity>(ThemeEntity(), ThemeEntity(), ThemeEntity(), ThemeEntity(), ThemeEntity())
             themeLiveData.postValue(list)
         }
     }
+
+    fun loadTab(): List<String> {
+        return (1..10).map {
+            "group" + it.toString()
+        }
+    }
+
+    fun loadDraft():List<Project>{
+      return  (1..5).map {index-> Project().also { it.projectName="name$index" } }
+    }
+
     @PageName
     override fun getPageName() = PageName.HOME
 }

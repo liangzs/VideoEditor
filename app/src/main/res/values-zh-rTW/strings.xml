@@ -4,6 +4,7 @@
 
     <string name="main_hot_theme">热门主题</string>
     <string name="main_studio">我的工作台</string>
+    <string name="new_theme">新主題</string>
 
     <string name="no_network">无网络连接，请检查网络设置</string>
     <string name="network_error">出了点意外，内容加载失败</string>
@@ -20,4 +21,5 @@
     <string name="refresh_refresh_complete">更新完成</string>
 
     <string name="setting">设置</string>
+    <string name="manager">管理</string>
 </resources>

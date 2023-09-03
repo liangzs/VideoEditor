@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ThemeFactory {
+public class ThemeRepository {
 
     /**
      * 预处理对象
@@ -346,7 +346,7 @@ public class ThemeFactory {
      */
     public static List<String> getThemeSort() {
         if (themeSort == null || themeSort == ThemeConstant.defaultThemeSort) {
-            synchronized (ThemeFactory.class) {
+            synchronized (ThemeRepository.class) {
                 if (themeSort == null || themeSort == ThemeConstant.defaultThemeSort) {
                     try {
                         Reader reader = new FileReader(DownloadPath.THEME_SORT_SAVE);

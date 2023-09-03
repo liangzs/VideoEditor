@@ -314,7 +314,7 @@ public class MediaDataRepository {
         mSpBgInfo.setBackgrondType(BackgroundType.SELF);
         mSpBgInfo.setBlurLevel(50);
         //当且仅当同一主题，然后已选了自定义歌曲时，不进行歌曲切换
-        if (!ThemeFactory.checkLockTheme(slideEntity.getThemeEnum())) {
+        if (!ThemeRepository.checkLockTheme(slideEntity.getThemeEnum())) {
 
             ThreadPoolManager.getThreadPool().execute(() -> {
                 try {
@@ -971,7 +971,7 @@ public class MediaDataRepository {
      */
     public void swapOperate(int fromPosition, int toPosition) {
         LogUtils.i("swapOperate", "fromPosition:" + fromPosition + ",toPosition:" + toPosition);
-        preTreatment = ThemeFactory.createPreTreatment(ConstantMediaSize.themeType);
+        preTreatment = ThemeRepository.createPreTreatment(ConstantMediaSize.themeType);
         if (fromPosition < toPosition) {
             for (int i = fromPosition; i < toPosition; i++) {
                 Collections.swap(dataOperate, i, i + 1);
@@ -1944,7 +1944,7 @@ public class MediaDataRepository {
             bakNoThemeDuration();
         }
         setCurrentSlideEntity(slideshowEntity);
-        preTreatment = ThemeFactory.createPreTreatment(slideshowEntity.getThemeEnum());
+        preTreatment = ThemeRepository.createPreTreatment(slideshowEntity.getThemeEnum());
         if (!ObjectUtils.isEmpty(mimaps)) {
             for (int i = 0; i < mimaps.size(); i++) {
                 List<Bitmap> bitmaps = mimaps.get(i);

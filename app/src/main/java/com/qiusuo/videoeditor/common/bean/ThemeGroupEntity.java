@@ -1,10 +1,9 @@
 package com.qiusuo.videoeditor.common.bean;
 
 
-import com.google.android.exoplayer2.offline.DownloadHelper;
 import com.ijoysoft.mediasdk.common.utils.ObjectUtils;
 import com.ijoysoft.mediasdk.module.opengl.theme.ThemeConstant;
-import com.qiusuo.videoeditor.common.data.ThemeFactory;
+import com.qiusuo.videoeditor.common.data.ThemeRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -295,7 +294,7 @@ public class ThemeGroupEntity {
             }
             return allCacheList;
         }
-        List<String> themeSort = ThemeFactory.getThemeSort();
+        List<String> themeSort = ThemeRepository.getThemeSort();
         startIndex = new int[themeSort.size() - 1];
         for (int j = 1; j < themeSort.size(); j++) {
             startIndex[i++] = allCacheList.size();
