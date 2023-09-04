@@ -4,7 +4,7 @@ plugins {
     id 'kotlin-android-extensions'
     id 'kotlin-kapt'
 }
-
+apply from: "murge.gradle"
 android {
     compileSdkVersion configs.compileSdkVersion
 
@@ -53,33 +53,6 @@ android {
                 srcDir "src/main/assets"
 //                srcDir "../selector/src/main/assets"
             }
-            manifest.srcFile {
-                //其它Manifest
-                def libraryManifests = [
-                        "src/main/AndroidManifest.xml",
-//                        "../selector/src/main/AndroidManifest.xml",
-                ]
-                //主manifest
-                def mainManifestPath = 'src/main/AndroidManifest.xml'
-                //新生成的manifest
-                def targetManifestPath = 'src/main/AndroidManifest_target.xml'
-
-                def mainManifest = new XmlParser().parseText(file(mainManifestPath).getText("utf-8"))
-                Node mainApplication = mainManifest["application"][0]
-                NodeList nodesInMainApplication = mainApplication.value();
-
-                for (libraryManifestPath in libraryManifests) {
-                    def libraryManifest = new XmlParser().parseText(file(libraryManifestPath).getText("utf-8"))
-                    Node libraryApplication = libraryManifest["application"][0]
-                    NodeList nodesInLibraryApplication = libraryApplication.value();
-                    nodesInMainApplication.addAll(nodesInLibraryApplication);
-                }
-
-                def serialize = groovy.xml.XmlUtil.serialize(mainManifest)
-                file(targetManifestPath).write(serialize, "utf-8")
-
-                return targetManifestPath
-            }
         }
     }
 }
@@ -92,15 +65,15 @@ configurations.all {
 dependencies {
     implementation 'androidx.core:core:{latest version}'
     implementation "androidx.core:core-ktx:$kotlin_base_version"
-    implementation 'androidx.appcompat:appcompat:1.4.1'
-    implementation 'com.google.android.material:material:1.4.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
-    implementation("androidx.recyclerview:recyclerview:1.2.1")
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.8.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation("androidx.recyclerview:recyclerview:1.3.0")
     implementation project(path: ':mediaSdk')
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    testImplementation 'junit:junit:4.+'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    testImplementation 'junit:junit:'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     implementation("androidx.annotation:annotation:${configs.androidx_annotation}")
     //retrofit
     implementation("com.squareup.retrofit2:retrofit:${configs.versions_retrofit}")

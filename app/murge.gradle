@@ -1,0 +1,48 @@
+import javax.xml.parsers.DocumentBuilderFactory
+import javax.xml.transform.TransformerFactory
+import javax.xml.transform.dom.DOMSource
+import javax.xml.transform.stream.StreamResult
+
+String mergeManifestXmlFiles(String mainXmlPath, ArrayList<String> libraryXmlPaths) {
+    def mainManifestFile = file(mainXmlPath)
+    def targetFile = new File(mainManifestFile.getParent(), 'AndroidManifest_target.xml')
+
+    //从DOM工厂中获得DOM解析器
+    def documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+
+    def mainXmlDocument = documentBuilder.parse(mainManifestFile)
+    def mainApplicationNode = mainXmlDocument.getElementsByTagName("application").item(0);
+
+    for (String libraryXmlPath in libraryXmlPaths) {
+        def libraryXmlDocument = documentBuilder.parse(file(libraryXmlPath))
+
+        def libraryUsersPermissionList = libraryXmlDocument.getElementsByTagName("uses-permission")
+        int length = libraryUsersPermissionList != null ? libraryUsersPermissionList.length : 0
+        if (length > 0) {
+            for (int i = 0; i < length; i++) {
+                def mainXmlNode = mainXmlDocument.getDocumentElement()
+                mainXmlNode.insertBefore(mainXmlDocument.importNode(libraryUsersPermissionList.item(i), true), mainXmlNode.getFirstChild())
+            }
+        }
+
+        def libraryApplication = libraryXmlDocument.getElementsByTagName("application").item(0)
+        if (libraryApplication != null && libraryApplication.hasChildNodes()) {
+            def children = libraryApplication.getChildNodes()
+            for (int i = 0; i < children.length; i++) {
+                mainApplicationNode.appendChild(mainXmlDocument.importNode(children.item(i), true))
+            }
+        }
+    }
+
+    def transformer = TransformerFactory.newInstance().newTransformer();
+    transformer.setOutputProperty("encoding", "utf-8")
+    transformer.setOutputProperty("indent", "yes")
+    def source = new DOMSource(mainXmlDocument)
+    def result = new StreamResult(targetFile)
+    transformer.transform(source, result)
+    targetFile.getAbsolutePath()
+}
+
+ext {
+    mergeManifestXmlFiles = this.&mergeManifestXmlFiles
+}
