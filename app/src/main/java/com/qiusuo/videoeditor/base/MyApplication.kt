@@ -7,6 +7,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ProcessLifecycleOwner
+import androidx.room.Room
+import com.qiusuo.videoeditor.common.room.AppDataBase
 
 /**
  * Application
@@ -14,32 +16,16 @@ import androidx.lifecycle.ProcessLifecycleOwner
 class MyApplication : Application() {
 
     private var applicationStartTime = 0L
-
+    private var db: AppDataBase? = null
     override fun onCreate() {
         super.onCreate()
         initInMainProcess {
             instance = this
-            // Application生命周期监听
-            ProcessLifecycleOwner.get().lifecycle.addObserver(object : LifecycleObserver {
-                @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-                fun onCreate() {
-                }
-
-                @OnLifecycleEvent(Lifecycle.Event.ON_START)
-                fun onStart() {
-                    // 应用启动埋点
-                    // reportAppStart(0)
-                    // 应用返回前台，记录时间戳
-                    applicationStartTime = System.currentTimeMillis()
-                }
-
-                @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-                fun onStop() {
-                    // 应用进入后台埋点
-                    // reportAppStayTime(applicationStartTime, System.currentTimeMillis())
-                }
-            })
         }
+        db = Room.databaseBuilder(
+            applicationContext,
+            AppDataBase::class.java, "videoeditor"
+        ).build()
     }
 
     /**

@@ -1,6 +1,5 @@
 package com.qiusuo.videoeditor.module.home
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.ijoysoft.mediasdk.common.utils.LogUtils
@@ -11,14 +10,12 @@ import com.nan.xarch.item.LargeVideoViewData
 import com.nan.xarch.item.VideoViewData
 import com.qiusuo.videoeditor.base.BaseRecyclerViewModel
 import com.qiusuo.videoeditor.base.BaseViewData
-import com.qiusuo.videoeditor.common.bean.Project
+import com.qiusuo.videoeditor.common.room.Project
 import com.qiusuo.videoeditor.common.bean.ThemeEntity
 import com.qiusuo.videoeditor.common.constant.PageName
 import com.qiusuo.videoeditor.common.constant.VideoType
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class HomeViewModel : BaseRecyclerViewModel() {
     override fun loadData(isLoadMore: Boolean, isReLoad: Boolean, page: Int) {

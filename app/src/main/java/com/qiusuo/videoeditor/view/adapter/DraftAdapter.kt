@@ -3,10 +3,10 @@ package com.qiusuo.videoeditor.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.qiusuo.videoeditor.common.bean.Project
+import com.qiusuo.videoeditor.common.room.Project
 import com.qiusuo.videoeditor.databinding.ItemDraftLayoutBinding
 
-class DraftAdapter(val list: List<Project>) : RecyclerView.Adapter<DraftAdapter.DraftHolder>() {
+class DraftAdapter(val list: List<Project>?) : RecyclerView.Adapter<DraftAdapter.DraftHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DraftHolder {

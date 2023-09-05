@@ -63,7 +63,7 @@ import com.qiusuo.videoeditor.base.MyApplication;
 import com.qiusuo.videoeditor.common.bean.CutMusicItem;
 import com.qiusuo.videoeditor.common.bean.MediaEntity;
 import com.qiusuo.videoeditor.common.bean.MusicEntity;
-import com.qiusuo.videoeditor.common.bean.Project;
+import com.qiusuo.videoeditor.common.room.Project;
 import com.qiusuo.videoeditor.common.bean.ThemeEntity;
 import com.qiusuo.videoeditor.common.bean.SpBgInfo;
 import com.qiusuo.videoeditor.common.bean.ThemeGroupEntity;
@@ -1475,10 +1475,10 @@ public class MediaDataRepository {
 
     public String getProjectID() {
         if (currentProject != null) {
-            return currentProject.getProjectId();
+            return currentProject.projectId;
         } else {
             establishProject();
-            return currentProject.getProjectId();
+            return currentProject.projectId;
         }
     }
 
@@ -2020,9 +2020,9 @@ public class MediaDataRepository {
     public List<MediaItem> clearThemeNone(boolean random) {
         LogUtils.d("changeTheme", "execute");
         if (random) {
-            currentProject.setTranGroup(TransitionRepository.INSTANCE.randomTranGroup());
+            currentProject.tranGroup = TransitionRepository.INSTANCE.randomTranGroup();
         } else {
-            currentProject.setTranGroup(TransitionRepository.TransiGroup.GROUP_NONE);
+            currentProject.tranGroup = TransitionRepository.TransiGroup.GROUP_NONE;
         }
         ConstantMediaSize.themeType = ThemeEnum.NONE;
         ConstantMediaSize.themeConstantype = ThemeConstant.HOT;
@@ -2305,10 +2305,10 @@ public class MediaDataRepository {
      * 设置随机转场
      */
     public boolean randomAllTransition() {
-        currentProject.setTranGroup(TransitionRepository.INSTANCE.randomTranGroup());
+        currentProject.tranGroup = TransitionRepository.INSTANCE.randomTranGroup();
         boolean changeTime = false;
         for (int i = 0; i < dataOperate.size(); i++) {
-            dataOperate.get(i).setTransitionFilter(TransitionRepository.INSTANCE.randomTransitionFilter(currentProject.getTranGroup(), i));
+            dataOperate.get(i).setTransitionFilter(TransitionRepository.INSTANCE.randomTransitionFilter(currentProject.tranGroup, i));
             if (dataOperate.get(i).getFinalDuration() < ConstantMediaSize.TRANSITION_DURATION) {
                 dataOperate.get(i).setDuration(ConstantMediaSize.TRANSITION_DURATION);
                 changeTime = true;
@@ -2324,7 +2324,7 @@ public class MediaDataRepository {
      * 移除随机转场
      */
     public void removeAllTransition() {
-        currentProject.setTranGroup(TransitionRepository.TransiGroup.GROUP_NONE);
+        currentProject.tranGroup = TransitionRepository.TransiGroup.GROUP_NONE;
         for (int i = 0; i < dataOperate.size(); i++) {
             dataOperate.get(i).setTransitionFilter(TransitionFactory.initFilters(TransitionType.NONE));
         }

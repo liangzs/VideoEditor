@@ -29,7 +29,7 @@ class DraftFragment : BaseFragment<FragmentDraftBinding>(FragmentDraftBinding::i
 
             }
         }
-        draftAdapter = DraftAdapter()
+        draftAdapter = DraftAdapter(null)
         viewBinding.rv.adapter = draftAdapter
     }
 
