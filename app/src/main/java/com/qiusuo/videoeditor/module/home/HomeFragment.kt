@@ -17,6 +17,7 @@ import com.qiusuo.videoeditor.R
 import com.qiusuo.videoeditor.base.BaseFragment
 import com.qiusuo.videoeditor.common.constant.PageName
 import com.qiusuo.videoeditor.databinding.FragmentHomeBinding
+import com.qiusuo.videoeditor.module.select.SelectClipActivity
 import com.qiusuo.videoeditor.ui.adapter.HomeFunAdapter
 
 
@@ -85,6 +86,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
      * 跳转到照片选择页面
      */
     fun openGallery() {
+       startActivity(Intent(requireActivity(),SelectClipActivity::class.java))
     }
 
 

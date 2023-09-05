@@ -637,7 +637,7 @@ class MediaRenderBus(val mediaCallback: IMediaCallback?) : IMediaRender, IThemeC
             return false
         }
         for (mediaItem in mediaList) {
-            if (mediaItem?.isVideo) {
+            if (mediaItem.isVideo) {
                 return true
             }
         }

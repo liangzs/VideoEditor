@@ -47,6 +47,7 @@ class Food3ThemeManager : ThemeManagerWithwidget() {
                 RatioType._4_3 -> it.setBackgroundTexture(BitmapUtil.decriptImage(ConstantMediaSize.themePath + "/43"))
                 RatioType._16_9 -> it.setBackgroundTexture(BitmapUtil.decriptImage(ConstantMediaSize.themePath + "/169"))
                 RatioType._1_1 -> it.setBackgroundTexture(BitmapUtil.decriptImage(ConstantMediaSize.themePath + "/11"))
+                else -> {}
             }
         }
 

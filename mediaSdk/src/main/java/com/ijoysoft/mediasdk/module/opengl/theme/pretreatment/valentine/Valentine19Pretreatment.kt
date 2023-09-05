@@ -36,6 +36,7 @@ class Valentine19Pretreatment : BaseTimePreTreatment() {
                 list.add(BitmapUtil.decriptImage(ConstantMediaSize.themePath + "/ratio916_1"))
                 list.add(BitmapUtil.decriptImage(ConstantMediaSize.themePath + "/ratio916_2"))
             }
+            else -> {}
         }
         return list
     }

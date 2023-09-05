@@ -26,6 +26,7 @@ class ThemeWidgetHelper {
                 ORIENTATION.LEFT -> startX = -1f
                 ORIENTATION.RIGHT -> startX = 1f
 
+                else -> {}
             }
             return AnimationBuilder(duration)
                 .setCoordinate(startX, startY, endX, endY)
@@ -45,6 +46,7 @@ class ThemeWidgetHelper {
                 ORIENTATION.LEFT -> startX = 1f
                 ORIENTATION.RIGHT -> startX = -1f
 
+                else -> {}
             }
             return AnimationBuilder(duration)
                 .setCoordinate(startX, startY, endX, endY)
@@ -68,6 +70,7 @@ class ThemeWidgetHelper {
                 }
 
 
+                else -> {}
             }
             return EnterEaseOutElastic(builder);
         }

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.qiusuo.videoeditor.R
 import com.qiusuo.videoeditor.base.BaseFragment
@@ -16,6 +17,7 @@ import kotlinx.coroutines.withContext
 
 class DraftFragment : BaseFragment<FragmentDraftBinding>(FragmentDraftBinding::inflate) {
     private var draftAdapter: DraftAdapter? = null
+    private val viewModel :HomeViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +31,7 @@ class DraftFragment : BaseFragment<FragmentDraftBinding>(FragmentDraftBinding::i
 
             }
         }
-        draftAdapter = DraftAdapter(null)
+        draftAdapter = DraftAdapter(viewModel.loadDraft())
         viewBinding.rv.adapter = draftAdapter
     }
 
