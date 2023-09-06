@@ -11,6 +11,7 @@ import com.ijoysoft.mediasdk.module.entity.MediaItem;
 import com.ijoysoft.mediasdk.module.entity.MediaType;
 import com.ijoysoft.mediasdk.module.entity.VideoMediaItem;
 
+import java.io.IOException;
 import java.io.Serializable;
 public class MediaEntity implements Serializable, Cloneable {
     /**
@@ -428,8 +429,10 @@ public class MediaEntity implements Serializable, Cloneable {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (retriever != null) {
+            try {
                 retriever.release();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }
     }

@@ -14,12 +14,14 @@ import java.util.Date
 @Entity(tableName = "project")
 data class Project(@PrimaryKey val projectId: String,
                    var copyId: String? = null,
-                   var createTime: Date? = null,
-                   var updateTime: Date? = null,
+                   var createTime: String? = null,
+                   var updateTime: String? = null,
                    var duration: Long = 0,
                    var coverPath: String? = null,
                    var projectName: String? = null,
                    var pathName: String? = null,
                    var tranGroup: Int = 0
-)
 
+) {
+    constructor() : this("", null, null, null, 0, null, null, null, 0)
+}

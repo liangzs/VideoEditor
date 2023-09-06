@@ -163,6 +163,7 @@ object MediaManager {
             MusicSortType.SORT_NAME -> sortByName(reverse)
             MusicSortType.SORT_DATE -> sortDate(reverse)
             MusicSortType.SORT_DURATION -> sortByDuration(reverse)
+            else -> {}
         }
     }
 

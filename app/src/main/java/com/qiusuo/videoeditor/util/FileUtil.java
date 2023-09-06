@@ -514,8 +514,10 @@ public class FileUtil {
             mediaMetadataRetriever.release();
         } catch (Exception e) {
             e.printStackTrace();
-            if (mediaMetadataRetriever != null) {
+            try {
                 mediaMetadataRetriever.release();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
             }
         }
 

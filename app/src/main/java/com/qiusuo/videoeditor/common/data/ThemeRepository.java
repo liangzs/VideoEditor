@@ -42,7 +42,7 @@ public class ThemeRepository {
     public static List<ThemeEntity> getThemeData(@ThemeConstant.ThemeType int themeType) {
         String localMusicPath = "";
         List<ThemeEntity> list = new ArrayList<>();
-        ThemeGroupEntity themeGroupEntity = MediaDataRepository.getInstance().getThemeGroupEntity();
+        ThemeGroupEntity themeGroupEntity = MediaDataRepository.INSTANCE.getThemeGroupEntity();
         if (ObjectUtils.isEmpty(themeGroupEntity)) {
             //如果主题基础数据没有从服务端获取，则创建四个主题本地数据进行显示
             return createLocalTheme(themeType);
@@ -51,7 +51,7 @@ public class ThemeRepository {
         if (ObjectUtils.isEmpty(downEntities)) {
             return createLocalTheme(themeType);
         }
-        ThemeResGroupEntity themeResGroupEntity = MediaDataRepository.getInstance().getThemeResGroupEntity();
+        ThemeResGroupEntity themeResGroupEntity = MediaDataRepository.INSTANCE.getThemeResGroupEntity();
         if (ObjectUtils.isEmpty(themeResGroupEntity)) {
             return createLocalTheme(themeType);
         }
@@ -113,7 +113,7 @@ public class ThemeRepository {
     public static List<ThemeEntity> getAllTheme() {
         String localMusicPath = "";
         List<ThemeEntity> list = new ArrayList<>();
-        ThemeGroupEntity themeGroupEntity = MediaDataRepository.getInstance().getThemeGroupEntity();
+        ThemeGroupEntity themeGroupEntity = MediaDataRepository.INSTANCE.getThemeGroupEntity();
         if (ObjectUtils.isEmpty(themeGroupEntity)) {
             //如果主题基础数据没有从服务端获取，则创建四个主题本地数据进行显示
             return createCommonTheme();
@@ -122,7 +122,7 @@ public class ThemeRepository {
         if (ObjectUtils.isEmpty(downEntities)) {
             return createCommonTheme();
         }
-        ThemeResGroupEntity themeResGroupEntity = MediaDataRepository.getInstance().getThemeResGroupEntity();
+        ThemeResGroupEntity themeResGroupEntity = MediaDataRepository.INSTANCE.getThemeResGroupEntity();
         if (ObjectUtils.isEmpty(themeResGroupEntity) || ObjectUtils.isEmpty(themeResGroupEntity.getAllResource())) {
             return createCommonTheme();
         }
@@ -173,7 +173,7 @@ public class ThemeRepository {
     public static List<ThemeEntity> getDownloadTheme() {
         String localMusicPath;
         List<ThemeEntity> list = new ArrayList<>();
-        ThemeGroupEntity themeGroupEntity = MediaDataRepository.getInstance().getThemeGroupEntity();
+        ThemeGroupEntity themeGroupEntity = MediaDataRepository.INSTANCE.getThemeGroupEntity();
         if (ObjectUtils.isEmpty(themeGroupEntity)) {
             return list;
         }
@@ -181,7 +181,7 @@ public class ThemeRepository {
         if (ObjectUtils.isEmpty(downEntities)) {
             return list;
         }
-        ThemeResGroupEntity themeResGroupEntity = MediaDataRepository.getInstance().getThemeResGroupEntity();
+        ThemeResGroupEntity themeResGroupEntity = MediaDataRepository.INSTANCE.getThemeResGroupEntity();
         if (ObjectUtils.isEmpty(themeResGroupEntity)) {
             return list;
         }

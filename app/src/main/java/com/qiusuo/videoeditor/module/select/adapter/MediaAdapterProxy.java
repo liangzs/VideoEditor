@@ -333,7 +333,7 @@ public class MediaAdapterProxy {
         if (isAddClip) {
             boolean contains = false;
             int i = 0;
-            for (MediaItem mediaItem : MediaDataRepository.getInstance().getDataOperate()) {
+            for (MediaItem mediaItem : MediaDataRepository.INSTANCE.getDataOperate()) {
                 //不计算新加的
                 if (i == ((SelectClipActivity) mContext).getOriginSize()) {
                     break;

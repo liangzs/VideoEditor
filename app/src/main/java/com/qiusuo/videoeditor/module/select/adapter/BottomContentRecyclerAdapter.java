@@ -404,7 +404,7 @@ public class BottomContentRecyclerAdapter extends RecyclerView.Adapter<BottomCon
 
         @Override
         public void onItemMove(int fromPosition, int toPosition) {
-            if (fromPosition + originSize >= MediaDataRepository.getInstance().getDataOperate().size() || toPosition + originSize >= MediaDataRepository.getInstance().getDataOperate().size()) {
+            if (fromPosition + originSize >= MediaDataRepository.INSTANCE.getDataOperate().size() || toPosition + originSize >= MediaDataRepository.INSTANCE.getDataOperate().size()) {
                 if (mMoveOutBoundsListener != null) {
                     mMoveOutBoundsListener.outBounds();
                 }
@@ -425,7 +425,7 @@ public class BottomContentRecyclerAdapter extends RecyclerView.Adapter<BottomCon
                     }
                 }
                 //MediaDataRepository中已做了转场mipmap的交换了
-                MediaDataRepository.getInstance().swapOperate(fromPosition + originSize, toPosition + originSize);
+                MediaDataRepository.INSTANCE.swapOperate(fromPosition + originSize, toPosition + originSize);
             }
         }
 
@@ -448,8 +448,8 @@ public class BottomContentRecyclerAdapter extends RecyclerView.Adapter<BottomCon
                 mediaEntity.setRotation(mediaItem.getRotation());
 //                mediaEntity.setVideoTrimCuttedValue(mediaItem);
                 if (mediaEntity.type == MediaEntity.TYPE_VIDEO) {
-                    MediaDataRepository.getInstance().setTempMediaEntity(mediaEntity);
-                    MediaDataRepository.getInstance().getTempMediaEntity().loadRotation();
+                    MediaDataRepository.INSTANCE.tempMediaEntity = mediaEntity;
+                    MediaDataRepository.INSTANCE.tempMediaEntity.loadRotation();
                 }
 //                AppBus.get().post(new PreviewEvent(mediaEntity, true, index));
             }

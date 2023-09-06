@@ -30,7 +30,8 @@
         <activity
             android:name=".module.edit.EditorActivity"
             android:exported="false" />
-        <activity android:name=".module.welcome.WelcomeActivity">
+        <activity android:name=".module.welcome.WelcomeActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

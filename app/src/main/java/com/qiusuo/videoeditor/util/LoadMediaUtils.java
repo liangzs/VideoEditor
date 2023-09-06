@@ -17,6 +17,7 @@ import com.qiusuo.videoeditor.common.data.ContentDataLoadTask;
 import com.qiusuo.videoeditor.util.pinyinhelper.PinyinUtils;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by wh on 2019/5/21.
@@ -157,7 +158,11 @@ public class LoadMediaUtils {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            retriever.release();
+            try {
+                retriever.release();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
         return cutMusicItem;
     }
@@ -198,7 +203,11 @@ public class LoadMediaUtils {
             e.printStackTrace();
             return 0;
         } finally {
-            retriever.release();
+            try {
+                retriever.release();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 

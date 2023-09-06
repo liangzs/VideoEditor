@@ -5,9 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.qiusuo.videoeditor.common.room.Project
 import com.qiusuo.videoeditor.databinding.ItemDraftLayoutBinding
-import kotlinx.android.synthetic.main.item_fragment_media_layout.view.*
 
-class DraftAdapter(val list: List<Project>?) : RecyclerView.Adapter<DraftAdapter.DraftHolder>() {
+class DraftAdapter(val list: List<Project>) : RecyclerView.Adapter<DraftAdapter.DraftHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DraftHolder {

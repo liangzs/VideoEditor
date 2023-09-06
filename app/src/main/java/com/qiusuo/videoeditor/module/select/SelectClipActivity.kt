@@ -48,8 +48,6 @@ import com.ijoysoft.mediasdk.module.entity.VideoMediaItem
 import com.ijoysoft.mediasdk.module.mediacodec.FfmpegBackgroundHelper
 import com.ijoysoft.mediasdk.module.opengl.transition.TransitionSeries
 import com.qiusuo.videoeditor.R
-import com.qiusuo.videoeditor.base.BaseActivity
-import com.qiusuo.videoeditor.base.MyApplication
 import com.qiusuo.videoeditor.base.ViewModelActivity
 import com.qiusuo.videoeditor.common.bean.MediaEntity
 import com.qiusuo.videoeditor.common.bean.MediaItemPicker
@@ -179,10 +177,10 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
             isAddClip = intent.getBooleanExtra(RequestCode.ADD_CLIP, false)
 
             if (isAddClip) {
-                originSize = MediaDataRepository.getInstance().dataOperate.size
+                originSize = MediaDataRepository.dataOperate.size
             }
             if (isAddClip || intent.getBooleanExtra(RequestCode.DRAFT_EDIT_TO_CLIP, false)) {
-                mediaListCopy = MediaDataRepository.getInstance().dataOperateCopy
+                mediaListCopy = MediaDataRepository.dataOperateCopy
             }
             isShowOriginData = intent.getBooleanExtra(RequestCode.SHOW_ORIGIN_ITEM, false)
             toStickerGroup = intent.getStringExtra(RequestCode.STICKER_GROUP)
@@ -349,14 +347,14 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
         mItemTouchHelper.attachToRecyclerView(viewBinding.recycler)
         mBottomContentRecyclerAdapter = BottomContentRecyclerAdapter(this, ArrayList())
         mBottomContentRecyclerAdapter!!.setOriginSize(originSize)
-        if (!isAddClip && MediaDataRepository.getInstance().isLocal) {
+        if (!isAddClip && MediaDataRepository.isLocal) {
             LogUtils.i("SelectClipActivity", "isLocal")
-            if (ObjectUtils.isEmpty(MediaDataRepository.getInstance().dataOperate)) {
+            if (ObjectUtils.isEmpty(MediaDataRepository.dataOperate)) {
                 LogUtils.i("SelectClipActivity", "empty return ")
                 return
             }
             LogUtils.i("SelectClipActivity", "not empty continue return ")
-            mBottomContentRecyclerAdapter!!.datas = MediaDataRepository.getInstance().dataOperate
+            mBottomContentRecyclerAdapter!!.datas = MediaDataRepository.dataOperate
             updateNum(
                 mBottomContentRecyclerAdapter!!.photoCount,
                 mBottomContentRecyclerAdapter!!.videoCount
@@ -365,10 +363,10 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
             viewBinding.recycler.visibility = View.VISIBLE
             viewBinding.dragTip.visibility = View.VISIBLE
         } else if (isAddClip && isShowOriginData) {
-            if (ObjectUtils.isEmpty(MediaDataRepository.getInstance().dataOperate)) {
+            if (ObjectUtils.isEmpty(MediaDataRepository.dataOperate)) {
                 return
             }
-            mBottomContentRecyclerAdapter!!.datas = MediaDataRepository.getInstance().dataOperate
+            mBottomContentRecyclerAdapter!!.datas = MediaDataRepository.dataOperate
             updateNum(
                 mBottomContentRecyclerAdapter!!.photoCount,
                 mBottomContentRecyclerAdapter!!.videoCount
@@ -388,13 +386,13 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
             BottomContentRecyclerAdapter.ItemClickListener {
             override fun onItemClick(view: View, position: Int) {
                 if (!AndroidUtil.chekcFastClickShort()) {
-                    val moperateData = MediaDataRepository.getInstance().dataOperate
+                    val moperateData = MediaDataRepository.dataOperate
                     if (moperateData == null || position >= moperateData.size) {
 //                        T.showShort(this@SelectClipActivity, resources.getString(R.string.delete_media_tip))
                         return
                     }
                     ThreadPoolManager.getThreadPool().execute(Runnable {
-                        MediaDataRepository.getInstance().remove(position + originSize)
+                        MediaDataRepository.remove(position + originSize)
                     })
                     if (position >= mBottomContentRecyclerAdapter!!.datas.size || position < 0) {
                         return
@@ -494,12 +492,12 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
         var toShowVideoToast = true
         var toShowMoreDialog = true
         //预先处理，避免多线程等待
-        MediaDataRepository.getInstance().preTrementGif()
+        MediaDataRepository.preTrementGif()
         //for (mediaEntity: MediaEntity in mediaEntities) {
         mediaEntities.forEach { mediaEntity ->
             //}
             //视频数量超过40检测
-            if (MediaDataRepository.getInstance().videoCount >= 40 && mediaEntity.type == MediaEntity.TYPE_VIDEO) {
+            if (MediaDataRepository.videoCount >= 40 && mediaEntity.type == MediaEntity.TYPE_VIDEO) {
                 if (toShowVideoToast) {
 //                    T.showShort(this@SelectClipActivity, resources.getString(R.string.not_add_more_video))
                     toShowVideoToast = false
@@ -509,7 +507,7 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
                 return@forEach
             }
 
-            if (MediaDataRepository.getInstance().dataOperate.size == 100 && !over && toShowMoreDialog) {
+            if (MediaDataRepository.dataOperate.size == 100 && !over && toShowMoreDialog) {
                 over = withContext(Dispatchers.Main) {
                     //暂停协程，并询问是否愿意超过100张
                     !askContinueSelectDialog()
@@ -517,31 +515,33 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
                 toShowMoreDialog = false
             }
 
-            if (over || MediaDataRepository.getInstance().dataOperate.size >= 200) {
+            if (over || MediaDataRepository.dataOperate.size >= 200) {
                 over = true
                 //超过了200的限制
                 count.countDown()
                 return@forEach
             }
-            val index = MediaDataRepository.getInstance().indexOfMediaEntity(mediaEntity)
+            val index = MediaDataRepository.indexOfMediaEntity(mediaEntity)
             if (index == -1) {
-                MediaDataRepository.getInstance().addMediaItem(mediaEntity, true) { m: MediaItem? ->
-                    count.countDown()
-                    runOnUiThread {
-                        if (loadShowing()) {
-                            //如果已经关闭则不显示
-//                            showLoading(resources.getString(R.string.selected) + " ${MediaDataRepository.getInstance().dataOperate.size} " + resources.getString(R.string.clips), true)
+                MediaDataRepository.addMediaItem(mediaEntity, true, object : MediaDataRepository.AddMediaCallback {
+                    override fun resultData(mediaItem: MediaItem?) {
+                        count.countDown()
+                        runOnUiThread {
+                            if (loadShowing()) {
+                                //如果已经关闭则不显示
+//                            showLoading(resources.getString(R.string.selected) + " ${MediaDataRepository.dataOperate.size} " + resources.getString(R.string.clips), true)
+                            }
                         }
                     }
-                }
+                })
                 val date = TimeUtils.format(mediaEntity.dateModify, TimeUtils.Date_PATTER)
                 fragment?.updateDateCount(date, mediaEntity.getType(), true)
             } else {
                 if (isAddClip && mBottomContentRecyclerAdapter!!.indexOfPath(mediaEntity.path) == -1) {
                     //添加模式下还未被复制
-                    MediaDataRepository.getInstance().copyMediaItemToPosition(
+                    MediaDataRepository.copyMediaItemToPosition(
                         index,
-                        MediaDataRepository.getInstance().dataOperate.size
+                        MediaDataRepository.dataOperate.size
                     )
                     val date = TimeUtils.format(mediaEntity.dateModify, TimeUtils.Date_PATTER)
                     fragment?.updateDateCount(date, mediaEntity.getType(), true)
@@ -549,7 +549,7 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
                         if (loadShowing()) {
                             //如果已经关闭则不显示
                             showLoading(
-                                resources.getString(R.string.selected) + " ${MediaDataRepository.getInstance().dataOperate.size} " + resources.getString(
+                                resources.getString(R.string.selected) + " ${MediaDataRepository.dataOperate.size} " + resources.getString(
                                     R.string.clips
                                 ), true
                             )
@@ -567,7 +567,7 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
             //                    throw new RuntimeException(e);
         }
         withContext(Dispatchers.Main) {
-            if (MediaDataRepository.getInstance().dataOperate.size > 60) {
+            if (MediaDataRepository.dataOperate.size > 60) {
                 T.showShort(this@SelectClipActivity, resources.getString(R.string.out_of_memory))
             }
             viewBinding.dragTip.visibility = View.VISIBLE
@@ -575,13 +575,13 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
             viewBinding.recycler.visibility = View.VISIBLE
             if (originSize > 0) {
                 mBottomContentRecyclerAdapter!!.datas =
-                    MediaDataRepository.getInstance().dataOperate.subList(
+                    MediaDataRepository.dataOperate.subList(
                         originSize,
-                        MediaDataRepository.getInstance().dataOperate.size
+                        MediaDataRepository.dataOperate.size
                     )
             } else {
                 mBottomContentRecyclerAdapter!!.datas =
-                    MediaDataRepository.getInstance().dataOperate
+                    MediaDataRepository.dataOperate
             }
             updateNum(
                 mBottomContentRecyclerAdapter!!.photoCount,
@@ -589,7 +589,7 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
             )
             fragment!!.updateSelect()
             endLoading()
-            if (MediaDataRepository.getInstance().dataOperate.size == 200) {
+            if (MediaDataRepository.dataOperate.size == 200) {
                 T.showShort(
                     this@SelectClipActivity,
                     resources.getString(R.string.not_add_more_photo)
@@ -627,26 +627,26 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
         //从大到小
         index.sortWith { a: Int, b: Int -> b - a }
         for (i: Int in index) {
-            MediaDataRepository.getInstance().remove(i + originSize)
+            MediaDataRepository.remove(i + originSize)
         }
         withContext(Dispatchers.Main) {
-            if (MediaDataRepository.getInstance().dataOperate.isEmpty()) {
+            if (MediaDataRepository.dataOperate.isEmpty()) {
                 viewBinding.dragTip.visibility = View.INVISIBLE
                 viewBinding.addClipTip.visibility = View.VISIBLE
                 viewBinding.recycler.visibility = View.INVISIBLE
             }
-            if (MediaDataRepository.getInstance().dataOperate.size == originSize) {
+            if (MediaDataRepository.dataOperate.size == originSize) {
                 mBottomContentRecyclerAdapter!!.clear()
             } else {
                 if (originSize > 0) {
                     mBottomContentRecyclerAdapter!!.datas =
-                        MediaDataRepository.getInstance().dataOperate.subList(
+                        MediaDataRepository.dataOperate.subList(
                             originSize,
-                            MediaDataRepository.getInstance().dataOperate.size
+                            MediaDataRepository.dataOperate.size
                         )
                 } else {
                     mBottomContentRecyclerAdapter!!.datas =
-                        MediaDataRepository.getInstance().dataOperate
+                        MediaDataRepository.dataOperate
                 }
             }
             updateNum(
@@ -722,7 +722,7 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
     //            return
     //        }
     //        if (mPreviewItem.type == MediaEntity.TYPE_VIDEO) {
-    //            mPreviewItem = MediaDataRepository.getInstance().tempMediaEntity
+    //            mPreviewItem = MediaDataRepository.tempMediaEntity
     //        }
     //        //已选中则不需要添加动画坐标，用来标记原来的状态
     //        if (getMediaItemSelectedIndex(mPreviewItem) == null) {
@@ -782,13 +782,13 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
                     //这里初始化视频播放类信息
                     endLoading()
                     if (isAddClip && !isShowOriginData) {
-                        var i = MediaDataRepository.getInstance().dataOperate.size - 1
+                        var i = MediaDataRepository.dataOperate.size - 1
                         while (i >= originSize) {
-                            MediaDataRepository.getInstance().remove(i)
+                            MediaDataRepository.remove(i)
                             i--
                         }
                     } else {
-                        MediaDataRepository.getInstance().clear()
+                        MediaDataRepository.clear()
                     }
                     runOnUiThread {
                         fragment!!.clearSelectCount()
@@ -804,6 +804,7 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
                     }
                 }
             }
+
             R.id.button_next -> {
                 if (mBottomContentRecyclerAdapter!!.datas.isEmpty()) {
 //                    T.showShort(this, getString(R.string.select_clip_enable_tip))
@@ -813,10 +814,11 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
                     isSave = true
                     showLoading(true, getString(R.string.loading))
                     next()
-                    MediaDataRepository.getInstance().isHasEdit = true
-                    MediaDataRepository.getInstance().resetMusic()
+                    MediaDataRepository.isHasEdit = true
+                    MediaDataRepository.resetMusic()
                 }
             }
+
             R.id.ll_folder -> showMediaFolder()
         }
     }
@@ -851,7 +853,7 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
     operator fun next() {
         ThreadPoolMaxThread.getInstance().execute(object : Runnable {
             override fun run() {
-                MediaDataRepository.getInstance().preTrementInfo()
+                MediaDataRepository.preTrementInfo()
                 ThreadPoolManager.getThreadPool().shutDown()
                 if (ThreadPoolManager.getThreadPool().awaitTermination(60)) {
                     ThreadPoolManager.getThreadPool().release()
@@ -861,16 +863,16 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
                 if (!isSave) {
                     return
                 }
-                //                MediaPlayerWrapper.getInstance().setDataSource(MediaDataRepository.getInstance().getDataOperate(),false);
+                //                MediaPlayerWrapper.getInstance().setDataSource(MediaDataRepository.getDataOperate(),false);
                 ThreadPoolManager.getThreadPool().release()
-                MediaDataRepository.getInstance().checkExtractVideoAudio()
+                MediaDataRepository.checkExtractVideoAudio()
                 runOnUiThread(object : Runnable {
                     override fun run() {
                         endLoading()
                         if (!isAddClip) {
                             if (intent.getBooleanExtra(RequestCode.MATERIAL_CREATE, false)) {
                                 if (ConstantMediaSize.transitionSeries != null && ConstantMediaSize.transitionSeries !== TransitionSeries.NONE) {
-                                    if (MediaDataRepository.getInstance().dataOperate.size < 2) {
+                                    if (MediaDataRepository.dataOperate.size < 2) {
                                         //一张图片不给进，防止崩溃
 //                                        T.showShort(this@SelectClipActivity, getString(R.string.single_not_support_transition))
                                         return
@@ -929,18 +931,18 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
 //            T.showShort(this@SelectClipActivity, getString(R.string.select_over_photo))
             return
         }
-        MediaDataRepository.getInstance().dataOperate?.let {
+        MediaDataRepository.dataOperate?.let {
             if (mediaItem!!.isImage) {
-                if (MediaDataRepository.getInstance().dataOperate.size == 60) {
+                if (MediaDataRepository.dataOperate.size == 60) {
 //                    T.showShort(this@SelectClipActivity, resources.getString(R.string.out_of_memory))
                 }
-                if (MediaDataRepository.getInstance().dataOperate.size >= 200) {
+                if (MediaDataRepository.dataOperate.size >= 200) {
 //                    T.showShort(this@SelectClipActivity, resources.getString(R.string.not_add_more_photo))
                     return
                 }
             }
             if (!mediaItem.isImage) {
-                if (MediaDataRepository.getInstance().videoCount >= 40) {
+                if (MediaDataRepository.videoCount >= 40) {
 //                    T.showShort(this@SelectClipActivity, resources.getString(R.string.not_add_more_video))
                     return
                 }
@@ -1007,21 +1009,21 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
             if (isAddClip) {
                 //使用copy防止重复
                 var i: Int = 0
-                val dataOperate: List<MediaItem> = MediaDataRepository.getInstance().dataOperate
+                val dataOperate = MediaDataRepository.dataOperate
                 val length: Int = dataOperate.size
                 while (i < length) {
-                    if (mediaItem.id == dataOperate[i].id) {
+                    if (mediaItem.id == dataOperate[i]!!.id) {
                         break
                     }
                     i++
                 }
                 if (i < length) {
                     //已经存在，采用复制方式
-                    val mediaItem1: MediaItem = MediaDataRepository.getInstance()
+                    val mediaItem1: MediaItem = MediaDataRepository
                         .copyMediaItemToPosition(
                             i,
-                            MediaDataRepository.getInstance().dataOperate.size
-                        )
+                            MediaDataRepository.dataOperate.size
+                        )!!
                     runOnUiThread {
                         mBottomContentRecyclerAdapter!!.update(mediaItem1)
                         updateNum(
@@ -1032,13 +1034,15 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
                     return@execute
                 }
             }
-            MediaDataRepository.getInstance().addMediaItem(mediaItem, true) { mediaItem ->
-                mBottomContentRecyclerAdapter!!.update(mediaItem)
-                updateNum(
-                    mBottomContentRecyclerAdapter!!.photoCount,
-                    mBottomContentRecyclerAdapter!!.videoCount
-                )
-            }
+            MediaDataRepository.addMediaItem(mediaItem, true, object : MediaDataRepository.AddMediaCallback {
+                override fun resultData(mediaItem: MediaItem?) {
+                    mBottomContentRecyclerAdapter!!.update(mediaItem)
+                    updateNum(
+                        mBottomContentRecyclerAdapter!!.photoCount,
+                        mBottomContentRecyclerAdapter!!.videoCount
+                    )
+                }
+            })
         }
     }
 
@@ -1049,7 +1053,7 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
                 val childCoordinate = intent.getIntArrayExtra("locate")
                 onMediaItemSelectingChanged(mediaItem, childCoordinate)
                 // 数据添加给mediaRepository更新数据
-                // MediaDataRepository.getInstance().addItem();
+                // MediaDataRepository.addItem();
             }
         }
     }
@@ -1066,7 +1070,7 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
         val index: Int? = getMediaItemSelectedIndex((mediaItem)!!)
         if (index != null) {
             ThreadPoolManager.getThreadPool()
-                .execute({ MediaDataRepository.getInstance().remove(index + originSize) })
+                .execute({ MediaDataRepository.remove(index + originSize) })
             val date = TimeUtils.format(mediaItem.dateModify, TimeUtils.Date_PATTER)
             fragment!!.updateDateCount(date, mediaItem.getType(), false)
             mBottomContentRecyclerAdapter!!.remove(null, index)
@@ -1129,14 +1133,14 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
         //}
         if (!isAddClip) {
             LogUtils.i("SelectClipActivity", "!isAddClip onResume")
-            if (ObjectUtils.isEmpty(MediaDataRepository.getInstance().dataOperate)) {
+            if (ObjectUtils.isEmpty(MediaDataRepository.dataOperate)) {
                 mBottomContentRecyclerAdapter!!.clear()
                 viewBinding.addClipTip.visibility = View.VISIBLE
                 viewBinding.recycler.visibility = View.INVISIBLE
                 viewBinding.dragTip.visibility = View.INVISIBLE
             } else {
                 mBottomContentRecyclerAdapter!!.datas =
-                    MediaDataRepository.getInstance().dataOperate
+                    MediaDataRepository.dataOperate
                 viewBinding.addClipTip.visibility = View.INVISIBLE
                 viewBinding.recycler.visibility = View.VISIBLE
                 viewBinding.dragTip.visibility = View.VISIBLE
@@ -1146,7 +1150,7 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
                 mBottomContentRecyclerAdapter!!.videoCount
             )
         } else {
-            val subList = MediaDataRepository.getInstance().dataOperate.let {
+            val subList = MediaDataRepository.dataOperate.let {
                 it.subList(originSize, it.size)
             }
             if (subList.isEmpty()) {
@@ -1188,7 +1192,7 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
     override fun onBackPressed() {
         this.setResult(-1) // 取消添加
         if (isAddClip && fragmentManager!!.backStackEntryCount == 1) { // 如果是二次添加不清除数据
-            MediaDataRepository.getInstance().overideData(mediaListCopy)
+            MediaDataRepository.overideData(mediaListCopy!!.toMutableList())
             setResult(RESULT_CANCELED)
             finish()
             return
@@ -1198,16 +1202,16 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
             "fragmentManager.getBackStackEntryCount():" + fragmentManager!!.backStackEntryCount
         )
         if (fragmentManager!!.backStackEntryCount == 1) {
-            if (!ObjectUtils.isEmpty(mBottomContentRecyclerAdapter!!.datas)) { // MediaDataRepository.getInstance().getDataOperate().size()
-                if (MediaDataRepository.getInstance().isLocal || isSave) {
+            if (!ObjectUtils.isEmpty(mBottomContentRecyclerAdapter!!.datas)) { // MediaDataRepository.getDataOperate().size()
+                if (MediaDataRepository.isLocal || isSave) {
                     // 如果是本地草稿，只保留进入当前页面时刻的数据
-                    MediaDataRepository.getInstance().overideData(mediaListCopy)
+                    MediaDataRepository.overideData(mediaListCopy!!.toMutableList())
                     saveLocalLoading()
                 } else {
                     showSaveDraftDialog()
                 }
             } else {
-                MediaDataRepository.getInstance().onDestory()
+                MediaDataRepository.onDestory()
                 finish()
             }
             return
@@ -1233,7 +1237,7 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
             ThreadPoolMaxThread.getInstance().execute {
                 ThreadPoolManager.getThreadPool().shutDownNow()
                 endLoading()
-                MediaDataRepository.getInstance().clearData() // 取消直接清除数据
+                MediaDataRepository.clearData() // 取消直接清除数据
                 runOnUiThread { finish() }
             }
         }
@@ -1267,7 +1271,7 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
                     ) label@{ pos: Int ->
                         when (pos) {
                             0 -> {
-                                if (MediaDataRepository.getInstance().dataOperate.size == 200) {
+                                if (MediaDataRepository.dataOperate.size == 200) {
 //                                    T.showShort(this@SelectClipActivity, resources.getString(R.string.not_add_more_photo))
                                     return@label
                                 }
@@ -1278,6 +1282,7 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
                                     openCamera()
                                 }
                             }
+
                             1 -> commonMenuPop = CommonMenuPop(
                                 this,
                                 mediaShowType,
@@ -1291,6 +1296,7 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
                                     viewModel.mediaSortType = mediaSortType!!
                                     fragment!!.switchAdapter(position)
                                 })
+
                             2 -> commonMenuPop = CommonMenuPop(
                                 this,
                                 mediaSortType!!.type,
@@ -1316,6 +1322,7 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
                 }
                 menuPopup!!.show(viewBinding.toolbar.findViewById(R.id.grid_layout))
             }
+
             R.id.select_all -> DialogUtil.createCommonDialog(
                 this,
                 getString(R.string.select_folder_all)
@@ -1427,6 +1434,7 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
                     mMediaScannerConnection!!.connect()
                 }
             }
+
             TAKE_VIDEO -> {
 //                MyApplication..isCamera = false
                 if (resultCode == RESULT_OK) {
@@ -1471,8 +1479,9 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
                     mMediaScannerConnection!!.connect()
                 }
             }
+
             RequestCode.REQUEST_SELECT_TO_EDIT -> if (!isAddClip) {
-                mediaListCopy = MediaDataRepository.getInstance().dataOperateCopy
+                mediaListCopy = MediaDataRepository.dataOperateCopy
             }
 
         }
@@ -1511,7 +1520,7 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
             checkFFmpegBackround()
             withContext(Dispatchers.IO) {
                 withTimeout(6000L) {
-                    MediaDataRepository.getInstance().save2Local()
+                    MediaDataRepository.save2Local()
                     //取消当前预处理的任务
                     ThreadPoolManager.getThreadPool().shutDown()
                     ThreadPoolManager.getThreadPool().release()
@@ -1519,16 +1528,16 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
                 }
             }
             withContext(Dispatchers.Default) {
-                MediaDataRepository.getInstance().recyleBitmaps()
-                MediaDataRepository.getInstance().onDestroyCurrentThread()
+                MediaDataRepository.recyleBitmaps()
+                MediaDataRepository.onDestroyCurrentThread()
                 LogUtils.v(
                     "test",
-                    "datalist.size:inner..." + MediaDataRepository.getInstance().dataOperate.size
+                    "datalist.size:inner..." + MediaDataRepository.dataOperate.size
                 );
             }
             LogUtils.v(
                 "test",
-                "datalist.size:" + MediaDataRepository.getInstance().dataOperate.size
+                "datalist.size:" + MediaDataRepository.dataOperate.size
             );
             endLoading()
             T.showShort(this@SelectClipActivity, getString(R.string.draft_save))
@@ -1540,10 +1549,10 @@ class SelectClipActivity : ViewModelActivity<LoadMediaViewModel, ActivitySelectC
      * 如果视频比较长，大于10mn则终止音频的抽取
      */
     private fun checkFFmpegBackround() {
-        if (ObjectUtils.isEmpty(MediaDataRepository.getInstance().dataOperate)) {
+        if (ObjectUtils.isEmpty(MediaDataRepository.dataOperate)) {
             return
         }
-        for (m: MediaItem in MediaDataRepository.getInstance().dataOperate) {
+        for (m: MediaItem? in MediaDataRepository.dataOperate) {
             if (m is VideoMediaItem) {
                 if (!ObjectUtils.isEmpty(m.extractTaskId) && m.getFinalDuration() > 600000) {
                     FfmpegBackgroundHelper.getInstance().removeTask(m.extractTaskId)

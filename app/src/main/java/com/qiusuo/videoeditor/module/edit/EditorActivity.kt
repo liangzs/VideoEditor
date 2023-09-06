@@ -11,15 +11,15 @@ import com.qiusuo.videoeditor.databinding.ActivityEditorBinding
 
 class EditorActivity : BaseActivity<ActivityEditorBinding>(ActivityEditorBinding::inflate) {
     lateinit var mediaPreviewView: MediaPreviewView ;
-    lateinit var mediaList:List<MediaItem>;
-    lateinit var mDoodleItems:List<DoodleItem>;
+    lateinit var mediaList:MutableList<MediaItem?>;
+    lateinit var mDoodleItems:MutableList<DoodleItem>;
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
 
     override fun initData(savedInstanceState: Bundle?) {
-        mediaList = MediaDataRepository.getInstance().getDataOperate()
-        mDoodleItems = MediaDataRepository.getInstance().getAllDoodle()
+        mediaList = MediaDataRepository.dataOperate
+        mDoodleItems = MediaDataRepository.doodleList!!
 //        val isfade: Boolean = SharedPreferencesUtil
 //            .getBoolean(ContactUtils.TAG_MUSIC_FADE + MediaDataRepository.getInstance().getProjectID(), false)
 //        mCurRatioType = RatioType.getRatioType(SharedPreferencesUtil
