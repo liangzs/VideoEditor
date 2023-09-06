@@ -33,19 +33,19 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
             TabId.HOT_THEME,
             getString(R.string.main_hot_theme),
             R.drawable.selector_main_hot_theme,
-            HotThemeFragment::class
+            null
         ),
         Tab(
             TabId.HOME,
             getString(R.string.main_home),
             R.drawable.selector_main_home,
-            HomeFragment::class
+            null
         ),
         Tab(
             TabId.STUDIO,
             getString(R.string.main_studio),
             R.drawable.selector_main_studio,
-            HomeFragment::class
+            null
         )
     ) }
 
@@ -66,7 +66,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
                     0 -> HotThemeFragment()
                     1 -> HomeFragment()
                     else -> {
-                        HomeFragment()
+                        MyStudioFragment()
                     }
                 }
         }
