@@ -10,10 +10,14 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.qiusuo.videoeditor.R
 import com.qiusuo.videoeditor.base.BaseFragment
 import com.qiusuo.videoeditor.databinding.FragmentStudioBinding
+import java.util.Arrays
 
 
 class MyStudioFragment : BaseFragment<FragmentStudioBinding>(FragmentStudioBinding::inflate) {
     val viewModel: HomeViewModel by viewModels()
+    val tabs:List<String>by lazy{
+        Arrays.asList(getString(R.string.video),getString(R.string.studio))
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -22,14 +26,11 @@ class MyStudioFragment : BaseFragment<FragmentStudioBinding>(FragmentStudioBindi
 
     override fun initView() {
         viewBinding.viewPager.adapter=StudioFragmentStateAdapter()
-        viewBinding.tabType.addTab(viewBinding.tabType.newTab().apply { this.text=getString(R.string.video) })
-        viewBinding.tabType.addTab(viewBinding.tabType.newTab().apply { this.text=getString(R.string.studio) })
-
         TabLayoutMediator(viewBinding.tabType,viewBinding.viewPager){tab,position->
-
+            tab.text=tabs.get(position)
         }.attach()
 
-//密密麻麻
+
     }
 
 

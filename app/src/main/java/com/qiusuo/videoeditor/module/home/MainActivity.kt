@@ -85,8 +85,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
            }
     }.attach()
         viewBinding.fragmentViewpager.currentItem=1
-
-
+        viewBinding.fragmentViewpager.isUserInputEnabled=false
 }
 
 

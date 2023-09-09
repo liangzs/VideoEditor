@@ -23,6 +23,7 @@ class DraftAdapter(val list: List<Project>) : RecyclerView.Adapter<DraftAdapter.
 
     inner class DraftHolder(val binding: ItemDraftLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
         fun onbind(project: Project) {
+            binding.textName.text=project.projectName
         }
     }
 }
